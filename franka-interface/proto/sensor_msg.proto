@@ -1,0 +1,30 @@
+syntax = "proto2";
+
+message BoundingBox {
+  required string name = 1;
+  required int32 id = 2;
+
+  required int32 x = 3;
+  required int32 y = 4;
+  required int32 w = 5;
+  required int32 h = 6;
+}
+
+message JointPositionVelocitySensorMessage {
+  required int32 id = 1;
+  required double timestamp = 2;
+  required double seg_run_time = 3;
+
+  repeated double joints = 4;
+  repeated double joint_vels = 5;
+}
+
+message PosePositionVelocitySensorMessage {
+  required int32 id = 1;
+  required double timestamp = 2;
+  required double seg_run_time = 3;
+
+  repeated double position = 4;
+  repeated double quaternion = 5;
+  repeated double pose_velocities = 6;
+}

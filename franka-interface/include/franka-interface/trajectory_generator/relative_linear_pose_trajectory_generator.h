@@ -1,0 +1,14 @@
+#ifndef FRANKA_INTERFACE_TRAJECTORY_GENERATOR_RELATIVE_LINEAR_POSE_TRAJECTORY_GENERATOR_H_
+#define FRANKA_INTERFACE_TRAJECTORY_GENERATOR_RELATIVE_LINEAR_POSE_TRAJECTORY_GENERATOR_H_
+
+#include "franka-interface/trajectory_generator/relative_pose_trajectory_generator.h"
+
+class RelativeLinearPoseTrajectoryGenerator : public RelativePoseTrajectoryGenerator {
+ public:
+  using RelativePoseTrajectoryGenerator::RelativePoseTrajectoryGenerator;
+
+  void get_next_step(const franka::RobotState &robot_state) override;
+
+};
+
+#endif  // FRANKA_INTERFACE_TRAJECTORY_GENERATOR_RELATIVE_LINEAR_POSE_TRAJECTORY_GENERATOR_H_

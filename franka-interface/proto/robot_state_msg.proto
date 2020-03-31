@@ -1,0 +1,107 @@
+syntax = "proto2";
+
+message RobotStateMessage {
+  repeated double pose_desired = 1;
+  repeated double O_T_EE = 2;
+  repeated double O_T_EE_d = 3;
+  repeated double F_T_EE = 4;
+  repeated double EE_T_K = 5;
+  required double m_ee = 6;
+  repeated double I_ee = 7;
+  repeated double F_x_Cee = 8;
+  required double m_load = 9;
+  repeated double I_load = 10;
+  repeated double F_x_Cload = 11;
+  required double m_total = 12;
+  repeated double I_total = 13;
+  repeated double F_x_Ctotal = 14;
+  repeated double elbow = 15;
+  repeated double elbow_d = 16;
+  repeated double elbow_c = 17;
+  repeated double delbow_c = 18;
+  repeated double ddelbow_c = 19;
+  repeated double tau_J = 20;
+  repeated double tau_J_d = 21;
+  repeated double dtau_J = 22;
+  repeated double q = 23;
+  repeated double q_d = 24;
+  repeated double dq = 25;
+  repeated double dq_d = 26;
+  repeated double ddq_d = 27;
+  repeated double joint_contact = 28;
+  repeated double cartesian_contact = 29;
+  repeated double joint_collision = 30;
+  repeated double cartesian_collision = 31;
+  repeated double tau_ext_hat_filtered = 32;
+  repeated double O_F_ext_hat_K = 33;
+  repeated double K_F_ext_hat_K = 34;
+  repeated double O_dP_EE_d = 35;
+  repeated double O_T_EE_c = 36;
+  repeated double O_dP_EE_c = 37;
+  repeated double O_ddP_EE_c = 38;
+  repeated double theta = 39;
+  repeated double dtheta = 40;
+  repeated double robot_frames = 41;
+
+  message Errors {
+    required bool joint_position_limits_violation = 1;
+    required bool cartesian_position_limits_violation = 2;
+    required bool self_collision_avoidance_violation = 3;
+    required bool joint_velocity_violation = 4;
+    required bool cartesian_velocity_violation = 5;
+    required bool force_control_safety_violation = 6;
+    required bool joint_reflex = 7;
+    required bool cartesian_reflex = 8;
+    required bool max_goal_pose_deviation_violation = 9;
+    required bool max_path_pose_deviation_violation = 10;
+    required bool cartesian_velocity_profile_safety_violation = 11;
+    required bool joint_position_motion_generator_start_pose_invalid = 12;
+    required bool joint_motion_generator_position_limits_violation = 13;
+    required bool joint_motion_generator_velocity_limits_violation = 14;
+    required bool joint_motion_generator_velocity_discontinuity = 15;
+    required bool joint_motion_generator_acceleration_discontinuity = 16;
+    required bool cartesian_position_motion_generator_start_pose_invalid = 17;
+    required bool cartesian_motion_generator_elbow_limit_violation = 18;
+    required bool cartesian_motion_generator_velocity_limits_violation = 19;
+    required bool cartesian_motion_generator_velocity_discontinuity = 20;
+    required bool cartesian_motion_generator_acceleration_discontinuity = 21;
+    required bool cartesian_motion_generator_elbow_sign_inconsistent = 22;
+    required bool cartesian_motion_generator_start_elbow_invalid = 23;
+    required bool cartesian_motion_generator_joint_position_limits_violation = 24;
+    required bool cartesian_motion_generator_joint_velocity_limits_violation = 25;
+    required bool cartesian_motion_generator_joint_velocity_discontinuity = 26;
+    required bool cartesian_motion_generator_joint_acceleration_discontinuity = 27;
+    required bool cartesian_position_motion_generator_invalid_frame = 28;
+    required bool force_controller_desired_force_tolerance_violation = 29;
+    required bool controller_torque_discontinuity = 30;
+    required bool start_elbow_sign_inconsistent = 31;
+    required bool communication_constraints_violation = 32;
+    required bool power_limit_violation = 33;
+    required bool joint_p2p_insufficient_torque_for_planning = 34;
+    required bool tau_j_range_violation = 35;
+    required bool instability_detected = 36;
+    required bool joint_move_in_wrong_direction = 37;
+  }
+
+  required Errors current_errors = 42;
+  required Errors last_motion_errors = 43;
+  required double control_command_success_rate = 44;
+
+  enum RobotMode {
+    OTHER=0;
+    IDLE=1;
+    MOVE=2;
+    GUIDING=3;
+    REFLEX=4;
+    USER_STOPPED=5;
+    AUTOMATIC_ERROR_RECOVERY=6;
+  }
+
+  required RobotMode robot_mode = 45;
+  required double robot_time = 46;
+  required double gripper_width = 47;
+  required double gripper_max_width = 48;
+  required bool gripper_is_grasped = 49;
+  required uint32 gripper_temperature = 50;
+  required double gripper_time = 51;
+}

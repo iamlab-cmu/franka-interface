@@ -28,7 +28,6 @@ Compiled source #
 *.log
 *.sql
 *.sqlite
-logs/*
 
 # OS generated files #
 ######################
@@ -62,36 +61,8 @@ CMakeCache.txt
 franka-interface/cmake-build-debug/
 
 # Add workspace build files
-catkin_ws/build
-catkin_ws/devel
 src/catkin_ws/build
 src/catkin_ws/devel
-catkin_ws/src/CMakeLists.txt
-catkin_ws/.catkin_tools
-catkin_ws/logs
 
 build
-Release
-test_franka-interface
-franka-interface/build
-franka-interface-common/build
-
-# Ipython notebook ignore
-notebooks/.ipynb_checkpoints
-
-*cmake-build-debug
-*imgui.ini
-*egg-info
-
-# Vscode
-.vscode
-
-# Saved data
-catkin_ws/src/franka_ros_interface/out*
-
-# Docker
-.docker_tmp
-
-# Output files
-outs/
-*.ipynb_checkpoints
+test_franka_interface
