@@ -48,6 +48,11 @@ class SensorDataManager {
      */
     SensorDataManagerReadStatus readJointSensorMessage(JointPositionVelocitySensorMessage& message);
 
+    /**
+     * Clears buffer
+     */
+    void clearBuffer();
+
  private:
     SensorBufferTypePtr buffer_;
     boost::interprocess::interprocess_mutex* buffer_mutex_= nullptr;

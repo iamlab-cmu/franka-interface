@@ -12,7 +12,6 @@ class CubicHermiteSplinePoseTrajectoryGenerator : public PoseTrajectoryGenerator
   void get_next_step(const franka::RobotState &robot_state) override;
 
  private:
-  int last_goal_timestamp_;
   double seg_start_time_ = 0.;
   double seg_run_time = 0.;
 

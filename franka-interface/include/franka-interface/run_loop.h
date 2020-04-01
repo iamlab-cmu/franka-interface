@@ -119,12 +119,6 @@ class run_loop {
 
   RunLoopSharedMemoryHandler* get_shared_memory_handler();
 
-  /**
-   * Return the sensor data manager.
-   * @return
-   */
-  SensorDataManager* get_sensor_data_manager();
-
   static std::atomic<bool> run_loop_ok_;
 
  private:

@@ -9,10 +9,7 @@
 
 void CubicHermiteSplineJointTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readJointSensorMessage(joint_sensor_msg_);
-  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS &&
-      joint_sensor_msg_.timestamp() - last_goal_timestamp_ > 1e-3) {
-    last_goal_timestamp_ = joint_sensor_msg_.timestamp();
-
+  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
     for (int i = 0; i < 7; i++) {
       goal_joints_[i] = joint_sensor_msg_.joints(i);
       goal_joint_velocities_[i] = joint_sensor_msg_.joint_vels(i);

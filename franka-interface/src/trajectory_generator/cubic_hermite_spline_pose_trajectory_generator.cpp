@@ -17,10 +17,7 @@ void CubicHermiteSplinePoseTrajectoryGenerator::initialize_trajectory(const fran
 
 void CubicHermiteSplinePoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readPoseSensorMessage(pose_sensor_msg_);
-  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS &&
-      pose_sensor_msg_.timestamp() - last_goal_timestamp_ > 1e-3) {
-    last_goal_timestamp_ = pose_sensor_msg_.timestamp();
-
+  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
     for (int i = 0; i < 3; i++) {
       goal_position_[i] = pose_sensor_msg_.position(i);
     }
@@ -77,6 +74,10 @@ void CubicHermiteSplinePoseTrajectoryGenerator::get_next_step(const franka::Robo
                         * Eigen::AngleAxisd(desired_euler_[1], Eigen::Vector3d::UnitY())
                         * Eigen::AngleAxisd(desired_euler_[2], Eigen::Vector3d::UnitZ());
 
-  calculate_desired_pose();
+  // calculate_desired_pose();
+  for (int i = 0; i < 16; i++) {
+    desired_pose_[i] = initial_pose_[i];
+  }
+  
 }
   

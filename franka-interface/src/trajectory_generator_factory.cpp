@@ -37,11 +37,11 @@ TrajectoryGenerator* TrajectoryGeneratorFactory::getTrajectoryGeneratorForSkill(
   "\n";
 
   switch (trajectory_generator_type) {
-    case TrajectoryGeneratorType::CubicHermiteSplinePoseTrajectoryGenerator:
-      trajectory_generator = new CubicHermiteSplinePoseTrajectoryGenerator(buffer, sensor_data_manager);
-      break;
     case TrajectoryGeneratorType::CubicHermiteSplineJointTrajectoryGenerator:
       trajectory_generator = new CubicHermiteSplineJointTrajectoryGenerator(buffer, sensor_data_manager);
+      break;
+    case TrajectoryGeneratorType::CubicHermiteSplinePoseTrajectoryGenerator:
+      trajectory_generator = new CubicHermiteSplinePoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::GoalPoseDmpTrajectoryGenerator:
       trajectory_generator = new GoalPoseDmpTrajectoryGenerator(buffer, sensor_data_manager);

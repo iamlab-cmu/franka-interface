@@ -70,7 +70,7 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
 
   PoseTrajectoryGenerator* pose_trajectory_generator = dynamic_cast<PoseTrajectoryGenerator*>(traj_generator);
 
-  if(pose_trajectory_generator == nullptr) {
+  if (pose_trajectory_generator == nullptr) {
     throw std::bad_cast();
   }
 

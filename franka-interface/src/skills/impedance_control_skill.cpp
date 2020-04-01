@@ -61,7 +61,7 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
     time += period.toSec();
     log_counter += 1;
 
-    if(time > 0.0) {
+    if (time > 0.0) {
       traj_generator_->get_next_step(robot_state);
     }
 

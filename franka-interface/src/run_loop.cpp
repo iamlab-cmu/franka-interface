@@ -104,7 +104,7 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
 
   SharedBufferTypePtr traj_buffer = shared_memory_handler_->getTrajectoryGeneratorBuffer(memory_index);
   TrajectoryGenerator *traj_generator = traj_gen_factory_.getTrajectoryGeneratorForSkill(
-      traj_buffer, get_sensor_data_manager());
+      traj_buffer, sensor_data_manager_);
   std::cout << "Did get traj generator\n";
 
   SharedBufferTypePtr feedback_controller_buffer = shared_memory_handler_->getFeedbackControllerBuffer(
@@ -115,11 +115,11 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   SharedBufferTypePtr termination_handler_buffer = shared_memory_handler_->getTerminationParametersBuffer(
       memory_index);
   TerminationHandler* termination_handler =
-      termination_handler_factory_.getTerminationHandlerForSkill(termination_handler_buffer, run_loop_info, get_sensor_data_manager());
+      termination_handler_factory_.getTerminationHandlerForSkill(termination_handler_buffer, run_loop_info, sensor_data_manager_);
   std::cout << "Did get TerminationHandler\n";
 
   // Start skill, does any pre-processing if required.
-  
+  sensor_data_manager_->clearBuffer();
   new_skill->start_skill(robot_, traj_generator, feedback_controller, termination_handler);
 }
 
@@ -582,8 +582,4 @@ SkillInfoManager* run_loop::getSkillInfoManager() {
 
 RunLoopSharedMemoryHandler* run_loop::get_shared_memory_handler() {
   return shared_memory_handler_;
-}
-
-SensorDataManager* run_loop::get_sensor_data_manager() {
-  return sensor_data_manager_;
 }
