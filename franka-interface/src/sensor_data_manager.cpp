@@ -22,6 +22,24 @@ SensorDataManagerReadStatus SensorDataManager::readJointSensorMessage(JointPosit
    return readMessageAsBytes(parse_callback);
 }
 
+SensorDataManagerReadStatus SensorDataManager::readPoseSensorMessage(PosePositionSensorMessage &message) {
+   std::function<bool(const void *bytes, int data_size)>
+       parse_callback = [&](const void *bytes, int data_size) -> bool {
+     // get state variables
+     return message.ParseFromArray(bytes, data_size);
+   };
+   return readMessageAsBytes(parse_callback);
+}
+
+SensorDataManagerReadStatus SensorDataManager::readJointSensorMessage(JointPositionSensorMessage &message) {
+   std::function<bool(const void *bytes, int data_size)>
+       parse_callback = [&](const void *bytes, int data_size) -> bool {
+     // get state variables
+     return message.ParseFromArray(bytes, data_size);
+   };
+   return readMessageAsBytes(parse_callback);
+}
+
 SensorDataManagerReadStatus SensorDataManager::readMessageAsBytes(std::function< bool(const void *bytes, int data_size)> parse_callback) {
   SensorDataManagerReadStatus status;
 

@@ -84,7 +84,7 @@ void PoseTrajectoryGenerator::fix_goal_quaternion(){
 }
 
 void PoseTrajectoryGenerator::calculate_desired_pose() {
-  if(same_orientation) {
+  if (same_orientation) {
     calculate_desired_position();
   } else {
     Eigen::Affine3d desired_pose_affine = Eigen::Affine3d::Identity();

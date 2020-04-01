@@ -46,6 +46,8 @@ enum class TrajectoryGeneratorType : uint8_t {
     LinearPoseTrajectoryGenerator,
     MinJerkJointTrajectoryGenerator,
     MinJerkPoseTrajectoryGenerator,
+    PassThroughJointTrajectoryGenerator,
+    PassThroughPoseTrajectoryGenerator,
     PoseDmpTrajectoryGenerator,
     RelativeLinearPoseTrajectoryGenerator,
     RelativeMinJerkPoseTrajectoryGenerator,
@@ -91,7 +93,9 @@ enum class SensorDataManagerReadStatus : uint8_t {
 
 enum class SensorDataMessageType : uint8_t {
   JOINT_POSITION_VELOCITY,
+  JOINT_POSITION,
   POSE_POSITION_VELOCITY,
+  POSE_POSITION,
   BOUNDING_BOX,
 };
 

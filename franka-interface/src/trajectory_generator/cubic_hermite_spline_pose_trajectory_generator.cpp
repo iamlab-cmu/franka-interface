@@ -74,10 +74,7 @@ void CubicHermiteSplinePoseTrajectoryGenerator::get_next_step(const franka::Robo
                         * Eigen::AngleAxisd(desired_euler_[1], Eigen::Vector3d::UnitY())
                         * Eigen::AngleAxisd(desired_euler_[2], Eigen::Vector3d::UnitZ());
 
-  // calculate_desired_pose();
-  for (int i = 0; i < 16; i++) {
-    desired_pose_[i] = initial_pose_[i];
-  }
+  calculate_desired_pose();
   
 }
   

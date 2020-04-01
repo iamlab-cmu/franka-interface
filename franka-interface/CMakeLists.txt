@@ -49,8 +49,8 @@ add_library(franka-interface SHARED
   src/termination_handler/noop_termination_handler.cpp
   src/termination_handler/termination_handler.cpp
   src/termination_handler/time_termination_handler.cpp
-  src/trajectory_generator/cubic_hermite_spline_pose_trajectory_generator.cpp
   src/trajectory_generator/cubic_hermite_spline_joint_trajectory_generator.cpp
+  src/trajectory_generator/cubic_hermite_spline_pose_trajectory_generator.cpp
   src/trajectory_generator/goal_pose_dmp_trajectory_generator.cpp
   src/trajectory_generator/gripper_trajectory_generator.cpp
   src/trajectory_generator/impulse_trajectory_generator.cpp
@@ -60,6 +60,8 @@ add_library(franka-interface SHARED
   src/trajectory_generator/linear_pose_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_joint_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_pose_trajectory_generator.cpp
+  src/trajectory_generator/pass_through_joint_trajectory_generator.cpp
+  src/trajectory_generator/pass_through_pose_trajectory_generator.cpp
   src/trajectory_generator/pose_dmp_trajectory_generator.cpp
   src/trajectory_generator/pose_trajectory_generator.cpp
   src/trajectory_generator/relative_linear_pose_trajectory_generator.cpp

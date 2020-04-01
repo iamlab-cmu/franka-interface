@@ -48,6 +48,20 @@ class SensorDataManager {
      */
     SensorDataManagerReadStatus readJointSensorMessage(JointPositionVelocitySensorMessage& message);
 
+   /**
+     * Read PosePositionSensorMessage
+     * @param message
+     * @return
+     */
+    SensorDataManagerReadStatus readPoseSensorMessage(PosePositionSensorMessage& message);
+
+    /**
+     * Read JointPositionSensorMessage
+     * @param message
+     * @return
+     */
+    SensorDataManagerReadStatus readJointSensorMessage(JointPositionSensorMessage& message);
+
     /**
      * Clears buffer
      */
