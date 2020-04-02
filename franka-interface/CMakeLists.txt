@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_compile_options(-Wno-unused-but-set-variable -Wno-unused-parameter -Wno-unused-variable)
+add_compile_options(-Wall -Wextra)
 
 ## Dependencies
 # find_package(Poco REQUIRED COMPONENTS Net Foundation)

@@ -63,7 +63,9 @@ class SharedMemoryInfo {
   int getOffsetForTimerParameters();
 
   int getSizeForSensorData();
-  int getOffsetForSensorData();
+  int getOffsetForSensorDataTrajectoryGenerator();
+  int getOffsetForSensorDataFeedbackController();
+  int getOffsetForSensorDataTerminationHandler();
 
  
   int getSizeForCurrentRobotState();
@@ -104,8 +106,8 @@ class SharedMemoryInfo {
   const std::string current_robot_state_mutex_name_ = "current_robot_state_mutex";
 
   // Declare sizes
-  const int sensor_buffer_size_ = 2 * 1024 * sizeof(SensorBufferType);  // Notice the different "type"
-  const int params_memory_size_0_ = 16 * 1024 * sizeof(SharedBufferType) + sensor_buffer_size_;
+  const int sensor_buffer_size_ = 5 * 1024 * sizeof(SensorBufferType);  // Notice the different "type"
+  const int params_memory_size_0_ = 16 * 1024 * sizeof(SharedBufferType) + sensor_buffer_size_ * 3;
   const int params_memory_size_1_ = 16 * 1024 * sizeof(SharedBufferType);
   const int objects_memory_size_ = 16 * 1024 * sizeof(SharedBufferType);
 

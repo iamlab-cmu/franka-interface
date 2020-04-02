@@ -229,7 +229,7 @@ void RunLoopSharedMemoryHandler::start() {
   region_sensor_data_trajectory_generator_0_ =  boost::interprocess::mapped_region(
             shared_memory_object_0_,
             boost::interprocess::read_write,
-            shared_memory_info_.getOffsetForSensorData(),
+            shared_memory_info_.getOffsetForSensorDataTrajectoryGenerator(),
             shared_memory_info_.getSizeForSensorData()
   );
 
@@ -238,7 +238,7 @@ void RunLoopSharedMemoryHandler::start() {
   region_sensor_data_feedback_controller_0_ =  boost::interprocess::mapped_region(
             shared_memory_object_0_,
             boost::interprocess::read_write,
-            shared_memory_info_.getOffsetForSensorData(),
+            shared_memory_info_.getOffsetForSensorDataFeedbackController(),
             shared_memory_info_.getSizeForSensorData()
   );
 
@@ -247,7 +247,7 @@ void RunLoopSharedMemoryHandler::start() {
   region_sensor_data_termination_handler_0_ =  boost::interprocess::mapped_region(
             shared_memory_object_0_,
             boost::interprocess::read_write,
-            shared_memory_info_.getOffsetForSensorData(),
+            shared_memory_info_.getOffsetForSensorDataTerminationHandler(),
             shared_memory_info_.getSizeForSensorData()
   );
 

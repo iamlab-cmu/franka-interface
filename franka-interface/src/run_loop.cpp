@@ -213,7 +213,7 @@ void run_loop::update_process_info() {
         // currently executed.
         if (!is_executing_skill && run_loop_info->get_new_skill_available()) {
 
-          std::cout << "Did get new skill";
+          std::cout << "Did get new skill" << std::endl;
           // Create new task Skill
           int new_skill_id = run_loop_info->get_new_skill_id();
           SkillType new_skill_type = static_cast<SkillType>(run_loop_info->get_new_skill_type());

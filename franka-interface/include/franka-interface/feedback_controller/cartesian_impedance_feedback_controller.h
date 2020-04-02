@@ -12,12 +12,15 @@ class CartesianImpedanceFeedbackController : public FeedbackController {
   void parse_parameters() override;
 
   void initialize_controller(FrankaRobot *robot) override;
+
+  void parse_sensor_data(const franka::RobotState &robot_state) override;
   
   void get_next_step(const franka::RobotState &robot_state, 
                      TrajectoryGenerator *traj_generator) override;
 
  private:
   CartesianImpedanceFeedbackControllerMessage cartesian_impedance_feedback_params_;
+  CartesianImpedanceSensorMessage cartesian_impedance_sensor_msg_;
 
   const franka::Model *model_;
 

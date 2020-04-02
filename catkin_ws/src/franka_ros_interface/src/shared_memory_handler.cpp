@@ -87,7 +87,7 @@ namespace franka_ros_interface
     region_sensor_data_trajectory_generator_0_ =  boost::interprocess::mapped_region(
         shared_memory_object_0_,
         boost::interprocess::read_write,
-        shared_memory_info_.getOffsetForSensorData(),
+        shared_memory_info_.getOffsetForSensorDataTrajectoryGenerator(),
         shared_memory_info_.getSizeForSensorData()
     );
     std::cout << region_sensor_data_trajectory_generator_0_.get_address() << std::endl;
@@ -95,7 +95,7 @@ namespace franka_ros_interface
     region_sensor_data_feedback_controller_0_ =  boost::interprocess::mapped_region(
         shared_memory_object_0_,
         boost::interprocess::read_write,
-        shared_memory_info_.getOffsetForSensorData(),
+        shared_memory_info_.getOffsetForSensorDataFeedbackController(),
         shared_memory_info_.getSizeForSensorData()
     );
     std::cout << region_sensor_data_feedback_controller_0_.get_address() << std::endl;
@@ -103,7 +103,7 @@ namespace franka_ros_interface
     region_sensor_data_termination_handler_0_ =  boost::interprocess::mapped_region(
         shared_memory_object_0_,
         boost::interprocess::read_write,
-        shared_memory_info_.getOffsetForSensorData(),
+        shared_memory_info_.getOffsetForSensorDataTerminationHandler(),
         shared_memory_info_.getSizeForSensorData()
     );
     std::cout << region_sensor_data_termination_handler_0_.get_address() << std::endl;
@@ -824,14 +824,14 @@ namespace franka_ros_interface
     int sensor_data_size = sensor_data.size;
 
     // First let's indicate this is new data.
-    sensor_data_trajectory_generator_buffer_0_[0] = 1;
+    sensor_buffer_ptr[0] = 1;
     // Now add the type for the message.
-    sensor_data_trajectory_generator_buffer_0_[1] = sensor_data.type;
+    sensor_buffer_ptr[1] = sensor_data.type;
     // Now add the size of the data.
-    sensor_data_trajectory_generator_buffer_0_[2] = (sensor_data_size & 0xFF);
-    sensor_data_trajectory_generator_buffer_0_[3] = ((sensor_data_size >> 8) & 0xFF);
-    sensor_data_trajectory_generator_buffer_0_[4] = ((sensor_data_size >> 16) & 0xFF);
-    sensor_data_trajectory_generator_buffer_0_[5] = ((sensor_data_size >> 24) & 0xFF);
+    sensor_buffer_ptr[2] = (sensor_data_size & 0xFF);
+    sensor_buffer_ptr[3] = ((sensor_data_size >> 8) & 0xFF);
+    sensor_buffer_ptr[4] = ((sensor_data_size >> 16) & 0xFF);
+    sensor_buffer_ptr[5] = ((sensor_data_size >> 24) & 0xFF);
 
     memcpy(sensor_buffer_ptr + 6, &sensor_data.sensorData[0], sensor_data_size * sizeof(uint8_t));
   }
@@ -841,7 +841,6 @@ namespace franka_ros_interface
     if (sensor_data_group_0_mutex_->try_lock())
     {
       if (sensor_data_group_ptr->has_trajectory_generator_sensor_data) {
-        printf("has traj gen sensor data\n");
         loadSensorDataIntoSharedMemory(sensor_data_group_ptr->trajectoryGeneratorSensorData, sensor_data_trajectory_generator_buffer_0_);
       }
 

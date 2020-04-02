@@ -38,21 +38,29 @@ void CartesianImpedanceFeedbackController::initialize_controller(FrankaRobot *ro
 
   stiffness_ = Eigen::MatrixXd(6,6);
   stiffness_.setZero();
-  stiffness_(0,0) = translational_stiffnesses_[0];
-  stiffness_(1,1) = translational_stiffnesses_[1];
-  stiffness_(2,2) = translational_stiffnesses_[2];
-  stiffness_(3,3) = rotational_stiffnesses_[0];
-  stiffness_(4,4) = rotational_stiffnesses_[1];
-  stiffness_(5,5) = rotational_stiffnesses_[2];
-
   damping_ = Eigen::MatrixXd(6,6);
   damping_.setZero();
-  damping_(0,0) = 2.0 * sqrt(translational_stiffnesses_[0]);
-  damping_(1,1) = 2.0 * sqrt(translational_stiffnesses_[1]);
-  damping_(2,2) = 2.0 * sqrt(translational_stiffnesses_[2]);
-  damping_(3,3) = 2.0 * sqrt(rotational_stiffnesses_[0]);
-  damping_(4,4) = 2.0 * sqrt(rotational_stiffnesses_[1]);
-  damping_(5,5) = 2.0 * sqrt(rotational_stiffnesses_[2]);
+
+  for (int i = 0; i < 3; i++) {
+    stiffness_(i, i) = translational_stiffnesses_[i];
+    stiffness_(i + 3, i + 3) = rotational_stiffnesses_[i];
+  }
+  for (int i = 0; i < 6; i++) {
+    damping_(i, i) = 2. * sqrt(stiffness_(i, i));
+  }
+}
+
+void CartesianImpedanceFeedbackController::parse_sensor_data(const franka::RobotState &robot_state) {
+  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readFeedbackControllerSensorMessage(cartesian_impedance_sensor_msg_);
+  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
+    for (int i = 0; i < 3; i++) {
+      stiffness_(i, i) = cartesian_impedance_sensor_msg_.translational_stiffnesses(i);
+      stiffness_(i + 3, i + 3) = cartesian_impedance_sensor_msg_.rotational_stiffnesses(i);
+    }
+    for (int i = 0; i < 6; i++) {
+      damping_(i, i) = 2. * sqrt(stiffness_(i, i));
+    }
+  }
 }
 
 void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotState &robot_state,

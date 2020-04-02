@@ -9,7 +9,7 @@ void MinJerkPoseTrajectoryGenerator::get_next_step(const franka::RobotState &rob
   t_ = std::min(std::max(time_ / run_time_, 0.0), 1.0);
   slerp_t_ = (10 * std::pow(t_, 3) - 15 * std::pow(t_, 4) + 6 * std::pow(t_, 5));
   
-  for (size_t i = 0; i < desired_position_.size(); i++) {
+  for (int i = 0; i < desired_position_.size(); i++) {
     desired_position_[i] = initial_position_[i] + 
                            (goal_position_[i] - initial_position_[i]) * slerp_t_;
   }

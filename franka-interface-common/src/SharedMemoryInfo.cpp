@@ -173,11 +173,29 @@ int SharedMemoryInfo::getSizeForSensorData()  {
     return sensor_buffer_size_;
 }
 
-int SharedMemoryInfo::getOffsetForSensorData()  {
+int SharedMemoryInfo::getOffsetForSensorDataTrajectoryGenerator()  {
   return (trajectory_params_buffer_size_
           + feedback_controller_params_buffer_size_
           + termination_params_buffer_size_
           + timer_params_buffer_size_);
+}
+
+int SharedMemoryInfo::getOffsetForSensorDataFeedbackController()  {
+  return (trajectory_params_buffer_size_
+          + feedback_controller_params_buffer_size_
+          + termination_params_buffer_size_
+          + timer_params_buffer_size_
+          + sensor_buffer_size_
+          );
+}
+
+int SharedMemoryInfo::getOffsetForSensorDataTerminationHandler()  {
+  return (trajectory_params_buffer_size_
+          + feedback_controller_params_buffer_size_
+          + termination_params_buffer_size_
+          + timer_params_buffer_size_
+          + sensor_buffer_size_ * 2
+          );
 }
 
 int SharedMemoryInfo::getSizeForExecutionFeedbackData() {
