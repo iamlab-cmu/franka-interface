@@ -13,7 +13,9 @@
 
 class FeedbackController {
  public:
-  explicit FeedbackController(SharedBufferTypePtr p) : params_{p} {};
+  explicit FeedbackController(SharedBufferTypePtr p, SensorDataManager* sensor_data_manager) : 
+                                                                                params_{p},
+                                                                                sensor_data_manager_{sensor_data_manager} {};
 
   /**
    * Parse parameters from memory.
@@ -35,6 +37,7 @@ class FeedbackController {
 
  protected:
   SharedBufferTypePtr params_=0;
+  SensorDataManager* sensor_data_manager_;
 };
 
 #endif  // FRANKA_INTERFACE_FEEDBACK_CONTROLLER_FEEDBACK_CONTROLLER_H_

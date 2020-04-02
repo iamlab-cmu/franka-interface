@@ -7,7 +7,7 @@
 #include <cmath>
 
 void PassThroughJointTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
-  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readJointSensorMessage(joint_sensor_msg_);
+  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readSensorMessage(joint_sensor_msg_);
   if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
     for (int i = 0; i < 7; i++) {
       desired_joints_[i] = joint_sensor_msg_.joints(i);

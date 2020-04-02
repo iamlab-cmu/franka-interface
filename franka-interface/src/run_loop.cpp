@@ -110,7 +110,7 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   SharedBufferTypePtr feedback_controller_buffer = shared_memory_handler_->getFeedbackControllerBuffer(
       memory_index);
   FeedbackController *feedback_controller =
-      feedback_controller_factory_.getFeedbackControllerForSkill(feedback_controller_buffer);
+      feedback_controller_factory_.getFeedbackControllerForSkill(feedback_controller_buffer, sensor_data_manager_);
 
   SharedBufferTypePtr termination_handler_buffer = shared_memory_handler_->getTerminationParametersBuffer(
       memory_index);

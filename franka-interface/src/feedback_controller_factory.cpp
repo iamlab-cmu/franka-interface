@@ -15,7 +15,7 @@
 #include "franka-interface/feedback_controller/pass_through_feedback_controller.h"
 #include "franka-interface/feedback_controller/set_internal_impedance_feedback_controller.h"
 
-FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(SharedBufferTypePtr buffer){
+FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(SharedBufferTypePtr buffer, SensorDataManager* sensor_data_manager){
   FeedbackControllerType feedback_controller_type = static_cast<FeedbackControllerType>(buffer[0]);
 
   std::cout << "Feedback Controller Type: " << 
@@ -25,22 +25,22 @@ FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(Sha
   FeedbackController* feedback_controller = nullptr;
   switch (feedback_controller_type) {
     case FeedbackControllerType::NoopFeedbackController:
-      feedback_controller = new NoopFeedbackController(buffer);
+      feedback_controller = new NoopFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::CartesianImpedanceFeedbackController:
-      feedback_controller = new CartesianImpedanceFeedbackController(buffer);
+      feedback_controller = new CartesianImpedanceFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::JointImpedanceFeedbackController:
-      feedback_controller = new JointImpedanceFeedbackController(buffer);
+      feedback_controller = new JointImpedanceFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::ForceAxisImpedenceFeedbackController:
-      feedback_controller = new ForceAxisImpedenceFeedbackController(buffer);
+      feedback_controller = new ForceAxisImpedenceFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::PassThroughFeedbackController:
-      feedback_controller = new PassThroughFeedbackController(buffer);
+      feedback_controller = new PassThroughFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::SetInternalImpedanceFeedbackController:
-      feedback_controller = new SetInternalImpedanceFeedbackController(buffer);
+      feedback_controller = new SetInternalImpedanceFeedbackController(buffer, sensor_data_manager);
       break;
     default:
       std::cout << "Cannot create Feedback Controller with type: " << 

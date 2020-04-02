@@ -6,7 +6,7 @@
 #include <cmath>
 
 void PassThroughPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
-  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readPoseSensorMessage(pose_sensor_msg_);
+  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readSensorMessage(pose_sensor_msg_);
   if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
     for (int i = 0; i < 3; i++) {
       desired_position_[i] = pose_sensor_msg_.position(i);

@@ -34,33 +34,12 @@ class SensorDataManager {
                       buffer_(buffer),
                       buffer_mutex_(mutex)
                       {};
-   /**
-     * Read PosePositionVelocitySensorMessage
-     * @param message
-     * @return
-     */
-    SensorDataManagerReadStatus readPoseSensorMessage(PosePositionVelocitySensorMessage& message);
-
     /**
-     * Read JointPositionVelocitySensorMessage
+     * Read message
      * @param message
      * @return
      */
-    SensorDataManagerReadStatus readJointSensorMessage(JointPositionVelocitySensorMessage& message);
-
-   /**
-     * Read PosePositionSensorMessage
-     * @param message
-     * @return
-     */
-    SensorDataManagerReadStatus readPoseSensorMessage(PosePositionSensorMessage& message);
-
-    /**
-     * Read JointPositionSensorMessage
-     * @param message
-     * @return
-     */
-    SensorDataManagerReadStatus readJointSensorMessage(JointPositionSensorMessage& message);
+    SensorDataManagerReadStatus readSensorMessage(google::protobuf::Message& message);
 
     /**
      * Clears buffer
