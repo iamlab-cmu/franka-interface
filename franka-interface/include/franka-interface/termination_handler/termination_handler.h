@@ -61,7 +61,7 @@ class TerminationHandler {
   /**
    * Parse sensor data
    */
-  virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
+  virtual void parse_sensor_data(const franka::RobotState &robot_state);
 
   bool done_ = false;
 
@@ -71,6 +71,7 @@ class TerminationHandler {
   SharedBufferTypePtr params_ = 0;
   RunLoopProcessInfo *run_loop_info_ = nullptr;
   SensorDataManager* sensor_data_manager_;
+  ShouldTerminateSensorMessage should_terminate_msg_;
 
   // Create hyperplanes
   const std::vector<Eigen::Hyperplane<double,3>> planes_ {

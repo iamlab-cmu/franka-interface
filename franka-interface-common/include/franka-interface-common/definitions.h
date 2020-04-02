@@ -96,6 +96,7 @@ enum class SensorDataMessageType : uint8_t {
   JOINT_POSITION,
   POSE_POSITION_VELOCITY,
   POSE_POSITION,
+  SHOULD_TERMINATE,
   BOUNDING_BOX,
 };
 

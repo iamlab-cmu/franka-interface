@@ -48,3 +48,10 @@ void TerminationHandler::check_terminate_virtual_wall_collisions(const franka::R
     }
   }
 }
+
+void TerminationHandler::parse_sensor_data(const franka::RobotState &robot_state) {
+  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readTerminationHandlerSensorMessage(should_terminate_msg_);
+  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
+    done_ = should_terminate_msg_.should_terminate();
+  }
+}

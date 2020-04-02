@@ -8,25 +8,17 @@
 void PassThroughPoseTrajectoryGenerator::parse_sensor_data(const franka::RobotState &robot_state) {
   SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readTrajectoryGeneratorSensorMessage(pose_sensor_msg_);
   if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
-    printf("Target: ");
     for (int i = 0; i < 3; i++) {
       desired_position_[i] = pose_sensor_msg_.position(i);
-      printf("%f, ", desired_position_[i]);
     }
-    printf("\n");
 
     desired_orientation_.w() = pose_sensor_msg_.quaternion(0);
     desired_orientation_.x() = pose_sensor_msg_.quaternion(1);
     desired_orientation_.y() = pose_sensor_msg_.quaternion(2);
     desired_orientation_.z() = pose_sensor_msg_.quaternion(3);
-  } else if (sensor_msg_status == SensorDataManagerReadStatus::FAIL_TO_READ) {
-    printf("Failed to read \n");
-  } else {
-    printf("No new msg\n");
   }
 }
 
 void PassThroughPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   calculate_desired_pose();
 }
-  
