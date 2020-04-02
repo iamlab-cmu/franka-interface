@@ -33,6 +33,11 @@ class FeedbackController {
   virtual void get_next_step(const franka::RobotState &robot_state, 
                              TrajectoryGenerator *traj_generator) = 0;
 
+  /**
+   * Parse sensor data
+   */
+  virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
+
   std::array<double, 7> tau_d_array_{};
 
  protected:

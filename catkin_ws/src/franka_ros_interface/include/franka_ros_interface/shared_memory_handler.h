@@ -9,6 +9,7 @@
 #include "ros/ros.h" // For ROS::ERROR messages
 #include <std_msgs/Float64.h>
 #include "franka_interface_msgs/SensorData.h"
+#include <franka_interface_msgs/SensorDataGroup.h>
 #include <google/protobuf/message.h>
 #include <robot_state_msg.pb.h>
 
@@ -39,10 +40,6 @@ namespace franka_ros_interface
       int loadSkillParametersIntoSharedMemory(const franka_interface_msgs::ExecuteSkillGoalConstPtr &goal);
 
       /**
-       * Will try to load sensor data into shared memory. This method tries to acquire the lock to write to the
-       * sensor data part of shared memory. If successful, it writes the data into shared memory, else if it cannot
-       * acquire the lock it does not do anything.
-       *
        * The protocol for writing data to the shared memory is the following. Note that the shared memory is of type
        * unsigned int (uint_8) i.e. raw bytes.
        *
@@ -61,7 +58,14 @@ namespace franka_ros_interface
        * @param ptr Pointer to the sensor data message to be written to the shared memory.
        * @param current_free_shared_memory_index
        */
-      void tryToLoadSensorDataIntoSharedMemory(const franka_interface_msgs::SensorData::ConstPtr &sensor_data_ptr);
+      void loadSensorDataIntoSharedMemory(const franka_interface_msgs::SensorData &sensor_data, SensorBufferTypePtr sensor_buffer_ptr);
+      
+      /**
+       * Will try to load all sensor data into shared memory. This method tries to acquire the lock to write to the
+       * sensor data parts of shared memory. If successful, it writes the data into shared memory, else if it cannot
+       * acquire the lock it does not do anything.
+       */
+      void tryToLoadSensorDataGroupIntoSharedMemory(const franka_interface_msgs::SensorDataGroup::ConstPtr &sensor_data_group_ptr);
 
       bool getSkillRunningFlagInSharedMemory();
 
@@ -102,9 +106,7 @@ namespace franka_ros_interface
       boost::interprocess::interprocess_mutex *shared_memory_object_0_mutex_;
       boost::interprocess::interprocess_mutex *shared_memory_object_1_mutex_;
 
-//      boost::interprocess::interprocess_mutex *shared_sensor_data_0_mutex_;
-//      boost::interprocess::interprocess_mutex *shared_sensor_data_1_mutex_;
-      boost::interprocess::interprocess_mutex *sensor_data_0_mutex_;
+      boost::interprocess::interprocess_mutex *sensor_data_group_0_mutex_;
 
       boost::interprocess::interprocess_mutex *shared_execution_response_0_mutex_;
       boost::interprocess::interprocess_mutex *shared_execution_response_1_mutex_;
@@ -133,7 +135,9 @@ namespace franka_ros_interface
       boost::interprocess::mapped_region region_feedback_controller_sensor_data_0_;
       boost::interprocess::mapped_region region_termination_sensor_data_0_;
       boost::interprocess::mapped_region region_timer_sensor_data_0_;
-      boost::interprocess::mapped_region region_sensor_data_0_;
+      boost::interprocess::mapped_region region_sensor_data_trajectory_generator_0_;
+      boost::interprocess::mapped_region region_sensor_data_feedback_controller_0_;
+      boost::interprocess::mapped_region region_sensor_data_termination_handler_0_;
 
       boost::interprocess::mapped_region region_traj_sensor_data_1_;
       boost::interprocess::mapped_region region_feedback_controller_sensor_data_1_;
@@ -156,7 +160,9 @@ namespace franka_ros_interface
       SharedBufferTypePtr termination_handler_buffer_1_;
       SharedBufferTypePtr timer_buffer_1_;
 
-      SensorBufferTypePtr sensor_data_buffer_0_ ;
+      SensorBufferTypePtr sensor_data_trajectory_generator_buffer_0_ ;
+      SensorBufferTypePtr sensor_data_feedback_controller_buffer_0_ ;
+      SensorBufferTypePtr sensor_data_termination_handler_buffer_0_ ;
 
       SharedBufferTypePtr execution_feedback_buffer_0_;
       SharedBufferTypePtr execution_result_buffer_0_;

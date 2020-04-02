@@ -34,7 +34,7 @@ class SharedMemoryInfo {
   std::string getRunLoopInfoMutexName();
   std::string getFrankaInterfaceStateInfoMutexName();
   std::string getParameterMemoryMutexName(int index);
-  std::string getSensorDataMutexName(int index);
+  std::string getSensorDataGroupMutexName(int index);
   std::string getExecutionResponseMutexName(int index);
   std::string getCurrentRobotStateMutexName();
 
@@ -97,8 +97,8 @@ class SharedMemoryInfo {
   // Declare mutexes
   const std::string params_memory_mutex_name_0_ = "run_loop_shared_obj_0_mutex";
   const std::string params_memory_mutex_name_1_ = "run_loop_shared_obj_1_mutex";
-  const std::string sensor_data_mutex_name_0_ = "run_loop_sensor_data_0_mutex";
-  const std::string sensor_data_mutex_name_1_ = "run_loop_sensor_data_1_mutex";
+  const std::string sensor_data_group_mutex_name_0_ = "run_loop_sensor_data_0_mutex";
+  const std::string sensor_data_group_mutex_name_1_ = "run_loop_sensor_data_1_mutex";
   const std::string execution_response_mutex_name_0_ = "run_loop_execution_response_0_mutex";
   const std::string execution_response_mutex_name_1_ = "run_loop_execution_response_1_mutex";
   const std::string current_robot_state_mutex_name_ = "current_robot_state_mutex";

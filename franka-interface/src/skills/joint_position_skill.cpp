@@ -28,6 +28,7 @@ void JointPositionSkill::execute_skill_on_franka(run_loop* run_loop,
   boost::interprocess::scoped_lock<boost::interprocess::interprocess_mutex> lock(
                                   *(shared_memory_handler->getRunLoopProcessInfoMutex()),
                                   boost::interprocess::defer_lock);
+  SensorDataManager* sensor_data_manager = run_loop->get_sensor_data_manager();
 
   std::cout << "Will run the control loop\n";
 
@@ -60,6 +61,14 @@ void JointPositionSkill::execute_skill_on_franka(run_loop* run_loop,
     
     traj_generator_->time_ = time;
     traj_generator_->dt_ = current_period_;
+
+    try {
+      sensor_data_manager->getSensorBufferGroupMutex()->try_lock();
+      traj_generator_->parse_sensor_data(robot_state);
+      termination_handler_->parse_sensor_data(robot_state);
+      sensor_data_manager->getSensorBufferGroupMutex()->unlock();
+    } catch (boost::interprocess::lock_exception) {
+    }
     
     if(time > 0.0) {
       traj_generator_->get_next_step(robot_state);

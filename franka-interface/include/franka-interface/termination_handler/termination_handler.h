@@ -45,9 +45,9 @@ class TerminationHandler {
    * return it.
    * @return  True if skill has terminated previously else False.
    */
-  virtual bool has_terminated();
+  bool has_terminated();
 
-  virtual bool has_terminated_by_virt_coll();
+  bool has_terminated_by_virt_coll();
 
   /**
    * Sets done_ to true if preempt flag is true.
@@ -57,6 +57,11 @@ class TerminationHandler {
   void check_terminate_time(TrajectoryGenerator *trajectory_generator);
 
   void check_terminate_virtual_wall_collisions(const franka::RobotState &robot_state, franka::Model *robot_model);
+
+  /**
+   * Parse sensor data
+   */
+  virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
 
   bool done_ = false;
 

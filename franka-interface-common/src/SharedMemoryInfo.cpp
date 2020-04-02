@@ -81,9 +81,9 @@ std::string SharedMemoryInfo::getParameterMemoryMutexName(int index) {
   }
 }
 
-std::string SharedMemoryInfo::getSensorDataMutexName(int index) {
+std::string SharedMemoryInfo::getSensorDataGroupMutexName(int index) {
   if (index == 0) {
-    return sensor_data_mutex_name_0_;
+    return sensor_data_group_mutex_name_0_;
   } else {
     assert(false);
     return "";

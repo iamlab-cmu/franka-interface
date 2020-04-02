@@ -29,34 +29,35 @@
  */
 class SensorDataManager {
  public:
-  SensorDataManager(SensorBufferTypePtr buffer,
+  SensorDataManager(SensorBufferTypePtr trajectory_generator_buffer,
+                    SensorBufferTypePtr feedback_controller_buffer,
+                    SensorBufferTypePtr termination_handler_buffer,
                     boost::interprocess::interprocess_mutex *mutex) :
-                      buffer_(buffer),
-                      buffer_mutex_(mutex)
+                      trajectory_generator_buffer_(trajectory_generator_buffer),
+                      feedback_controller_buffer_(feedback_controller_buffer),
+                      termination_handler_buffer_(termination_handler_buffer),
+                      buffer_group_mutex_(mutex)
                       {};
-    /**
-     * Read message
-     * @param message
-     * @return
-     */
-    SensorDataManagerReadStatus readSensorMessage(google::protobuf::Message& message);
+    
+    SensorDataManagerReadStatus readTrajectoryGeneratorSensorMessage(google::protobuf::Message& message);
+    SensorDataManagerReadStatus readFeedbackControllerSensorMessage(google::protobuf::Message& message);
+    SensorDataManagerReadStatus readTerminationHandlerSensorMessage(google::protobuf::Message& message);
 
     /**
      * Clears buffer
      */
-    void clearBuffer();
+    void clearBuffers();
+
+    boost::interprocess::interprocess_mutex* getSensorBufferGroupMutex();
 
  private:
-    SensorBufferTypePtr buffer_;
-    boost::interprocess::interprocess_mutex* buffer_mutex_= nullptr;
+    SensorBufferTypePtr trajectory_generator_buffer_;
+    SensorBufferTypePtr feedback_controller_buffer_;
+    SensorBufferTypePtr termination_handler_buffer_;
+    boost::interprocess::interprocess_mutex* buffer_group_mutex_ = nullptr;
 
-    /**
-     * Get current message size.
-     * @return
-     */
-    float getMessageSize();
-
-    SensorDataManagerReadStatus readMessageAsBytes(std::function< bool(const void *bytes, int data_size)> parse_callback);
+    SensorDataManagerReadStatus readSensorMessage(google::protobuf::Message& message, SensorBufferTypePtr buffer);
+    SensorDataManagerReadStatus readMessageAsBytes(std::function< bool(const void *bytes, int data_size)> parse_callback, SensorBufferTypePtr buffer);
 };
 
 #endif //FRANKA_INTERFACE_SENSOR_DATA_MANAGER_H

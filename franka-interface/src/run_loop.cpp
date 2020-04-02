@@ -70,8 +70,10 @@ void run_loop::start() {
   shared_memory_handler_->start();
 
   sensor_data_manager_ = new SensorDataManager(
-      shared_memory_handler_->getSensorDataBuffer(0),
-      shared_memory_handler_->getSensorDataBufferMutex());
+      shared_memory_handler_->getSensorDataTrajectoryGeneratorBuffer(0),
+      shared_memory_handler_->getSensorDataFeedbackControllerBuffer(0),
+      shared_memory_handler_->getSensorDataTerminationHandlerBuffer(0),
+      shared_memory_handler_->getSensorDataGroupBufferMutex());
 }
 
 void run_loop::stop() {
@@ -119,7 +121,7 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   std::cout << "Did get TerminationHandler\n";
 
   // Start skill, does any pre-processing if required.
-  sensor_data_manager_->clearBuffer();
+  sensor_data_manager_->clearBuffers();
   new_skill->start_skill(robot_, traj_generator, feedback_controller, termination_handler);
 }
 
@@ -582,4 +584,8 @@ SkillInfoManager* run_loop::getSkillInfoManager() {
 
 RunLoopSharedMemoryHandler* run_loop::get_shared_memory_handler() {
   return shared_memory_handler_;
+}
+
+SensorDataManager* run_loop::get_sensor_data_manager() {
+  return sensor_data_manager_;
 }

@@ -9,6 +9,8 @@ class CubicHermiteSplineJointTrajectoryGenerator : public JointTrajectoryGenerat
 
   void get_next_step(const franka::RobotState &robot_state) override;
 
+  void parse_sensor_data(const franka::RobotState &robot_state) override;
+
  private:
   double seg_start_time_ = 0.;
   double seg_run_time = 0.;

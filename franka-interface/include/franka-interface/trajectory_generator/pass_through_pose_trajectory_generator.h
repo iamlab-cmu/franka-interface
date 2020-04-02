@@ -9,6 +9,8 @@ class PassThroughPoseTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   void get_next_step(const franka::RobotState &robot_state) override;
 
+  void parse_sensor_data(const franka::RobotState &robot_state) override;
+
  private:
   PosePositionSensorMessage pose_sensor_msg_;
 

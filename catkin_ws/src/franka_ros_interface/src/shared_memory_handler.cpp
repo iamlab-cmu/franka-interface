@@ -84,14 +84,30 @@ namespace franka_ros_interface
         shared_memory_info_.getSizeForTimerParameters()
     );
     timer_buffer_0_ = reinterpret_cast<SharedBufferTypePtr>(region_timer_params_0_.get_address());
-    region_sensor_data_0_ =  boost::interprocess::mapped_region(
+    region_sensor_data_trajectory_generator_0_ =  boost::interprocess::mapped_region(
         shared_memory_object_0_,
         boost::interprocess::read_write,
         shared_memory_info_.getOffsetForSensorData(),
         shared_memory_info_.getSizeForSensorData()
     );
-    std::cout << region_sensor_data_0_.get_address() << std::endl;
-    sensor_data_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_0_.get_address());
+    std::cout << region_sensor_data_trajectory_generator_0_.get_address() << std::endl;
+    sensor_data_trajectory_generator_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_trajectory_generator_0_.get_address());
+    region_sensor_data_feedback_controller_0_ =  boost::interprocess::mapped_region(
+        shared_memory_object_0_,
+        boost::interprocess::read_write,
+        shared_memory_info_.getOffsetForSensorData(),
+        shared_memory_info_.getSizeForSensorData()
+    );
+    std::cout << region_sensor_data_feedback_controller_0_.get_address() << std::endl;
+    sensor_data_feedback_controller_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_feedback_controller_0_.get_address());
+    region_sensor_data_termination_handler_0_ =  boost::interprocess::mapped_region(
+        shared_memory_object_0_,
+        boost::interprocess::read_write,
+        shared_memory_info_.getOffsetForSensorData(),
+        shared_memory_info_.getSizeForSensorData()
+    );
+    std::cout << region_sensor_data_termination_handler_0_.get_address() << std::endl;
+    sensor_data_termination_handler_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_termination_handler_0_.get_address());
 
     // Get mutex for buffer 1 from the shared memory segment.
     std::pair<boost::interprocess::interprocess_mutex *, std::size_t> shared_memory_object_1_mutex_pair = \
@@ -141,9 +157,9 @@ namespace franka_ros_interface
 
     std::pair<boost::interprocess::interprocess_mutex *, std::size_t> sensor_data_0_mutex_pair = \
       managed_shared_memory_.find<boost::interprocess::interprocess_mutex>
-              (shared_memory_info_.getSensorDataMutexName(0).c_str());
-    sensor_data_0_mutex_ = sensor_data_0_mutex_pair.first;
-    assert(sensor_data_0_mutex_ != 0);
+              (shared_memory_info_.getSensorDataGroupMutexName(0).c_str());
+    sensor_data_group_0_mutex_ = sensor_data_0_mutex_pair.first;
+    assert(sensor_data_group_0_mutex_ != 0);
 
     /**
      * Open shared memory region for sensor data buffer 1.
@@ -803,28 +819,43 @@ namespace franka_ros_interface
     // Do nothing.
   }
 
-    //Adding new function to load sensor data into sensor memory buffer
-  void SharedMemoryHandler::tryToLoadSensorDataIntoSharedMemory(const franka_interface_msgs::SensorData::ConstPtr &sensor_data_ptr)
-  {
-    if (sensor_data_0_mutex_->try_lock())
+  // WARNING: THIS ASSUMES MUTEX HAS ALREADY BEEN OBTAINED
+  void SharedMemoryHandler::loadSensorDataIntoSharedMemory(const franka_interface_msgs::SensorData &sensor_data, SensorBufferTypePtr sensor_buffer_ptr) {
+    int sensor_data_size = sensor_data.size;
+
+    // First let's indicate this is new data.
+    sensor_data_trajectory_generator_buffer_0_[0] = 1;
+    // Now add the type for the message.
+    sensor_data_trajectory_generator_buffer_0_[1] = sensor_data.type;
+    // Now add the size of the data.
+    sensor_data_trajectory_generator_buffer_0_[2] = (sensor_data_size & 0xFF);
+    sensor_data_trajectory_generator_buffer_0_[3] = ((sensor_data_size >> 8) & 0xFF);
+    sensor_data_trajectory_generator_buffer_0_[4] = ((sensor_data_size >> 16) & 0xFF);
+    sensor_data_trajectory_generator_buffer_0_[5] = ((sensor_data_size >> 24) & 0xFF);
+
+    memcpy(sensor_buffer_ptr + 6, &sensor_data.sensorData[0], sensor_data_size * sizeof(uint8_t));
+  }
+
+  //Adding new function to load sensor data into sensor memory buffer
+  void SharedMemoryHandler::tryToLoadSensorDataGroupIntoSharedMemory(const franka_interface_msgs::SensorDataGroup::ConstPtr &sensor_data_group_ptr) {
+    if (sensor_data_group_0_mutex_->try_lock())
     {
-      int sensor_data_size = sensor_data_ptr->size;
+      if (sensor_data_group_ptr->has_trajectory_generator_sensor_data) {
+        printf("has traj gen sensor data\n");
+        loadSensorDataIntoSharedMemory(sensor_data_group_ptr->trajectoryGeneratorSensorData, sensor_data_trajectory_generator_buffer_0_);
+      }
 
-      // First let's indicate this is new data.
-      sensor_data_buffer_0_[0] = 1;
-      // Now add the type for the message.
-      sensor_data_buffer_0_[1] = sensor_data_ptr->type;
-      // Now add the size of the data.
-      sensor_data_buffer_0_[2] = (sensor_data_size & 0xFF);
-      sensor_data_buffer_0_[3] = ((sensor_data_size >> 8) & 0xFF);
-      sensor_data_buffer_0_[4] = ((sensor_data_size >> 16) & 0xFF);
-      sensor_data_buffer_0_[5] = ((sensor_data_size >> 24) & 0xFF);
+      if (sensor_data_group_ptr->has_feedback_controller_sensor_data) {
+        loadSensorDataIntoSharedMemory(sensor_data_group_ptr->feedbackControllerSensorData, sensor_data_feedback_controller_buffer_0_);
+      }
 
-      memcpy(sensor_data_buffer_0_ + 6, &sensor_data_ptr->sensorData[0],
-             sensor_data_size * sizeof(uint8_t));
-      sensor_data_0_mutex_->unlock();
+      if (sensor_data_group_ptr->has_termination_handler_sensor_data) {
+        loadSensorDataIntoSharedMemory(sensor_data_group_ptr->terminationHandlerSensorData, sensor_data_termination_handler_buffer_0_);
+      }
+
+      sensor_data_group_0_mutex_->unlock();
     } else {
-      ROS_DEBUG("Failed to get sensor data 0 mutex");
+      ROS_INFO("Failed to get sensor data group 0 mutex");
     }
   }
 

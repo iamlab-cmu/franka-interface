@@ -32,6 +32,11 @@ class TrajectoryGenerator {
    */
   virtual void get_next_step(const franka::RobotState &robot_state) = 0;
 
+  /**
+   * Parse sensor data
+   */
+  virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
+
   double run_time_ = 0.0;
   double dt_ = 0.001;
   double time_ = 0.0;

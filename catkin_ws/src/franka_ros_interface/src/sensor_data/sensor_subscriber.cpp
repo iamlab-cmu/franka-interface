@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-#include <std_msgs/Float64.h>
 
 #include "franka_ros_interface/sensor_data/sensor_subscriber_handler.h"
 

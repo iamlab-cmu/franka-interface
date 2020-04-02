@@ -43,7 +43,7 @@ class RunLoopSharedMemoryHandler {
 
   boost::interprocess::interprocess_mutex* getFrankaInterfaceStateInfoMutex();
 
-  boost::interprocess::interprocess_mutex* getSensorDataBufferMutex();
+  boost::interprocess::interprocess_mutex* getSensorDataGroupBufferMutex();
 
   SharedBufferTypePtr getTrajectoryGeneratorBuffer(int memory_region);
 
@@ -57,7 +57,11 @@ class RunLoopSharedMemoryHandler {
 
   SharedBufferTypePtr getCurrentRobotStateBuffer();
 
-  SensorBufferTypePtr getSensorDataBuffer(int memory_region);
+  SensorBufferTypePtr getSensorDataTrajectoryGeneratorBuffer(int memory_region);
+
+  SensorBufferTypePtr getSensorDataFeedbackControllerBuffer(int memory_region);
+
+  SensorBufferTypePtr getSensorDataTerminationHandlerBuffer(int memory_region);
 
 
   void clearAllBuffers();
@@ -96,14 +100,16 @@ class RunLoopSharedMemoryHandler {
   SharedBufferTypePtr termination_buffer_0_=0;
   SharedBufferTypePtr timer_buffer_0_=0;
 
-  SensorBufferTypePtr sensor_data_buffer_0_=0;
+  SensorBufferTypePtr sensor_data_trajectory_generator_buffer_0_=0;
+  SensorBufferTypePtr sensor_data_feedback_controller_buffer_0_=0;
+  SensorBufferTypePtr sensor_data_termination_handler_buffer_0_=0;
 
   SharedBufferTypePtr traj_gen_buffer_1_=0;
   SharedBufferTypePtr feedback_controller_buffer_1_=0;
   SharedBufferTypePtr termination_buffer_1_=0;
   SharedBufferTypePtr timer_buffer_1_=0;
 
-  boost::interprocess::interprocess_mutex *sensor_data_mutex_0_= nullptr;
+  boost::interprocess::interprocess_mutex *sensor_data_group_mutex_0_= nullptr;
 
   boost::interprocess::shared_memory_object shared_execution_result_0_{};
   boost::interprocess::shared_memory_object shared_execution_result_1_{};
@@ -115,7 +121,9 @@ class RunLoopSharedMemoryHandler {
   boost::interprocess::mapped_region region_execution_feedback_buffer_1_{};
   boost::interprocess::mapped_region region_execution_result_buffer_1_{};
 
-  boost::interprocess::mapped_region region_sensor_data_0_{};
+  boost::interprocess::mapped_region region_sensor_data_trajectory_generator_0_{};
+  boost::interprocess::mapped_region region_sensor_data_feedback_controller_0_{};
+  boost::interprocess::mapped_region region_sensor_data_termination_handler_0_{};
 
   SharedBufferTypePtr execution_feedback_buffer_0_=0;
   SharedBufferTypePtr execution_result_buffer_0_=0;

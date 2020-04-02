@@ -1,17 +1,8 @@
 #ifndef FRANKA_ROS_INTERFACE_SENSOR_SUBSCRIBER_HANDLER_H
 #define FRANKA_ROS_INTERFACE_SENSOR_SUBSCRIBER_HANDLER_H
 
-#include <iostream>
-#include <thread>
-#include <array>
-#include <chrono>
-#include <vector>
 #include <ros/ros.h>
-//#include <std_msgs/String.h>
-#include <std_msgs/Float64.h>
-#include "franka_interface_msgs/SensorData.h"
-
-#include "franka_interface_msgs/FrankaInterfaceStatus.h"
+#include "franka_interface_msgs/SensorDataGroup.h"
 #include "franka_ros_interface/shared_memory_handler.h"
 
 namespace franka_ros_interface  
@@ -30,7 +21,7 @@ namespace franka_ros_interface
       SensorSubscriberHandler(ros::NodeHandle& nh);
       ~SensorSubscriberHandler(){};
       
-      void SensorSubscriberCallback(const franka_interface_msgs::SensorData::ConstPtr& sensor_msg);
+      void SensorSubscriberCallback(const franka_interface_msgs::SensorDataGroup::ConstPtr& sensor_group_msg);
   };
 }
 

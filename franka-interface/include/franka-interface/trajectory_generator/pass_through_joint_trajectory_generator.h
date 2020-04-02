@@ -7,7 +7,9 @@ class PassThroughJointTrajectoryGenerator : public JointTrajectoryGenerator {
  public:
   using JointTrajectoryGenerator::JointTrajectoryGenerator;
 
-  void get_next_step(const franka::RobotState &robot_state) override;
+  void get_next_step(const franka::RobotState &robot_state) {};
+
+  void parse_sensor_data(const franka::RobotState &robot_state) override;
 
  private:
   JointPositionSensorMessage joint_sensor_msg_;

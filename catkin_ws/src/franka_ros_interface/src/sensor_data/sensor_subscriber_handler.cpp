@@ -1,6 +1,4 @@
 #include "franka_ros_interface/sensor_data/sensor_subscriber_handler.h"
-#include <std_msgs/String.h>
-#include <std_msgs/Float64.h>
 
 namespace franka_ros_interface
 {
@@ -10,10 +8,13 @@ namespace franka_ros_interface
     ROS_INFO("created_sensor_subscriber_handler");
   }
 
-  void SensorSubscriberHandler::SensorSubscriberCallback(const franka_interface_msgs::SensorData::ConstPtr& sensor_msg) {
-    ROS_INFO("Got sensor message!");
-    ROS_INFO_STREAM(sensor_msg->info);
+  void SensorSubscriberHandler::SensorSubscriberCallback(const franka_interface_msgs::SensorDataGroup::ConstPtr& sensor_group_msg) {
+    ROS_INFO("Got sensor message! TG %s | FC %s | TH %s", 
+      sensor_group_msg->has_trajectory_generator_sensor_data ? "yes" : "no",
+      sensor_group_msg->has_feedback_controller_sensor_data ? "yes" : "no",
+      sensor_group_msg->has_termination_handler_sensor_data ? "yes" : "no"
+    );
 
-    shared_memory_handler_.tryToLoadSensorDataIntoSharedMemory(sensor_msg);
+    shared_memory_handler_.tryToLoadSensorDataGroupIntoSharedMemory(sensor_group_msg);
   }
 }

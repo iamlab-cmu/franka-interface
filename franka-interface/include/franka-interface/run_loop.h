@@ -121,6 +121,8 @@ class run_loop {
 
   static std::atomic<bool> run_loop_ok_;
 
+  SensorDataManager* get_sensor_data_manager();
+
  private:
 
   FrankaRobot* robot_;
