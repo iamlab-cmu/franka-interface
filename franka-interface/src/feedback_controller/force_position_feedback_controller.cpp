@@ -68,8 +68,10 @@ void ForcePositionFeedbackController::get_next_step(const franka::RobotState &ro
 
   // Compute errors
   Eigen::Vector3d translation_error = target_transform.translation() - actual_transform.translation();
-  Eigen::Affine3d delta_transform = actual_transform.inverse() * target_transform;
-  Eigen::Vector3d euler_error = delta_transform.linear().eulerAngles(0, 1, 2);
+  Eigen::Quaterniond target_quat(target_transform.linear());
+  Eigen::Quaterniond actual_quat(actual_transform.linear());
+  Eigen::Quaterniond err_quat(target_quat * actual_quat.inverse());
+  Eigen::AngleAxisd err_angle_axis(err_quat);
 
   // Dynamics
   std::array<double, 7> coriolis_array = model_->coriolis(robot_state);
@@ -78,11 +80,8 @@ void ForcePositionFeedbackController::get_next_step(const franka::RobotState &ro
   Eigen::Map<const Eigen::Matrix<double, 6, 7> > jacobian(jacobian_array.data());
 
   // compute control
-  xe_ << translation_error, euler_error;
-  xe_(3) = 0.; xe_(4) = 0.;xe_(5) = 0.; // TODO: remove this
+  xe_ << translation_error, err_angle_axis.axis() * err_angle_axis.angle();
   fe_ << target_force - actual_force;
-
-  printf("xe: "); for (int i = 0; i < 6; i++) printf("%f, ", xe_(i)); printf("\n");
 
   xes_ << S_ * xe_;
   fes_ << Sp_ * fe_;
