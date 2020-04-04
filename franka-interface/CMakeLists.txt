@@ -31,6 +31,7 @@ add_library(franka-interface SHARED
   src/feedback_controller/cartesian_impedance_feedback_controller.cpp
   src/feedback_controller/feedback_controller.cpp
   src/feedback_controller/force_axis_impedence_feedback_controller.cpp
+  src/feedback_controller/force_position_feedback_controller.cpp
   src/feedback_controller/joint_impedance_feedback_controller.cpp
   src/feedback_controller/noop_feedback_controller.cpp
   src/feedback_controller/pass_through_feedback_controller.cpp
@@ -60,6 +61,7 @@ add_library(franka-interface SHARED
   src/trajectory_generator/linear_pose_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_joint_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_pose_trajectory_generator.cpp
+  src/trajectory_generator/pass_through_force_position_trajectory_generator.cpp
   src/trajectory_generator/pass_through_joint_trajectory_generator.cpp
   src/trajectory_generator/pass_through_pose_trajectory_generator.cpp
   src/trajectory_generator/pose_dmp_trajectory_generator.cpp

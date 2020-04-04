@@ -46,6 +46,7 @@ enum class TrajectoryGeneratorType : uint8_t {
     LinearPoseTrajectoryGenerator,
     MinJerkJointTrajectoryGenerator,
     MinJerkPoseTrajectoryGenerator,
+    PassThroughForcePositionTrajectoryGenerator,
     PassThroughJointTrajectoryGenerator,
     PassThroughPoseTrajectoryGenerator,
     PoseDmpTrajectoryGenerator,
@@ -61,6 +62,7 @@ enum class TrajectoryGeneratorType : uint8_t {
 enum class FeedbackControllerType : uint8_t {
     CartesianImpedanceFeedbackController,
     ForceAxisImpedenceFeedbackController,
+    ForcePositionFeedbackController,
     JointImpedanceFeedbackController,
     NoopFeedbackController,
     PassThroughFeedbackController,
@@ -92,6 +94,7 @@ enum class SensorDataManagerReadStatus : uint8_t {
 };
 
 enum class SensorDataMessageType : uint8_t {
+  FORCE_POSITION,
   JOINT_POSITION_VELOCITY,
   JOINT_POSITION,
   POSE_POSITION_VELOCITY,

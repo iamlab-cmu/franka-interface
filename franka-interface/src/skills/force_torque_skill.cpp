@@ -33,12 +33,6 @@ void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
                                   boost::interprocess::defer_lock);
   SensorDataManager* sensor_data_manager = run_loop->get_sensor_data_manager();
 
-  ImpulseTrajectoryGenerator* impulse_trajectory_generator = dynamic_cast<ImpulseTrajectoryGenerator*>(traj_generator_);
-
-  if(impulse_trajectory_generator == nullptr) {
-    throw std::bad_cast();
-  } 
-
   auto force_control_callback = [&](const franka::RobotState& robot_state, 
                     franka::Duration period) -> franka::Torques {
     
@@ -46,7 +40,7 @@ void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
     time += current_period_;
 
     if (time == 0.0) {
-      impulse_trajectory_generator->initialize_trajectory(robot_state, SkillType::ForceTorqueSkill);
+      traj_generator_->initialize_trajectory(robot_state, SkillType::ForceTorqueSkill);
       try {
         if (lock.try_lock()) {
           run_loop_info->set_time_skill_started_in_robot_time(robot_state.time.toSec());
@@ -80,7 +74,6 @@ void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
       return franka::MotionFinished(torques);
     }
     
-    impulse_trajectory_generator->check_displacement_cap(robot_state);
     traj_generator_->time_ = time;
     traj_generator_->dt_ = current_period_;
 

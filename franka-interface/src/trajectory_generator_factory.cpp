@@ -19,6 +19,7 @@
 #include "franka-interface/trajectory_generator/linear_joint_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/min_jerk_joint_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/min_jerk_pose_trajectory_generator.h"
+#include "franka-interface/trajectory_generator/pass_through_force_position_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/pass_through_joint_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/pass_through_pose_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/pose_dmp_trajectory_generator.h"
@@ -68,6 +69,9 @@ TrajectoryGenerator* TrajectoryGeneratorFactory::getTrajectoryGeneratorForSkill(
       break;
     case TrajectoryGeneratorType::MinJerkPoseTrajectoryGenerator:
       trajectory_generator = new MinJerkPoseTrajectoryGenerator(buffer, sensor_data_manager);
+      break;
+    case TrajectoryGeneratorType::PassThroughForcePositionTrajectoryGenerator:
+      trajectory_generator = new PassThroughForcePositionTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::PassThroughJointTrajectoryGenerator:
       trajectory_generator = new PassThroughJointTrajectoryGenerator(buffer, sensor_data_manager);

@@ -10,6 +10,7 @@
 
 #include "franka-interface/feedback_controller/cartesian_impedance_feedback_controller.h"
 #include "franka-interface/feedback_controller/force_axis_impedence_feedback_controller.h"
+#include "franka-interface/feedback_controller/force_position_feedback_controller.h"
 #include "franka-interface/feedback_controller/joint_impedance_feedback_controller.h"
 #include "franka-interface/feedback_controller/noop_feedback_controller.h"
 #include "franka-interface/feedback_controller/pass_through_feedback_controller.h"
@@ -35,6 +36,9 @@ FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(Sha
       break;
     case FeedbackControllerType::ForceAxisImpedenceFeedbackController:
       feedback_controller = new ForceAxisImpedenceFeedbackController(buffer, sensor_data_manager);
+      break;
+    case FeedbackControllerType::ForcePositionFeedbackController:
+      feedback_controller = new ForcePositionFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::PassThroughFeedbackController:
       feedback_controller = new PassThroughFeedbackController(buffer, sensor_data_manager);
