@@ -16,13 +16,13 @@ void ForcePositionFeedbackController::parse_parameters() {
     for (int i = 0; i < 6; i++) {
         S_(i, i) = std::min(std::max(force_position_feedback_params_.selection(i), 0.), 1.);
         Sp_(i, i) = 1. - S_(i, i);
+
+        position_kps_(i, i) = force_position_feedback_params_.position_kps(i);
+        position_kds_(i, i) = 2. * sqrt(position_kps_(i, i));
+
+        force_kps_(i, i) = force_position_feedback_params_.force_kps(i);
+        force_kis_(i, i) = 0.01 * force_kps_(i, i);
     }
-
-    position_kp_ = force_position_feedback_params_.position_kp();
-    position_kd_ = 2. * sqrt(position_kp_);
-
-    force_kp_ = force_position_feedback_params_.force_kp();
-    force_ki_ = 0.01 * force_kp_;
   } else {
     std::cout << "Parsing ForcePositionFeedbackController params failed. Data size = " << data_size << std::endl;
   }
@@ -32,15 +32,15 @@ void ForcePositionFeedbackController::parse_sensor_data(const franka::RobotState
   SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readFeedbackControllerSensorMessage(force_position_sensor_msg_);
   if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
     for (int i = 0; i < 6; i++) {
-        S_(i, i) = fmin(fmax(force_position_sensor_msg_.selection(i), 0.), 1.);
+        S_(i, i) = std::min(std::max(force_position_sensor_msg_.selection(i), 0.), 1.);
         Sp_(i, i) = 1. - S_(i, i);
+
+        position_kps_(i, i) = force_position_sensor_msg_.position_kps(i);
+        position_kds_(i, i) = 2. * sqrt(position_kps_(i, i));
+
+        force_kps_(i, i) = force_position_sensor_msg_.force_kps(i);
+        force_kis_(i, i) = 0.01 * force_kps_(i, i);
     }
-
-    position_kp_ = force_position_sensor_msg_.position_kp();
-    position_kd_ = 2. * sqrt(position_kp_);
-
-    force_kp_ = force_position_sensor_msg_.force_kp();
-    force_ki_ = 0.01 * force_kp_;
   }
 }
 
@@ -86,18 +86,15 @@ void ForcePositionFeedbackController::get_next_step(const franka::RobotState &ro
   xes_ << S_ * xe_;
   fes_ << Sp_ * fe_;
 
-  q_es_ << jacobian.transpose() * xes_;
-  tau_es_ << jacobian.transpose() * fes_;
+  tau_x_ << jacobian.transpose() * (position_kps_ * xes_ + position_kds_ * (xes_ - last_xes_));
+  tau_f_ << jacobian.transpose() * (force_kps_ * fes_ + force_kis_ * total_fes_);
 
-  tau_p_ << position_kp_ * q_es_ + position_kd_ * (q_es_ - last_q_es_);
-  tau_f_ << force_kp_ * tau_es_ + force_ki_ * total_tau_es_;
-
-  tau_task_ << tau_p_ + tau_f_;
+  tau_task_ << tau_x_ + tau_f_;
   tau_d_ << tau_task_ + coriolis;
 
   Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d_;
 
-  last_q_es_ << q_es_;
-  total_tau_es_ << total_tau_es_ + tau_es_;
+  last_xes_ << xes_;
+  total_fes_ << total_fes_ + fes_;
 }
 

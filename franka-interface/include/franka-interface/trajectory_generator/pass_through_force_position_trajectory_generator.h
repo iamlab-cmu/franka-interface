@@ -10,7 +10,7 @@ class PassThroughForcePositionTrajectoryGenerator : public TrajectoryGenerator {
 
   void get_next_step(const franka::RobotState &robot_state) {};
 
-  void parse_parameters() {};
+  void parse_parameters() override;
 
   void initialize_trajectory(const franka::RobotState &robot_state, SkillType skill_type) override;
 
@@ -21,6 +21,7 @@ class PassThroughForcePositionTrajectoryGenerator : public TrajectoryGenerator {
   const std::array<double, 6>& get_target_force() const;
 
  private:
+  RunTimeMessage run_time_params_;
   ForcePositionSensorMessage force_position_sensor_msg_;
 
   std::array<double, 16> target_pose_{};
