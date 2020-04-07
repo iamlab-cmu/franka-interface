@@ -57,6 +57,7 @@ add_library(franka-interface SHARED
   src/trajectory_generator/impulse_trajectory_generator.cpp
   src/trajectory_generator/joint_dmp_trajectory_generator.cpp
   src/trajectory_generator/joint_trajectory_generator.cpp
+  src/trajectory_generator/linear_force_position_trajectory_generator.cpp
   src/trajectory_generator/linear_joint_trajectory_generator.cpp
   src/trajectory_generator/linear_pose_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_joint_trajectory_generator.cpp

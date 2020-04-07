@@ -42,6 +42,7 @@ enum class TrajectoryGeneratorType : uint8_t {
     GripperTrajectoryGenerator,
     ImpulseTrajectoryGenerator,
     JointDmpTrajectoryGenerator,
+    LinearForcePositionTrajectoryGenerator,
     LinearJointTrajectoryGenerator,
     LinearPoseTrajectoryGenerator,
     MinJerkJointTrajectoryGenerator,
