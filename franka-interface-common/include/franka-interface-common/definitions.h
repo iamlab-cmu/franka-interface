@@ -46,6 +46,7 @@ enum class TrajectoryGeneratorType : uint8_t {
     LinearPoseTrajectoryGenerator,
     MinJerkJointTrajectoryGenerator,
     MinJerkPoseTrajectoryGenerator,
+    PassThroughForcePositionTrajectoryGenerator,
     PassThroughJointTrajectoryGenerator,
     PassThroughPoseTrajectoryGenerator,
     PoseDmpTrajectoryGenerator,
@@ -61,6 +62,7 @@ enum class TrajectoryGeneratorType : uint8_t {
 enum class FeedbackControllerType : uint8_t {
     CartesianImpedanceFeedbackController,
     ForceAxisImpedenceFeedbackController,
+    ForcePositionFeedbackController,
     JointImpedanceFeedbackController,
     NoopFeedbackController,
     PassThroughFeedbackController,
@@ -92,13 +94,15 @@ enum class SensorDataManagerReadStatus : uint8_t {
 };
 
 enum class SensorDataMessageType : uint8_t {
+  BOUNDING_BOX,
+  CARTESIAN_IMPEDANCE,
+  FORCE_POSITION,
+  FORCE_POSITION_GAINS,
   JOINT_POSITION_VELOCITY,
   JOINT_POSITION,
   POSE_POSITION_VELOCITY,
   POSE_POSITION,
   SHOULD_TERMINATE,
-  CARTESIAN_IMPEDANCE,
-  BOUNDING_BOX,
 };
 
 #endif  // FRANKA_INTERFACE_COMMON_DEFINITIONS_H_

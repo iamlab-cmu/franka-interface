@@ -58,6 +58,8 @@ void ImpulseTrajectoryGenerator::initialize_initial_states(const franka::RobotSt
 void ImpulseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   t_ = time_;
 
+  check_displacement_cap(robot_state);
+
   double coef = 0.0;
   if (!should_deacc_) {
     if (t_ >= 0 && t_ < acc_time_) {
