@@ -80,7 +80,6 @@ void PoseTrajectoryGenerator::fix_goal_quaternion(){
   }
 
   same_orientation = abs(quaternion_dot_product) > quaternion_dist_threshold;
-  std::cout << "PoseTrajectoryGenerator: same_orientation = " << same_orientation << std::endl;
 }
 
 void PoseTrajectoryGenerator::calculate_desired_pose() {

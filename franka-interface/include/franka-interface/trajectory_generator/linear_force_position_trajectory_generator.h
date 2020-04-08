@@ -1,10 +1,10 @@
-#ifndef FRANKA_INTERFACE_TRAJECTORY_GENERATOR_PASS_THROUGH_FORCE_POSITION_TRAJECTORY_GENERATOR_H_
-#define FRANKA_INTERFACE_TRAJECTORY_GENERATOR_PASS_THROUGH_FORCE_POSITION_TRAJECTORY_GENERATOR_H_
+#ifndef FRANKA_INTERFACE_TRAJECTORY_GENERATOR_LINEAR_FORCE_POSITION_TRAJECTORY_GENERATOR_H_
+#define FRANKA_INTERFACE_TRAJECTORY_GENERATOR_LINEAR_FORCE_POSITION_TRAJECTORY_GENERATOR_H_
 
 #include <Eigen/Dense>
 #include "franka-interface/trajectory_generator/force_position_trajectory_generator.h"
 
-class PassThroughForcePositionTrajectoryGenerator : public ForcePositionTrajectoryGenerator {
+class LinearForcePositionTrajectoryGenerator : public ForcePositionTrajectoryGenerator {
  public:
   using ForcePositionTrajectoryGenerator::ForcePositionTrajectoryGenerator;
 
@@ -19,6 +19,12 @@ class PassThroughForcePositionTrajectoryGenerator : public ForcePositionTrajecto
   const std::array<double, 16>& get_desired_pose() override;
 
   const std::array<double, 6>& get_desired_force() override;
+
+ private:
+  double seg_run_time_ = 0.;
+  double seg_start_time_;
+
+  Eigen::Affine3d goal_transform_{};
 };
 
-#endif	// FRANKA_INTERFACE_TRAJECTORY_GENERATOR_PASS_THROUGH_FORCE_POSITION_TRAJECTORY_GENERATOR_H_
+#endif	// FRANKA_INTERFACE_TRAJECTORY_GENERATOR_LINEAR_FORCE_POSITION_TRAJECTORY_GENERATOR_H_
