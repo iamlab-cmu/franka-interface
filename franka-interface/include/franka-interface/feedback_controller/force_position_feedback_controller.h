@@ -43,6 +43,8 @@ class ForcePositionFeedbackController : public FeedbackController {
 
   Eigen::Matrix<double, 6, 1> xe_, fe_, xes_, fes_;
   Eigen::Matrix<double, 7, 1> tau_x_, tau_f_, tau_task_, tau_d_, q_es_, tau_es_;
+
+  Eigen::Matrix<double, 3, 3> R_err = Eigen::MatrixXd::Identity(3, 3);
 };
 
 #endif  // FRANKA_INTERFACE_FEEDBACK_CONTROLLER_FORCE_POSITION_FEEDBACK_CONTROLLER_H_

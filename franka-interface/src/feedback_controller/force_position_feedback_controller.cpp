@@ -17,23 +17,45 @@ void ForcePositionFeedbackController::parse_parameters() {
         S_(i, i) = std::min(std::max(force_position_feedback_params_.selection(i), 0.), 1.);
         Sp_(i, i) = 1. - S_(i, i);
     }
-
+    if (force_position_feedback_params_.error_frame_size() == 9) {
+      for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+          R_err(i, j) = i * 3 + j;
+        }
+      }
+    }
     use_cartesian_gains_ = force_position_feedback_params_.use_cartesian_gains();
     if (use_cartesian_gains_) {
       for (int i = 0; i < 6; i++) {
         position_kps_cart_(i, i) = force_position_feedback_params_.position_kps_cart(i);
-        position_kds_cart_(i, i) = 2. * sqrt(position_kps_cart_(i, i));
+        if (force_position_feedback_params_.position_kds_cart_size() == 6) {
+          position_kds_cart_(i, i) = force_position_feedback_params_.position_kds_cart(i);
+        } else {
+          position_kds_cart_(i, i) = 2. * sqrt(position_kps_cart_(i, i));
+        }
 
         force_kps_cart_(i, i) = force_position_feedback_params_.force_kps_cart(i);
-        force_kis_cart_(i, i) = 0.01 * force_kps_cart_(i, i);
+        if (force_position_feedback_params_.force_kis_cart_size() == 6) {
+          force_kis_cart_(i, i) = force_position_feedback_params_.force_kis_cart(i);
+        } else {
+          force_kis_cart_(i, i) = 0.01 * force_kps_cart_(i, i);
+        }
       }
     } else {
       for (int i = 0; i < 7; i++) {
         position_kps_joint_(i, i) = force_position_feedback_params_.position_kps_joint(i);
-        position_kds_joint_(i, i) = 2. * sqrt(position_kps_joint_(i, i));
+        if (force_position_feedback_params_.position_kds_joint_size() == 7) {
+          position_kds_joint_(i, i) = force_position_feedback_params_.position_kds_joint(i);
+        } else {
+          position_kds_joint_(i, i) = 2. * sqrt(position_kps_joint_(i, i));
+        }
 
         force_kps_joint_(i, i) = force_position_feedback_params_.force_kps_joint(i);
-        force_kis_joint_(i, i) = 0.01 * force_kps_joint_(i, i);
+        if (force_position_feedback_params_.force_kis_cart_size() == 7) {
+          force_kis_joint_(i, i) = force_position_feedback_params_.force_kis_joint(i);
+        } else {
+          force_kis_joint_(i, i) = 0.01 * force_kps_joint_(i, i);
+        }
       }
     }
   } else {
@@ -48,22 +70,51 @@ void ForcePositionFeedbackController::parse_sensor_data(const franka::RobotState
         S_(i, i) = std::min(std::max(force_position_sensor_msg_.selection(i), 0.), 1.);
         Sp_(i, i) = 1. - S_(i, i);
     }
+    if (force_position_sensor_msg_.error_frame_size() == 9) {
+      for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+          R_err(i, j) = i * 3 + j;
+        }
+      }
+    }
     if (use_cartesian_gains_) {
       for (int i = 0; i < 6; i++) {
         position_kps_cart_(i, i) = force_position_sensor_msg_.position_kps_cart(i);
-        position_kds_cart_(i, i) = 2. * sqrt(position_kps_cart_(i, i));
+        if (force_position_sensor_msg_.position_kds_cart_size() == 6) {
+          position_kds_cart_(i, i) = force_position_sensor_msg_.position_kds_cart(i);
+        } else {
+          position_kds_cart_(i, i) = 2. * sqrt(position_kps_cart_(i, i));
+        }
 
         force_kps_cart_(i, i) = force_position_sensor_msg_.force_kps_cart(i);
-        force_kis_cart_(i, i) = 0.01 * force_kps_cart_(i, i);
+        if (force_position_sensor_msg_.force_kis_cart_size() == 6) {
+          force_kis_cart_(i, i) = force_position_sensor_msg_.force_kis_cart(i);
+        } else {
+          force_kis_cart_(i, i) = 0.01 * force_kps_cart_(i, i);
+        }
       }
     } else {
       for (int i = 0; i < 7; i++) {
         position_kps_joint_(i, i) = force_position_sensor_msg_.position_kps_joint(i);
-        position_kds_joint_(i, i) = 2. * sqrt(position_kps_joint_(i, i));
+        if (force_position_sensor_msg_.position_kds_joint_size() == 7) {
+          position_kds_joint_(i, i) = force_position_sensor_msg_.position_kds_joint(i);
+        } else {
+          position_kds_joint_(i, i) = 2. * sqrt(position_kps_joint_(i, i));
+        }
 
         force_kps_joint_(i, i) = force_position_sensor_msg_.force_kps_joint(i);
-        force_kis_joint_(i, i) = 0.01 * force_kps_joint_(i, i);
+        if (force_position_sensor_msg_.force_kis_cart_size() == 7) {
+          force_kis_joint_(i, i) = force_position_sensor_msg_.force_kis_joint(i);
+        } else {
+          force_kis_joint_(i, i) = 0.01 * force_kps_joint_(i, i);
+        }
       }
+    }
+
+    if (force_position_sensor_msg_.has_reset_force_integral_error() && 
+        force_position_sensor_msg_.reset_force_integral_error()) {
+      total_fes_ << total_fes_ * 0;
+      total_tau_es_ << total_tau_es_ * 0;
     }
   }
 }
