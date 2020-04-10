@@ -17,8 +17,8 @@ class CubicHermiteSplinePoseTrajectoryGenerator : public PoseTrajectoryGenerator
   double seg_start_time_ = 0.;
   double seg_run_time = 0.;
 
-  std::array<double, 6> initial_pose_velocities_{0., 0., 0., 0., 0., 0.};
-  std::array<double, 6> goal_pose_velocities_{0., 0., 0., 0., 0., 0.};
+  std::array<double, 6> initial_pose_velocities_{{0., 0., 0., 0., 0., 0.}};
+  std::array<double, 6> goal_pose_velocities_{{0., 0., 0., 0., 0., 0.}};
 
   Eigen::Vector3d initial_euler_;
   Eigen::Vector3d goal_euler_;
