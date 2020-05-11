@@ -29,6 +29,7 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 
 add_library(franka-interface SHARED
   src/feedback_controller/cartesian_impedance_feedback_controller.cpp
+  src/feedback_controller/ee_cartesian_impedance_feedback_controller.cpp
   src/feedback_controller/feedback_controller.cpp
   src/feedback_controller/force_axis_impedence_feedback_controller.cpp
   src/feedback_controller/force_position_feedback_controller.cpp

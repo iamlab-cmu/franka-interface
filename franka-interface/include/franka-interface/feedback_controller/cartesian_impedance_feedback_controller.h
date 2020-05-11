@@ -18,7 +18,7 @@ class CartesianImpedanceFeedbackController : public FeedbackController {
   void get_next_step(const franka::RobotState &robot_state, 
                      TrajectoryGenerator *traj_generator) override;
 
- private:
+ protected:
   CartesianImpedanceFeedbackControllerMessage cartesian_impedance_feedback_params_;
   CartesianImpedanceSensorMessage cartesian_impedance_sensor_msg_;
 

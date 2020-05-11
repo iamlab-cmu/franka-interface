@@ -62,6 +62,7 @@ enum class TrajectoryGeneratorType : uint8_t {
 // Enum for Feedback Controller Types
 enum class FeedbackControllerType : uint8_t {
     CartesianImpedanceFeedbackController,
+    EECartesianImpedanceFeedbackController,
     ForceAxisImpedenceFeedbackController,
     ForcePositionFeedbackController,
     JointImpedanceFeedbackController,

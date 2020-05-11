@@ -9,6 +9,7 @@
 #include <franka-interface-common/definitions.h>
 
 #include "franka-interface/feedback_controller/cartesian_impedance_feedback_controller.h"
+#include "franka-interface/feedback_controller/ee_cartesian_impedance_feedback_controller.h"
 #include "franka-interface/feedback_controller/force_axis_impedence_feedback_controller.h"
 #include "franka-interface/feedback_controller/force_position_feedback_controller.h"
 #include "franka-interface/feedback_controller/joint_impedance_feedback_controller.h"
@@ -25,20 +26,24 @@ FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(Sha
 
   FeedbackController* feedback_controller = nullptr;
   switch (feedback_controller_type) {
-    case FeedbackControllerType::NoopFeedbackController:
-      feedback_controller = new NoopFeedbackController(buffer, sensor_data_manager);
-      break;
+    
     case FeedbackControllerType::CartesianImpedanceFeedbackController:
       feedback_controller = new CartesianImpedanceFeedbackController(buffer, sensor_data_manager);
       break;
-    case FeedbackControllerType::JointImpedanceFeedbackController:
-      feedback_controller = new JointImpedanceFeedbackController(buffer, sensor_data_manager);
+    case FeedbackControllerType::EECartesianImpedanceFeedbackController:
+      feedback_controller = new EECartesianImpedanceFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::ForceAxisImpedenceFeedbackController:
       feedback_controller = new ForceAxisImpedenceFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::ForcePositionFeedbackController:
       feedback_controller = new ForcePositionFeedbackController(buffer, sensor_data_manager);
+      break;
+    case FeedbackControllerType::JointImpedanceFeedbackController:
+      feedback_controller = new JointImpedanceFeedbackController(buffer, sensor_data_manager);
+      break;
+    case FeedbackControllerType::NoopFeedbackController:
+      feedback_controller = new NoopFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::PassThroughFeedbackController:
       feedback_controller = new PassThroughFeedbackController(buffer, sensor_data_manager);
