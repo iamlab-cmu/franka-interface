@@ -10,14 +10,15 @@ This is a software package used for controlling and learning skills on the Frank
 
 ## Computer Setup Instructions
 
-1. The instructions for setting up a computer with the Ubuntu 16.04 / 18.04 Realtime Kernel from scratch are located here: [control pc ubuntu setup guide](docs/control_pc_ubuntu_setup_guide.md)
+This library is intended to be installed on the computer that interfaces with the Franka (we call this the Control PC).
+To use this library, refer to [FrankaPy](https://github.com/iamlab-cmu/frankapy), which can be run on any computer on the same ROS network and sends commands to `franka-interface`.
+
+1. The Control PC should have an OS with real time kernel. The instructions for setting up a computer with the Ubuntu 16.04 / 18.04 Realtime Kernel from scratch are located here: [control pc ubuntu setup guide](docs/control_pc_ubuntu_setup_guide.md)
 2. Instructions for setting up the computer specifically for Franka Robots is located here: [franka control pc setup guide](docs/franka_control_pc_setup_guide.md)
 
 ## Install ProtoBuf
 
-1. Read installation instructions here https://github.com/protocolbuffers/protobuf/blob/master/src/README.md.
-
-2. We use both C++ and Python versions of protobufs so you would need to install Protobufs from source. In short you will have to do the following. NOTE: However, make to read protobuf installation instructions once.
+We use both C++ and Python versions of protobufs so you would need to install Protobufs from source. 
 
 Do `nproc` to find out how many cores you have, and use that as the `N` number in the `make` command below:
 
@@ -32,6 +33,8 @@ make check -jN
 sudo make install
 sudo ldconfig
 ```
+
+See detailed instructions [here](https://github.com/protocolbuffers/protobuf/blob/master/src/README.md)
 
 ## Installation
 
@@ -60,7 +63,7 @@ All directories below are given relative to `/franka-interface`.
    ```bash
    bash ./bash_scripts/make_catkin.sh
    ```
-
+   
 ## Issues
 
 #### LibPoco issue
