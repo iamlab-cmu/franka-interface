@@ -28,7 +28,8 @@ You should now be able to see the Franka desk GUI in the web browser.
 3. (Optional) Program the Franka Robot in Desk by creating a new program and clicking and dragging blocks and moving the robot by pressing on the two buttons near the Franka’s end effectors.
 
 ## Franka ROS Installation
-1. Run the following terminal command to install the Franka ROS packages:
+1. Run the following terminal command to install the Franka ROS packages on Ubuntu 16.04:
 `sudo apt install ros-kinetic-libfranka ros-kinetic-franka-ros`
+or on Ubuntu 18.04: `sudo apt install ros-melodic-libfranka ros-melodic-franka-ros`
 
 Now you are ready to return back to the main [README.md](../README.md) to continue the installation.

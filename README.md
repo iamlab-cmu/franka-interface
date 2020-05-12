@@ -42,6 +42,7 @@ See detailed instructions [here](https://github.com/protocolbuffers/protobuf/blo
 
    ```bash
    git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git
+   cd franka-interface
    ```
 All directories below are given relative to `/franka-interface`.
 
@@ -58,7 +59,7 @@ All directories below are given relative to `/franka-interface`.
 
 4. Build ROS Node franka_ros_interface
 
-   Make sure that you have installed ROS Kinetic / Melodic already and have added the `source /opt/ros/kinetic/setup.bash` into your `~/.bashrc` file. Make sure you have also installed catkin-tools either globally or in a virtual environment using the command `pip install catkin-tools`.
+   Make sure that you have installed ROS Kinetic / Melodic already and have added the `source /opt/ros/kinetic/setup.bash` or `source /opt/ros/melodic/setup.bash` into your `~/.bashrc` file. Make sure you have also installed catkin-tools either globally or in a virtual environment using the command `pip install catkin-tools`.
 
    ```bash
    bash ./bash_scripts/make_catkin.sh
