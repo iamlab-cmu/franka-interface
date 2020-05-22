@@ -20,7 +20,7 @@ void ForcePositionFeedbackController::parse_parameters() {
     if (force_position_feedback_params_.error_frame_size() == 9) {
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-          R_err(i, j) = i * 3 + j;
+          R_err(i, j) = force_position_sensor_msg_.error_frame(i * 3 + j);
         }
       }
     }
@@ -73,7 +73,7 @@ void ForcePositionFeedbackController::parse_sensor_data(const franka::RobotState
     if (force_position_sensor_msg_.error_frame_size() == 9) {
       for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-          R_err(i, j) = i * 3 + j;
+          R_err(i, j) = force_position_sensor_msg_.error_frame(i * 3 + j);
         }
       }
     }
@@ -157,13 +157,40 @@ void ForcePositionFeedbackController::get_next_step(const franka::RobotState &ro
 
   // compute control
   xe_ << translation_error, err_angle_axis.axis() * err_angle_axis.angle();
-  fe_ << desired_force - actual_force;
 
-  xes_ << S_ * xe_;
-  fes_ << Sp_ * fe_;
+  // b/c force is already a "delta", we can transform actual force directly to error frame
+  // we ignore torque error for now - that remains in base frame
+  fe_.head(3) << desired_force.head(3) - R_err * actual_force.head(3);
+  fe_.tail(3) << desired_force.tail(3) - actual_force.tail(3);
+
+  // transform translation error to error frame, ignoring rotation error
+  xes_.head(3) << R_err.transpose() * S_.block(0, 0, 3, 3) * R_err * xe_.head(3);
+  xes_.tail(3) << S_.block(3, 3, 3, 3) * xe_.tail(3);
+
+  // transform force error back to base frame
+  fes_.head(3) << R_err.transpose() * Sp_.block(0, 0, 3, 3) * fe_.head(3);
+  fes_.tail(3) << Sp_.block(3, 3, 3, 3) * fe_.tail(3);
+
+  if (actual_force.head(3).norm() > 2.) {
+    printf("in contact\n");
+  } else {
+    printf("not in contact\n");
+  }
+  printf("fd: "); for (int i = 0; i < 3; i++) printf("%f, ", desired_force(i)); printf("\n");
+  printf("fe: "); for (int i = 0; i < 3; i++) printf("%f, ", fe_(i)); printf("\n");
+  printf("fes: "); for (int i = 0; i < 3; i++) printf("%f, ", fes_(i)); printf("\n");
+  printf("\n");
+  // printf("xe: "); for (int i = 0; i < 6; i++) printf("%f, ", xe_(i)); printf("\n");
+  // printf("xes: "); for (int i = 0; i < 6; i++) printf("%f, ", xes_(i)); printf("\n");
 
   if (use_cartesian_gains_) {
-    tau_x_ << jacobian.transpose() * (position_kps_cart_ * xes_ - position_kds_cart_ * (jacobian * dq));
+    xad_ << jacobian * dq; 
+
+    // compute positinoal dampign term in error frame
+    xads_.head(3) << R_err.transpose() * S_.block(0, 0, 3, 3) * R_err * xad_.head(3);
+    xads_.tail(3) << S_.block(3, 3, 3, 3) * xad_.tail(3);
+
+    tau_x_ << jacobian.transpose() * (position_kps_cart_ * xes_ - position_kds_cart_ * xads_);
     tau_f_ << jacobian.transpose() * (force_kps_cart_ * fes_ + force_kis_cart_ * total_fes_);
 
     total_fes_ << total_fes_ + fes_;
