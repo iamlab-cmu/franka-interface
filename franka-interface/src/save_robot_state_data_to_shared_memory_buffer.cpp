@@ -70,8 +70,8 @@ void save_current_robot_state_data_to_shared_memory_buffer(RunLoopSharedMemoryHa
         robot_state_msg.add_robot_frames(robot_state_data->current_robot_frames_[i]);
     }
 
-    RobotStateMessage::Errors* current_errors = new RobotStateMessage::Errors();
-    RobotStateMessage::Errors* last_motion_errors = new RobotStateMessage::Errors(); 
+    RobotStateMessage::Errors* current_errors = robot_state_msg.mutable_current_errors();
+    RobotStateMessage::Errors* last_motion_errors = robot_state_msg.mutable_last_motion_errors(); 
 
     current_errors->set_joint_position_limits_violation(robot_state_data->current_robot_state_.current_errors.joint_position_limits_violation);
     current_errors->set_cartesian_position_limits_violation(robot_state_data->current_robot_state_.current_errors.cartesian_position_limits_violation);
@@ -148,9 +148,6 @@ void save_current_robot_state_data_to_shared_memory_buffer(RunLoopSharedMemoryHa
     last_motion_errors->set_tau_j_range_violation(robot_state_data->current_robot_state_.last_motion_errors.tau_j_range_violation);
     last_motion_errors->set_instability_detected(robot_state_data->current_robot_state_.last_motion_errors.instability_detected);
     last_motion_errors->set_joint_move_in_wrong_direction(robot_state_data->current_robot_state_.last_motion_errors.joint_move_in_wrong_direction);
-
-    robot_state_msg.set_allocated_current_errors(current_errors);
-    robot_state_msg.set_allocated_last_motion_errors(last_motion_errors);
 
     robot_state_msg.set_control_command_success_rate(robot_state_data->current_robot_state_.control_command_success_rate);
     robot_state_msg.set_robot_mode(static_cast<RobotStateMessage::RobotMode>(robot_state_data->current_robot_state_.robot_mode));
