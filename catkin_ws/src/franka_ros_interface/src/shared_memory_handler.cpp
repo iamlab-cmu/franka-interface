@@ -543,7 +543,7 @@ namespace franka_ros_interface
       }
 
       for (int i = 0; i < 144; i++) {
-        robot_frames[i] = robot_state_msg.robot_frames(i);
+        robot_frames[i] = static_cast<double>(robot_state_msg.robot_frames(i));
       }
 
       robot_state.current_errors.joint_position_limits_violation = robot_state_msg.current_errors_joint_position_limits_violation();

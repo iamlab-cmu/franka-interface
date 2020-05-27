@@ -67,7 +67,7 @@ void save_current_robot_state_data_to_shared_memory_buffer(RunLoopSharedMemoryHa
     }
 
     for (int i = 0; i < 144; i++) {
-        robot_state_msg.add_robot_frames(robot_state_data->current_robot_frames_[i]);
+        robot_state_msg.add_robot_frames(static_cast<float>(robot_state_data->current_robot_frames_[i]));
     }
 
     robot_state_msg.set_current_errors_joint_position_limits_violation(robot_state_data->current_robot_state_.current_errors.joint_position_limits_violation);

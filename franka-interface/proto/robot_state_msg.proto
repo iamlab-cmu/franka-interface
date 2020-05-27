@@ -41,7 +41,7 @@ message RobotStateMessage {
   repeated double O_ddP_EE_c = 38;
   repeated double theta = 39;
   repeated double dtheta = 40;
-  repeated double robot_frames = 41;
+  repeated float robot_frames = 41;
 
   required bool current_errors_joint_position_limits_violation = 42;
   required bool current_errors_cartesian_position_limits_violation = 43;
