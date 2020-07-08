@@ -67,7 +67,7 @@ class RunLoopSharedMemoryHandler {
   void clearAllBuffers();
 
  private:
-  SharedMemoryInfo shared_memory_info_=SharedMemoryInfo();
+  SharedMemoryInfo shared_memory_info_ = SharedMemoryInfo();
 
   boost::interprocess::interprocess_mutex* run_loop_info_mutex_= nullptr;
   RunLoopProcessInfo* run_loop_info_= nullptr;

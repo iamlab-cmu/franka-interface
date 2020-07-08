@@ -1,8 +1,10 @@
 #ifndef FRANKA_INTERFACE_SENSOR_DATA_MANAGER_H
 #define FRANKA_INTERFACE_SENSOR_DATA_MANAGER_H
 
-#include <franka-interface-common/definitions.h>
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
+
+#include <franka-interface-common/definitions.h>
+#include <franka-interface-common/SharedMemoryInfo.h>
 
 #include "sensor_msg.pb.h"
 
@@ -58,6 +60,8 @@ class SensorDataManager {
 
     SensorDataManagerReadStatus readSensorMessage(google::protobuf::Message& message, SensorBufferTypePtr buffer);
     SensorDataManagerReadStatus readMessageAsBytes(std::function< bool(const void *bytes, int data_size)> parse_callback, SensorBufferTypePtr buffer);
+
+    SharedMemoryInfo shared_memory_info_ = SharedMemoryInfo();
 };
 
 #endif //FRANKA_INTERFACE_SENSOR_DATA_MANAGER_H

@@ -29,9 +29,9 @@ SensorDataManagerReadStatus SensorDataManager::readMessageAsBytes(
   std::function< bool(const void *bytes, int data_size)> parse_callback, SensorBufferTypePtr buffer) {
   SensorDataManagerReadStatus status;
 
-  int has_new_message = static_cast<int>(buffer[0]);
+  uint8_t has_new_message = buffer[0];
   if (has_new_message == 1) {
-    int sensor_msg_type = static_cast<int>(buffer[1]);
+    uint8_t sensor_msg_type = buffer[1]; // Currently not used
     int data_size = (buffer[2] + (buffer[3] << 8) + (buffer[4] << 16) + (buffer[5] << 24));
 
     if (parse_callback(buffer + 6, data_size)) {
@@ -50,9 +50,10 @@ SensorDataManagerReadStatus SensorDataManager::readMessageAsBytes(
 void SensorDataManager::clearBuffers() {
   try {
     if (buffer_group_mutex_->try_lock()) {
-      trajectory_generator_buffer_[0] = 0;
-      feedback_controller_buffer_[0] = 0;
-      termination_handler_buffer_[0] = 0;
+      int sensor_buffer_size = shared_memory_info_.getSizeForSensorData();
+      memset(trajectory_generator_buffer_, 0, sensor_buffer_size);
+      memset(feedback_controller_buffer_, 0, sensor_buffer_size);
+      memset(termination_handler_buffer_, 0, sensor_buffer_size);
       buffer_group_mutex_->unlock();
     }
   } catch (boost::interprocess::lock_exception) {

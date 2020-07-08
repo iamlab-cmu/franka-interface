@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
   franka_ros_interface::SensorSubscriberHandler handler(n);
-  ros::Subscriber sub = n.subscribe("franka_ros_interface/sensor", 1000, &franka_ros_interface::SensorSubscriberHandler::SensorSubscriberCallback, &handler);
+  ros::Subscriber sub = n.subscribe("franka_ros_interface/sensor", 10, &franka_ros_interface::SensorSubscriberHandler::SensorSubscriberCallback, &handler);
 
   ros::spin();
 
