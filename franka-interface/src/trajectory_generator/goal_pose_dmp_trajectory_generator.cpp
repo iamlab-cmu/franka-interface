@@ -5,6 +5,7 @@
 #include "franka-interface/trajectory_generator/goal_pose_dmp_trajectory_generator.h"
 
 #include <cmath>
+#include <iomanip>
 #include <iostream>
 
 void GoalPoseDmpTrajectoryGenerator::parse_parameters() {
@@ -15,7 +16,7 @@ void GoalPoseDmpTrajectoryGenerator::parse_parameters() {
   bool parsed_params = pose_dmp_trajectory_params_.ParseFromArray(params_ + 5, data_size);
 
   if(parsed_params){
-    orientation_only_ = pose_dmp_trajectory_params_.orientation_only();
+    orientation_only_ = pose_dmp_trajectory_params_.orientation_only(); //I dont' think anyone implemented this yet (Steven, 7/15/20)
     position_only_ = pose_dmp_trajectory_params_.position_only();
     run_time_ = pose_dmp_trajectory_params_.run_time();
     tau_ = pose_dmp_trajectory_params_.tau();
@@ -72,19 +73,20 @@ void GoalPoseDmpTrajectoryGenerator::initialize_trajectory(const franka::RobotSt
 
   double dmp_z_dist = 0.0;
 
-  if(initial_sensor_values_[2][0] >= -0.01) {
-    dmp_z_dist = initial_sensor_values_[2][0];
-  } else {
-    dmp_z_dist = initial_sensor_values_[2][0] / 2;
-  }
+  // // This stuff is probaly for kevin's cutting (Steven 7/15/20)
+  // if(initial_sensor_values_[2][0] >= -0.01) {
+  //   dmp_z_dist = initial_sensor_values_[2][0];
+  // } else {
+  //   dmp_z_dist = initial_sensor_values_[2][0] / 2;
+  // }
 
-  if(min_z > initial_position_(2) + eps){
-    for (int j = 0; j < num_sensor_values_; j++) {
-      initial_sensor_values_[2][j] = 0.0;
-    }
-  } else if(min_z > initial_position_(2) + dmp_z_dist){
-    initial_sensor_values_[2][0] = (initial_position_(2) - min_z) * 2;
-  }
+  // if(min_z > initial_position_(2) + eps){
+  //   for (int j = 0; j < num_sensor_values_; j++) {
+  //     initial_sensor_values_[2][j] = 0.0;
+  //   }
+  // } else if(min_z > initial_position_(2) + dmp_z_dist){
+  //   initial_sensor_values_[2][0] = (initial_position_(2) - min_z) * 2;
+  // }
 }
 
 void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
@@ -111,7 +113,8 @@ void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &rob
     factor[k] = (factor[k] * x_) / (den + 1e-8);
   }
   t = fmin(-log(x_)/tau_, 1);
-  factor[0] = pow(t, 3) * (6*pow(t, 2) - 15 * t + 10);
+  // factor[0] = pow(t, 3) * (6*pow(t, 2) - 15 * t + 10);
+  factor[0] = 1; // min jerk feature for goal formulation
 
   for (i = 0; i < num_dims_; i++) {
     ddy = (alpha_ * (beta_ * (y0_[i] - y_[i]) - tau_ * dy_[i]));
