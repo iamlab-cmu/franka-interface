@@ -58,35 +58,23 @@ void GoalPoseDmpTrajectoryGenerator::parse_parameters() {
 void GoalPoseDmpTrajectoryGenerator::initialize_trajectory(const franka::RobotState &robot_state,
                                                         SkillType skill_type) {
   initialize_initial_and_desired_poses(robot_state, skill_type);
-  
-  for(size_t i = 0; i < y0_.size(); i++) {
+
+  Eigen::Matrix3d m = initial_transform_.rotation();
+
+  Eigen::Vector3d ea = m.eulerAngles(0, 1, 2);
+
+  for(size_t i = 0; i < 3; i++) {
     y0_[i] = initial_position_(i);
-  }
-  for(size_t i = 0; i < y_.size(); i++) {
+    y0_[3+i] = ea[i];
     y_[i] = initial_position_(i);
+    y_[3+i] = ea[i];
   }
+  
   for(size_t i = 0; i < dy_.size(); i++) {
     dy_[i] = robot_state.O_dP_EE_c[i];
   }
 
   x_ = 1.0;
-
-  double dmp_z_dist = 0.0;
-
-  // // This stuff is probaly for kevin's cutting (Steven 7/15/20)
-  // if(initial_sensor_values_[2][0] >= -0.01) {
-  //   dmp_z_dist = initial_sensor_values_[2][0];
-  // } else {
-  //   dmp_z_dist = initial_sensor_values_[2][0] / 2;
-  // }
-
-  // if(min_z > initial_position_(2) + eps){
-  //   for (int j = 0; j < num_sensor_values_; j++) {
-  //     initial_sensor_values_[2][j] = 0.0;
-  //   }
-  // } else if(min_z > initial_position_(2) + dmp_z_dist){
-  //   initial_sensor_values_[2][0] = (initial_position_(2) - min_z) * 2;
-  // }
 }
 
 void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
@@ -109,7 +97,6 @@ void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &rob
   }
 
   for (k = 1; k < num_basis_; k++) {
-    // factor[k] = (factor[k] * x_) / (den * basis_mean_[k]);
     factor[k] = (factor[k] * x_) / (den + 1e-8);
   }
   t = fmin(-log(x_)/tau_, 1);
@@ -117,7 +104,7 @@ void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &rob
   factor[0] = 1; // min jerk feature for goal formulation
 
   for (i = 0; i < num_dims_; i++) {
-    ddy = (alpha_ * (beta_ * (y0_[i] - y_[i]) - tau_ * dy_[i]));
+    ddy = (alpha_ * (beta_ * (y0_[i] - y_[i]) - dy_[i] / tau_));
     net_sensor_force = 0;
     for (j = 0; j < num_sensor_values_; j++) {
       sensor_feature = 0;
@@ -128,10 +115,6 @@ void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &rob
     }
     ddy += (alpha_ * beta_ * net_sensor_force);
     ddy /= (tau_ * tau_);
-    // NOTE: dt_ used below can sometimes be greater than 0.001 
-    // (e.g. 0.003, 0.006), we believe this might be because of some 
-    // low-pass filtering that franka implements. We should theoretically 
-    // use a fixed dt, but this works fine for now.
     dy_[i] += (ddy * dt_);
     y_[i] += (dy_[i] * dt_);
   }
@@ -144,12 +127,31 @@ void GoalPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &rob
   desired_position_(1) = y_[1];
   desired_position_(2) = y_[2];
 
+  // set the virtual wall ?
+  Eigen::Matrix3d n;
+  n = Eigen::AngleAxisd(y_[3], Eigen::Vector3d::UnitX())
+    * Eigen::AngleAxisd(y_[4], Eigen::Vector3d::UnitY())
+    * Eigen::AngleAxisd(y_[5], Eigen::Vector3d::UnitZ());
+
+  desired_pose_[0] = n(0,0);
+  desired_pose_[1] = n(1,0);
+  desired_pose_[2] = n(2,0);
+  desired_pose_[4] = n(0,1);
+  desired_pose_[5] = n(1,1);
+  desired_pose_[6] = n(2,1);
+  desired_pose_[8] = n(0,2);
+  desired_pose_[9] = n(1,2);
+  desired_pose_[10] = n(2,2);
+
+  desired_orientation_ = Eigen::Quaterniond(n);
+
+
   calculate_desired_position();
 }
 
 void GoalPoseDmpTrajectoryGenerator::getInitialMeanAndStd() {
-  std::array<double, 10> basis_mean{};
-  std::array<double, 10> basis_std{};
+  std::array<double, 40> basis_mean{};
+  std::array<double, 40> basis_std{};
   for (int i = 0; i < num_basis_; i++)  {
     basis_mean[i] = exp(-(i)*0.5/(num_basis_-1));
   }

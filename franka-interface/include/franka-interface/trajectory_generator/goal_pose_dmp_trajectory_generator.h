@@ -15,17 +15,8 @@ class GoalPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   void get_next_step(const franka::RobotState &robot_state) override;
 
-  // NOTE: Right now this is goal position not pose (Steven, 7/15/20)
-  std::array<double, 3> y_={};
-  std::array<double, 3> dy_={};
-
-  // min_z was found by attaching the knife to the robot arm and 
-  // placing it on the cutting board. Then I used the print_joint_poses
-  // in libfranka/examples to see the actual min z
-  // double min_z = 0.02653;  # for kevin's stuff
-  // double eps = -0.01;
-  double min_z = 0.0;
-  double eps = 0.0;
+  std::array<double, 6> y_={};
+  std::array<double, 6> dy_={};
 
  private:
   PoseDMPTrajectoryGeneratorMessage pose_dmp_trajectory_params_;
@@ -45,15 +36,9 @@ class GoalPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   int num_sensor_values_=2;
   std::array<double, 40> basis_mean_{};
   std::array<double, 40> basis_std_{};
-  // // 20 represents number of basis functions and 10 represent the number
-  // // of sensor values
-  // // std::array<std::array<std::array<double, 20>, 10>, 3> weights_{};
-  // std::array<std::array<std::array<double, 40>, 10>, 6> weights_{};
-  // std::array<std::array<double, 10>, 6> initial_sensor_values_{};
-  // std::array<double, 6> y0_={};
-  std::array<std::array<std::array<double, 40>, 2>, 3> weights_{};
-  std::array<std::array<double, 2>, 3> initial_sensor_values_{};
-  std::array<double, 3> y0_={};
+  std::array<std::array<std::array<double, 40>, 10>, 6> weights_{};
+  std::array<std::array<double, 10>, 6> initial_sensor_values_{};
+  std::array<double, 6> y0_={};
 
   void getInitialMeanAndStd();
 };
