@@ -73,6 +73,8 @@ void PoseDmpTrajectoryGenerator::initialize_trajectory(const franka::RobotState 
   x_ = 1.0;
 }
 
+extern const int traj_counter_steven = 0;
+
 void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   static int i, j, k;
   static double ddy;
@@ -98,9 +100,11 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
 
   double t = fmin(-log(x_) * 2.0, 1.0);
   factor[0] = pow(t, 3) * (6*pow(t, 2) - 15 * t + 10);
+  // factor[0] = 1;
 
   for (i = 0; i < num_dims_; i++) {
     ddy = (alpha_ * (beta_ * (y0_[i] - y_[i]) - dy_[i] / tau_));
+    // ddy = (alpha_ * (beta_ * ((initial_sensor_values_[j] + y0_[i]) - y_[i]) - dy_[i] / tau_));
     net_sensor_force = 0;
     for (j = 0; j < num_sensor_values_; j++) {
       sensor_feature = 0;
@@ -122,6 +126,12 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   desired_position_(0) = y_[0];
   desired_position_(1) = y_[1];
   desired_position_(2) = y_[2];
+
+  if (traj_counter_steven % 50 == 0){
+    std::cout << "y_0 = " << y_[0];
+    std::cout << "y_1 = " << y_[1];
+    std::cout << "y_2 = " << y_[2] << "\n" << std::endl;
+  }
 
   Eigen::Matrix3d n;
   n = Eigen::AngleAxisd(y_[3], Eigen::Vector3d::UnitX())

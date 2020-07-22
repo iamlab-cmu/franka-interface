@@ -15,8 +15,8 @@ class GoalPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   void get_next_step(const franka::RobotState &robot_state) override;
 
-  std::array<double, 6> y_={};
-  std::array<double, 6> dy_={};
+  std::array<double, 3> y_={};
+  std::array<double, 3> dy_={};
 
  private:
   PoseDMPTrajectoryGeneratorMessage pose_dmp_trajectory_params_;
@@ -36,9 +36,9 @@ class GoalPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   int num_sensor_values_=2;
   std::array<double, 40> basis_mean_{};
   std::array<double, 40> basis_std_{};
-  std::array<std::array<std::array<double, 40>, 10>, 6> weights_{};
-  std::array<std::array<double, 10>, 6> initial_sensor_values_{};
-  std::array<double, 6> y0_={};
+  std::array<std::array<std::array<double, 40>, 10>, 3> weights_{};
+  std::array<std::array<double, 10>, 3> initial_sensor_values_{};
+  std::array<double, 3> y0_={};
 
   void getInitialMeanAndStd();
 };

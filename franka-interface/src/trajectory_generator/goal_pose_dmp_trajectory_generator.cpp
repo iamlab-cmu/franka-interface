@@ -7,6 +7,11 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
+// #include <string>
+
+// void print_result(int z){
+//     std::cerr << "Value is: " << z << '\n';
+// }
 
 void GoalPoseDmpTrajectoryGenerator::parse_parameters() {
   // First parameter is reserved for the type
@@ -24,6 +29,9 @@ void GoalPoseDmpTrajectoryGenerator::parse_parameters() {
     beta_ = pose_dmp_trajectory_params_.beta();
     num_basis_ = pose_dmp_trajectory_params_.num_basis();
     num_sensor_values_ = pose_dmp_trajectory_params_.num_sensor_values();
+
+    // print_result(num_sensor_values);
+    // std::cin.ignore();
 
     if(orientation_only_ || position_only_){
       num_dims_ = 3;
@@ -65,6 +73,7 @@ void GoalPoseDmpTrajectoryGenerator::initialize_trajectory(const franka::RobotSt
 
   for(size_t i = 0; i < 3; i++) {
     y0_[i] = initial_position_(i);
+    // y0_[i] = 
     y0_[3+i] = ea[i];
     y_[i] = initial_position_(i);
     y_[3+i] = ea[i];

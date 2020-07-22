@@ -34,11 +34,11 @@ void GripperSkill::execute_skill_on_franka(run_loop* run_loop,
   GripperTrajectoryGenerator *gripper_traj_generator = static_cast<
       GripperTrajectoryGenerator *>(traj_generator_);
   double desired_gripper_width = gripper_traj_generator->getWidth();
-  if (gripper_state.max_width < desired_gripper_width) {
-    std::cout << "Object is too large for the current fingers on the gripper." << std::endl;
-    return_status_ = false;
-    return;
-  }
+  //if (gripper_state.max_width < desired_gripper_width) {
+  //  std::cout << "Object is too large for the current fingers on the gripper." << std::endl;
+  //  return_status_ = false;
+  //  return;
+  //}
 
   double desired_gripper_speed = gripper_traj_generator->getSpeed();
   if (gripper_traj_generator->isGraspSkill()) {
