@@ -76,37 +76,37 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
   Eigen::Vector3d position(transform.translation());
   Eigen::Quaterniond orientation(transform.linear());
 
-  // PoseTrajectoryGenerator* pose_trajectory_generator = dynamic_cast<PoseTrajectoryGenerator*>(traj_generator);
+  PoseTrajectoryGenerator* pose_trajectory_generator = dynamic_cast<PoseTrajectoryGenerator*>(traj_generator);
 
-  // if (pose_trajectory_generator == nullptr) {
-  //   throw std::bad_cast();
-  // }
+  if (pose_trajectory_generator == nullptr) {
+    throw std::bad_cast();
+  }
 
-  // Eigen::Vector3d position_d(pose_trajectory_generator->get_desired_position());
-  // Eigen::Quaterniond orientation_d(pose_trajectory_generator->get_desired_orientation());
+  Eigen::Vector3d position_d(pose_trajectory_generator->get_desired_position());
+  Eigen::Quaterniond orientation_d(pose_trajectory_generator->get_desired_orientation());
 
-  // // compute error to desired equilibrium pose
-  // // position error
-  // Eigen::Matrix<double, 6, 1> error;
-  // error.head(3) << position - position_d;
+  // compute error to desired equilibrium pose
+  // position error
+  Eigen::Matrix<double, 6, 1> error;
+  error.head(3) << position - position_d;
 
-  // // orientation error
-  // // "difference" quaternion
-  // if (orientation_d.coeffs().dot(orientation.coeffs()) < 0.0) {
-  //   orientation.coeffs() << -orientation.coeffs();
-  // }
-  // Eigen::Quaterniond error_quaternion(orientation * orientation_d.inverse());
-  // // convert to axis angle
-  // Eigen::AngleAxisd error_quaternion_angle_axis(error_quaternion);
-  // // compute "orientation error"
-  // error.tail(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
+  // orientation error
+  // "difference" quaternion
+  if (orientation_d.coeffs().dot(orientation.coeffs()) < 0.0) {
+    orientation.coeffs() << -orientation.coeffs();
+  }
+  Eigen::Quaterniond error_quaternion(orientation * orientation_d.inverse());
+  // convert to axis angle
+  Eigen::AngleAxisd error_quaternion_angle_axis(error_quaternion);
+  // compute "orientation error"
+  error.tail(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
 
-  // // compute control
-  // Eigen::VectorXd tau_task(7), tau_d(7);
+  // compute control
+  Eigen::VectorXd tau_task(7), tau_d(7);
 
-  // // Spring damper system with damping ratio=1
-  // tau_task << jacobian.transpose() * (-stiffness_ * error - damping_ * (jacobian * dq));
-  // tau_d << tau_task + coriolis;
+  // Spring damper system with damping ratio=1
+  tau_task << jacobian.transpose() * (-stiffness_ * error - damping_ * (jacobian * dq));
+  tau_d << tau_task + coriolis;
 
-  // Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
+  Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
 }

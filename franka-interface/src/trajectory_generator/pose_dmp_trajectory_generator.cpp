@@ -25,6 +25,13 @@ void PoseDmpTrajectoryGenerator::parse_parameters() {
     num_basis_ = pose_dmp_trajectory_params_.num_basis();
     num_sensor_values_ = pose_dmp_trajectory_params_.num_sensor_values();
 
+    std::cout << "run_time = " << pose_dmp_trajectory_params_.run_time() << "\n" << std::endl;
+    std::cout << "tau = " << tau_ << "\n" << std::endl;
+    std::cout << "alpha_ = " << alpha_ << "\n" << std::endl;
+    std::cout << "beta_ = " << beta_ << "\n" << std::endl;
+    std::cout << "num_basis_ = " << num_basis_ << "\n" << std::endl;
+    std::cout << "num_sensor_values_ = " << num_sensor_values_ << "\n" << std::endl;
+
     if(orientation_only_ || position_only_){
       num_dims_ = 3;
     }
@@ -73,7 +80,7 @@ void PoseDmpTrajectoryGenerator::initialize_trajectory(const franka::RobotState 
   x_ = 1.0;
 }
 
-extern const int traj_counter_steven = 0;
+extern int traj_counter_steven = 0;
 
 void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   static int i, j, k;
@@ -99,8 +106,8 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   }
 
   double t = fmin(-log(x_) * 2.0, 1.0);
-  factor[0] = pow(t, 3) * (6*pow(t, 2) - 15 * t + 10);
-  // factor[0] = 1;
+  // factor[0] = pow(t, 3) * (6*pow(t, 2) - 15 * t + 10);
+  factor[0] = 1;
 
   for (i = 0; i < num_dims_; i++) {
     ddy = (alpha_ * (beta_ * (y0_[i] - y_[i]) - dy_[i] / tau_));
@@ -112,6 +119,13 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
         sensor_feature += (factor[k] * weights_[i][j][k]);
       }
       net_sensor_force += (initial_sensor_values_[j] * sensor_feature);
+      // // for debugging
+      // if (traj_counter_steven % 100 == 1){
+      //   std::cout << "dim = " << i;
+      //   std::cout << " sensor_num = " << j;
+      //   std::cout << " sensor = " << initial_sensor_values_[j];
+      //   std::cout << " sensor_force = " << initial_sensor_values_[j]*sensor_feature << "\n" << std::endl;
+      // }
     }
     ddy += (alpha_ * beta_ * net_sensor_force);
     ddy *= (tau_ * tau_);
@@ -127,11 +141,13 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   desired_position_(1) = y_[1];
   desired_position_(2) = y_[2];
 
-  if (traj_counter_steven % 50 == 0){
+  // for debugging
+  if (traj_counter_steven % 100 == 1){
     std::cout << "y_0 = " << y_[0];
     std::cout << "y_1 = " << y_[1];
     std::cout << "y_2 = " << y_[2] << "\n" << std::endl;
   }
+  ++traj_counter_steven;
 
   Eigen::Matrix3d n;
   n = Eigen::AngleAxisd(y_[3], Eigen::Vector3d::UnitX())
