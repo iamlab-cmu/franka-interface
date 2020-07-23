@@ -477,10 +477,7 @@ namespace franka_ros_interface
                       (current_robot_state_buffer_[3] << 24));
 
       RobotStateMessage robot_state_msg;
-      try {
-        robot_state_msg.ParseFromArray(current_robot_state_buffer_ + 4, num_bytes);
-      }
-      catch (...) {
+      if(robot_state_msg.ParseFromArray(current_robot_state_buffer_ + 4, num_bytes) == false)
         std::cout << "ParsingFromArray Exception occurred.\n";
         robot_state.is_fresh = false;
         return robot_state;
