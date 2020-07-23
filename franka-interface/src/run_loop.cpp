@@ -107,19 +107,16 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   SharedBufferTypePtr traj_buffer = shared_memory_handler_->getTrajectoryGeneratorBuffer(memory_index);
   TrajectoryGenerator *traj_generator = traj_gen_factory_.getTrajectoryGeneratorForSkill(
       traj_buffer, sensor_data_manager_);
-  std::cout << "Did get TrajectoryGenerator\n";
 
   SharedBufferTypePtr feedback_controller_buffer = shared_memory_handler_->getFeedbackControllerBuffer(
       memory_index);
   FeedbackController *feedback_controller =
       feedback_controller_factory_.getFeedbackControllerForSkill(feedback_controller_buffer, sensor_data_manager_);
-  std::cout << "Did get FeedbackController\n";
 
   SharedBufferTypePtr termination_handler_buffer = shared_memory_handler_->getTerminationParametersBuffer(
       memory_index);
   TerminationHandler* termination_handler =
       termination_handler_factory_.getTerminationHandlerForSkill(termination_handler_buffer, run_loop_info, sensor_data_manager_);
-  std::cout << "Did get TerminationHandler\n";
 
   // Start skill, does any pre-processing if required.
   sensor_data_manager_->clearBuffers();
@@ -183,7 +180,6 @@ void run_loop::update_process_info() {
                 *(shared_memory_handler_->getRunLoopProcessInfoMutex()),
                 boost::interprocess::defer_lock);
     try {
-      std::cout << "Will try to get lock to update process info\n";
       if (lock.try_lock()) {
         run_loop_info->set_is_running_skill(is_executing_skill);
 

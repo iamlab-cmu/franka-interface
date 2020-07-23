@@ -90,7 +90,6 @@ namespace franka_ros_interface
         shared_memory_info_.getOffsetForSensorDataTrajectoryGenerator(),
         shared_memory_info_.getSizeForSensorData()
     );
-    std::cout << region_sensor_data_trajectory_generator_0_.get_address() << std::endl;
     sensor_data_trajectory_generator_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_trajectory_generator_0_.get_address());
     region_sensor_data_feedback_controller_0_ =  boost::interprocess::mapped_region(
         shared_memory_object_0_,
@@ -98,7 +97,6 @@ namespace franka_ros_interface
         shared_memory_info_.getOffsetForSensorDataFeedbackController(),
         shared_memory_info_.getSizeForSensorData()
     );
-    std::cout << region_sensor_data_feedback_controller_0_.get_address() << std::endl;
     sensor_data_feedback_controller_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_feedback_controller_0_.get_address());
     region_sensor_data_termination_handler_0_ =  boost::interprocess::mapped_region(
         shared_memory_object_0_,
@@ -106,7 +104,6 @@ namespace franka_ros_interface
         shared_memory_info_.getOffsetForSensorDataTerminationHandler(),
         shared_memory_info_.getSizeForSensorData()
     );
-    std::cout << region_sensor_data_termination_handler_0_.get_address() << std::endl;
     sensor_data_termination_handler_buffer_0_ = reinterpret_cast<SensorBufferTypePtr>(region_sensor_data_termination_handler_0_.get_address());
 
     // Get mutex for buffer 1 from the shared memory segment.
