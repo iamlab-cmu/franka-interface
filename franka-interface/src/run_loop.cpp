@@ -107,12 +107,13 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   SharedBufferTypePtr traj_buffer = shared_memory_handler_->getTrajectoryGeneratorBuffer(memory_index);
   TrajectoryGenerator *traj_generator = traj_gen_factory_.getTrajectoryGeneratorForSkill(
       traj_buffer, sensor_data_manager_);
-  std::cout << "Did get traj generator\n";
+  std::cout << "Did get TrajectoryGenerator\n";
 
   SharedBufferTypePtr feedback_controller_buffer = shared_memory_handler_->getFeedbackControllerBuffer(
       memory_index);
   FeedbackController *feedback_controller =
       feedback_controller_factory_.getFeedbackControllerForSkill(feedback_controller_buffer, sensor_data_manager_);
+  std::cout << "Did get FeedbackController\n";
 
   SharedBufferTypePtr termination_handler_buffer = shared_memory_handler_->getTerminationParametersBuffer(
       memory_index);
@@ -140,6 +141,8 @@ void run_loop::finish_current_skill(BaseSkill* skill) {
   if (status == SkillStatus::VIRT_COLL_ERR) {
     throw franka::Exception("Robot is in collision with virtual walls!");
   }
+
+  setup_robot_default_behavior();
   // TODO(Mohit): Do any other-preprocessing if required
 }
 
@@ -233,21 +236,27 @@ void run_loop::update_process_info() {
           run_loop_info->reset_time_skill_finished_in_robot_time();
 
           BaseSkill *new_skill;
+
+          std::string skill_type_name;
           switch(new_skill_type) {
             case SkillType::CartesianPoseSkill:
+              skill_type_name = "CartesianPoseSkill";
               new_skill = new CartesianPoseSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             case SkillType::ForceTorqueSkill:
+              skill_type_name = "ForceTorqueSkill";
               new_skill = new ForceTorqueSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             case SkillType::GripperSkill:
+              skill_type_name = "GripperSkill";
               new_skill = new GripperSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             case SkillType::ImpedanceControlSkill:
-              std::cout << "Impedance control " << std::endl;
+              skill_type_name = "ImpedanceControlSkill";
               new_skill = new ImpedanceControlSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             case SkillType::JointPositionSkill:
+              skill_type_name = "JointPositionSkill";
               new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             default:
@@ -256,6 +265,8 @@ void run_loop::update_process_info() {
               "\n";
               assert(false);
           }
+
+          std::cout << "Skill Type: " << skill_type_name << std::endl;
 
           skill_manager_.add_skill(new_skill);
 
@@ -549,6 +560,8 @@ void run_loop::run_on_franka() {
       std::cout << "Performing automatic error recovery\n";
       robot_->automaticErrorRecovery();
       robot_access_mutex_.unlock();
+
+      setup_robot_default_behavior();
 
       std::cout << "Error recovery finished\n";
 

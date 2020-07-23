@@ -36,72 +36,91 @@ TrajectoryGenerator* TrajectoryGeneratorFactory::getTrajectoryGeneratorForSkill(
   TrajectoryGeneratorType trajectory_generator_type = static_cast<TrajectoryGeneratorType>(buffer[0]);
   TrajectoryGenerator *trajectory_generator = nullptr;
 
-  std::cout << "Trajectory Generator Type: " << 
-  static_cast<std::underlying_type<TrajectoryGeneratorType>::type>(trajectory_generator_type) << 
-  "\n";
+  std::string trajectory_generator_type_name;
 
   switch (trajectory_generator_type) {
     case TrajectoryGeneratorType::CubicHermiteSplineJointTrajectoryGenerator:
+      trajectory_generator_type_name = "CubicHermiteSplineJointTrajectoryGenerator";
       trajectory_generator = new CubicHermiteSplineJointTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::CubicHermiteSplinePoseTrajectoryGenerator:
+      trajectory_generator_type_name = "CubicHermiteSplinePoseTrajectoryGenerator";
       trajectory_generator = new CubicHermiteSplinePoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::GoalPoseDmpTrajectoryGenerator:
+      trajectory_generator_type_name = "GoalPoseDmpTrajectoryGenerator";
       trajectory_generator = new GoalPoseDmpTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::GripperTrajectoryGenerator:
+      trajectory_generator_type_name = "GripperTrajectoryGenerator";
       trajectory_generator = new GripperTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::ImpulseTrajectoryGenerator:
+      trajectory_generator_type_name = "ImpulseTrajectoryGenerator";
       trajectory_generator = new ImpulseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::JointDmpTrajectoryGenerator:
+      trajectory_generator_type_name = "JointDmpTrajectoryGenerator";
       trajectory_generator = new JointDmpTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::LinearForcePositionTrajectoryGenerator:
+      trajectory_generator_type_name = "LinearForcePositionTrajectoryGenerator";
       trajectory_generator = new LinearForcePositionTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::LinearJointTrajectoryGenerator:
+      trajectory_generator_type_name = "LinearJointTrajectoryGenerator";
       trajectory_generator = new LinearJointTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::LinearPoseTrajectoryGenerator:
+      trajectory_generator_type_name = "LinearPoseTrajectoryGenerator";
       trajectory_generator = new LinearPoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::MinJerkJointTrajectoryGenerator:
+      trajectory_generator_type_name = "MinJerkJointTrajectoryGenerator";
       trajectory_generator = new MinJerkJointTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::MinJerkPoseTrajectoryGenerator:
+      trajectory_generator_type_name = "MinJerkPoseTrajectoryGenerator";
       trajectory_generator = new MinJerkPoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::PassThroughForcePositionTrajectoryGenerator:
+      trajectory_generator_type_name = "PassThroughForcePositionTrajectoryGenerator";
       trajectory_generator = new PassThroughForcePositionTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::PassThroughJointTrajectoryGenerator:
+      trajectory_generator_type_name = "PassThroughJointTrajectoryGenerator";
       trajectory_generator = new PassThroughJointTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::PassThroughPoseTrajectoryGenerator:
+      trajectory_generator_type_name = "PassThroughPoseTrajectoryGenerator";
       trajectory_generator = new PassThroughPoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::PoseDmpTrajectoryGenerator:
+      trajectory_generator_type_name = "PoseDmpTrajectoryGenerator";
       trajectory_generator = new PoseDmpTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::RelativeLinearPoseTrajectoryGenerator:
+      trajectory_generator_type_name = "RelativeLinearPoseTrajectoryGenerator";
       trajectory_generator = new RelativeLinearPoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::RelativeMinJerkPoseTrajectoryGenerator:
+      trajectory_generator_type_name = "RelativeMinJerkPoseTrajectoryGenerator";
       trajectory_generator = new RelativeMinJerkPoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::SineJointTrajectoryGenerator:
+      trajectory_generator_type_name = "SineJointTrajectoryGenerator";
       trajectory_generator = new SineJointTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::SinePoseTrajectoryGenerator:
+      trajectory_generator_type_name = "SinePoseTrajectoryGenerator";
       trajectory_generator = new SinePoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::StayInInitialJointsTrajectoryGenerator:
+      trajectory_generator_type_name = "StayInInitialJointsTrajectoryGenerator";
       trajectory_generator = new StayInInitialJointsTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::StayInInitialPoseTrajectoryGenerator:
+      trajectory_generator_type_name = "StayInInitialPoseTrajectoryGenerator";
       trajectory_generator = new StayInInitialPoseTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     default:
@@ -110,6 +129,7 @@ TrajectoryGenerator* TrajectoryGeneratorFactory::getTrajectoryGeneratorForSkill(
       "\n";
       return nullptr;
   }
+  std::cout << "Trajectory Generator Type: " << trajectory_generator_type_name << std::endl;
 
   trajectory_generator->parse_parameters();
   return trajectory_generator;
