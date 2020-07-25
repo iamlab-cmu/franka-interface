@@ -199,8 +199,8 @@ void run_loop::update_process_info() {
                               current_skill_id);
           } else if (run_loop_info->get_done_skill_id() != current_skill_id - 1) {
             // Make sure we are only updating skill sequentially.
-            std::cout << string_format("RunLoopProcInfo done skill id: %d current skill id: %d\n",
-                    run_loop_info->get_done_skill_id(), current_skill_id);
+            // std::cout << string_format("RunLoopProcInfo done skill id: %d current skill id: %d\n",
+            //         run_loop_info->get_done_skill_id(), current_skill_id);
           } else {
             run_loop_info->set_done_skill_id(current_skill_id);
             std::cout << string_format("Did set done_skill_id %d\n", current_skill_id);
