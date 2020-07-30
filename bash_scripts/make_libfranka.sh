@@ -1,7 +1,7 @@
 cd libfranka
 
 # Change built test to Off
-sed -i '155s/.*/option(BUILD_TESTS "Build tests" OFF)/' CMakeLists.txt
+sed -i '129s/.*/option(BUILD_TESTS "Build tests" OFF)/' CMakeLists.txt
 
 # Get CPU core count
 n_cores=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
