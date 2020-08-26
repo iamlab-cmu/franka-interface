@@ -22,6 +22,7 @@ class PoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   bool orientation_only_ = false;
   bool position_only_ = false;
+  bool ee_frame_ = false;
 
   // Variables initialized from shared memory should be doubles.
   double alpha_=5.0;

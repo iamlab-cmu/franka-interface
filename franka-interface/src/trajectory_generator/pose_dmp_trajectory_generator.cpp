@@ -18,6 +18,7 @@ void PoseDmpTrajectoryGenerator::parse_parameters() {
   if(parsed_params){
     orientation_only_ = pose_dmp_trajectory_params_.orientation_only();
     position_only_ = pose_dmp_trajectory_params_.position_only();
+    ee_frame_ = pose_dmp_trajectory_params_.ee_frame();
     run_time_ = pose_dmp_trajectory_params_.run_time();
     tau_ = pose_dmp_trajectory_params_.tau();
     alpha_ = pose_dmp_trajectory_params_.alpha();
@@ -118,10 +119,39 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   // Update canonical system.
   x_ -= (x_ * tau_) * dt_;
 
-  // Finally set the position we want.
-  desired_position_(0) = y_[0];
-  desired_position_(1) = y_[1];
-  desired_position_(2) = y_[2];
+  if(ee_frame_){
+    Eigen::Matrix3d R0 = initial_orientation_.toRotationMatrix();
+    Eigen::Matrix<double,3,1>pos;
+    Eigen::Matrix<double,3,1>new_pos; 
+    Eigen::Matrix3d R_dmp_to_EE;     
+    // R_dmp_to_EE << 1,0,0,0,-1,0,0,0,-1;
+    R_dmp_to_EE << 0,1,0,1,0,0,0,0,-1;
+
+    pos[0]=y_[0];
+    pos[1]=y_[1];
+    pos[2]=y_[2];  
+    
+    std::cout << "R_dmp_to_EE" << R_dmp_to_EE << std::endl; 
+    std::cout << "initial position " << initial_position_ << std::endl; 
+    std::cout << "initial orientation R " << R0 << std::endl; 
+
+    new_pos=R0 * (R_dmp_to_EE * (pos-initial_position_)) + initial_position_;
+
+    std::cout << "pos " << pos << std::endl;
+    std::cout << "new_pos " << new_pos << std::endl;
+    std::cout << "R_dmp_to_EE*pos " << R_dmp_to_EE*pos << std::endl;
+
+    desired_position_(0) = new_pos[0];
+    desired_position_(1) = new_pos[1];
+    desired_position_(2) = new_pos[2];
+  }
+  else {
+    // Finally set the position we want.
+    desired_position_(0) = y_[0];
+    desired_position_(1) = y_[1];
+    desired_position_(2) = y_[2];
+  }
+  
 
   Eigen::Matrix3d n;
   n = Eigen::AngleAxisd(y_[3], Eigen::Vector3d::UnitX())
