@@ -44,8 +44,10 @@ void PoseDmpTrajectoryGenerator::parse_parameters() {
       }
     }
 
-    for (int i = 0; i < num_sensor_values_; i++) {
-      initial_sensor_values_[i] = pose_dmp_trajectory_params_.initial_sensor_values(i);
+    for (int i = 0; i < num_dims_; i++) {
+      for (int j = 0; j < num_sensor_values_; j++) {
+        initial_sensor_values_[i][j] = pose_dmp_trajectory_params_.initial_sensor_values(i*num_sensor_values_ + j);
+      }
     }
   } else {
     std::cout << "Parsing PoseDMPTrajectoryGenerator params failed. Data size = " << data_size << std::endl;
@@ -108,7 +110,7 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
       for (k=0; k < num_basis_; k++) {
         sensor_feature += (factor[k] * weights_[i][j][k]);
       }
-      net_sensor_force += (initial_sensor_values_[j] * sensor_feature);
+      net_sensor_force += (initial_sensor_values_[i][j] * sensor_feature);
     }
     ddy += (alpha_ * beta_ * net_sensor_force);
     ddy *= (tau_ * tau_);
@@ -131,15 +133,15 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
     pos[1]=y_[1];
     pos[2]=y_[2];  
     
-    std::cout << "R_dmp_to_EE" << R_dmp_to_EE << std::endl; 
-    std::cout << "initial position " << initial_position_ << std::endl; 
-    std::cout << "initial orientation R " << R0 << std::endl; 
+    // std::cout << "R_dmp_to_EE" << R_dmp_to_EE << std::endl; 
+    // std::cout << "initial position " << initial_position_ << std::endl; 
+    // std::cout << "initial orientation R " << R0 << std::endl; 
 
     new_pos=R0 * (R_dmp_to_EE * (pos-initial_position_)) + initial_position_;
 
-    std::cout << "pos " << pos << std::endl;
-    std::cout << "new_pos " << new_pos << std::endl;
-    std::cout << "R_dmp_to_EE*pos " << R_dmp_to_EE*pos << std::endl;
+    // std::cout << "pos " << pos << std::endl;
+    // std::cout << "new_pos " << new_pos << std::endl;
+    // std::cout << "R_dmp_to_EE*pos " << R_dmp_to_EE*pos << std::endl;
 
     desired_position_(0) = new_pos[0];
     desired_position_(1) = new_pos[1];
