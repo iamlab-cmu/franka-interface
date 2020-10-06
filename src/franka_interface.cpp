@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
     int stop_franka_interface_on_error;
     int reset_skill_numbering_on_error;
     int use_new_filestream_on_error;
+    int with_gripper;
     std::string logdir;
     std::string robot_ip;
     po::options_description desc("Allowed options");
@@ -28,6 +29,7 @@ int main(int argc, char *argv[]) {
       ("use_new_filestream_on_error", po::value<int>(&use_new_filestream_on_error)->default_value(0),
             "Use a new filestream on error, i.e. any exception thrown by libfranka.")
       ("logdir", po::value<std::string>(&logdir)->default_value("logs"), "directory to save robot_state_data")
+      ("with_gripper", po::value<int>(&with_gripper)->default_value(1), "robot has gripper attached")
     ;
 
     po::positional_options_description p;
@@ -48,7 +50,7 @@ int main(int argc, char *argv[]) {
     std::mutex m;
     std::mutex robot_loop_data_mutex;
     run_loop rl = run_loop(std::ref(m), std::ref(robot_loop_data_mutex), robot_ip,
-        stop_franka_interface_on_error, reset_skill_numbering_on_error, use_new_filestream_on_error, logdir);
+        stop_franka_interface_on_error, reset_skill_numbering_on_error, use_new_filestream_on_error, logdir, with_gripper);
     std::cout << "Will start run loop.\n";
     
     rl.start();
