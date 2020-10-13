@@ -1,8 +1,8 @@
 //
-// Created by mohit on 11/20/18.
+// Created by saumya on 10/6/20.
 //
 
-#include "franka-interface/skills/impedance_control_skill.h"
+#include "franka-interface/skills/lqr_control_skill.h"
 
 #include <cassert>
 
@@ -13,7 +13,7 @@
 #include <franka-interface-common/definitions.h>
 #include <franka-interface-common/run_loop_process_info.h>
 
-void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop, 
+void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop, 
                                                     FrankaRobot* robot,
                                                     RobotStateData *robot_state_data) {
 
@@ -32,14 +32,15 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
   
   // define callback for the torque control loop
   std::function<franka::Torques(const franka::RobotState&, franka::Duration)>
-      impedance_control_callback = [&](const franka::RobotState& robot_state,
+      lqr_control_callback = [&](const franka::RobotState& robot_state,
                                               franka::Duration period) -> franka::Torques {
 
     current_period_ = period.toSec();
     time += current_period_;
 
     if (time == 0.0) {
-      traj_generator_->initialize_trajectory(robot_state, SkillType::ImpedanceControlSkill);
+      traj_generator_->initialize_trajectory(robot_state, SkillType::LqrControlSkill);
+      traj_generator_->get_next_step(robot_state);
       try {
         if (lock.try_lock()) {
           run_loop_info->set_time_skill_started_in_robot_time(robot_state.time.toSec());
@@ -73,7 +74,7 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
     }
 
     if (time > 0.0) {
-      traj_generator_->get_next_step(robot_state);
+      feedback_controller_->get_next_step(robot_state, traj_generator_);
     }
 
     if (log_counter % 1 == 0) {
@@ -81,7 +82,6 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
       robot_state_data->log_robot_state(pose_desired, robot_state, robot->getModel(), time);
     }
 
-    feedback_controller_->get_next_step(robot_state, traj_generator_);
 
     bool done = termination_handler_->should_terminate(robot_state, model_, traj_generator_);
 
@@ -101,5 +101,5 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
     return feedback_controller_->tau_d_array_;
   };
 
-  robot->robot_.control(impedance_control_callback);
+  robot->robot_.control(lqr_control_callback);
 }

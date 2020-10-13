@@ -39,6 +39,8 @@ class FeedbackController {
   virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
 
   std::array<double, 7> tau_d_array_{};
+  double dt_ = 0.001;
+  double time_ = 0.0;
 
  protected:
   SharedBufferTypePtr params_=0;

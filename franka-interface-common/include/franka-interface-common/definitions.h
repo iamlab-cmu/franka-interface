@@ -26,6 +26,7 @@ enum class SkillType : uint8_t {
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
+    LqrControlSkill,
 };
 
 // Enum for Meta Skill Types
@@ -45,6 +46,7 @@ enum class TrajectoryGeneratorType : uint8_t {
     LinearForcePositionTrajectoryGenerator,
     LinearJointTrajectoryGenerator,
     LinearPoseTrajectoryGenerator,
+    LqrPoseTrajectoryGenerator,
     MinJerkJointTrajectoryGenerator,
     MinJerkPoseTrajectoryGenerator,
     PassThroughForcePositionTrajectoryGenerator,
@@ -66,6 +68,7 @@ enum class FeedbackControllerType : uint8_t {
     ForceAxisImpedenceFeedbackController,
     ForcePositionFeedbackController,
     JointImpedanceFeedbackController,
+    LqrCartesianFeedbackController,
     NoopFeedbackController,
     PassThroughFeedbackController,
     SetInternalImpedanceFeedbackController,

@@ -34,6 +34,7 @@ add_library(franka-interface SHARED
   src/feedback_controller/force_axis_impedence_feedback_controller.cpp
   src/feedback_controller/force_position_feedback_controller.cpp
   src/feedback_controller/joint_impedance_feedback_controller.cpp
+  src/feedback_controller/lqr_cartesian_feedback_controller.cpp
   src/feedback_controller/noop_feedback_controller.cpp
   src/feedback_controller/pass_through_feedback_controller.cpp
   src/feedback_controller/set_internal_impedance_feedback_controller.cpp
@@ -45,6 +46,7 @@ add_library(franka-interface SHARED
   src/skills/impedance_control_skill.cpp
   src/skills/joint_position_continuous_skill.cpp
   src/skills/joint_position_skill.cpp
+  src/skills/lqr_control_skill.cpp
   src/termination_handler/contact_termination_handler.cpp
   src/termination_handler/final_joint_termination_handler.cpp
   src/termination_handler/final_pose_termination_handler.cpp
@@ -61,6 +63,7 @@ add_library(franka-interface SHARED
   src/trajectory_generator/linear_force_position_trajectory_generator.cpp
   src/trajectory_generator/linear_joint_trajectory_generator.cpp
   src/trajectory_generator/linear_pose_trajectory_generator.cpp
+  src/trajectory_generator/lqr_pose_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_joint_trajectory_generator.cpp
   src/trajectory_generator/min_jerk_pose_trajectory_generator.cpp
   src/trajectory_generator/pass_through_force_position_trajectory_generator.cpp

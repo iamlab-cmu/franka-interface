@@ -1,7 +1,6 @@
 //
 // Created by mohit on 11/25/18.
 //
-
 #include "franka-interface/feedback_controller/cartesian_impedance_feedback_controller.h"
 
 #include <exception>
@@ -66,10 +65,12 @@ void CartesianImpedanceFeedbackController::parse_sensor_data(const franka::Robot
 void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotState &robot_state,
                                                          TrajectoryGenerator *traj_generator) {
   std::array<double, 7> coriolis_array = model_->coriolis(robot_state);
+  std::array<double, 7> gravity_array = model_->gravity(robot_state);
   std::array<double, 42> jacobian_array = model_->zeroJacobian(franka::Frame::kEndEffector, robot_state);
 
   // convert to Eigen
   Eigen::Map<const Eigen::Matrix<double, 7, 1> > coriolis(coriolis_array.data());
+  Eigen::Map<Eigen::Matrix<double, 7, 1>> gravity(gravity_array.data());
   Eigen::Map<const Eigen::Matrix<double, 6, 7> > jacobian(jacobian_array.data());
   Eigen::Map<const Eigen::Matrix<double, 7, 1> > dq(robot_state.dq.data());
   Eigen::Affine3d transform(Eigen::Matrix4d::Map(robot_state.O_T_EE.data()));
@@ -107,6 +108,5 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
   // Spring damper system with damping ratio=1
   tau_task << jacobian.transpose() * (-stiffness_ * error - damping_ * (jacobian * dq));
   tau_d << tau_task + coriolis;
-
   Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
 }

@@ -26,6 +26,7 @@
 #include "franka-interface/skills/impedance_control_skill.h"
 #include "franka-interface/skills/joint_position_continuous_skill.h"
 #include "franka-interface/skills/joint_position_skill.h"
+#include "franka-interface/skills/lqr_control_skill.h"
 #include "franka-interface/utils/logger_utils.h"
 
 std::atomic<bool> run_loop::run_loop_ok_{false};
@@ -254,6 +255,10 @@ void run_loop::update_process_info() {
             case SkillType::JointPositionSkill:
               skill_type_name = "JointPositionSkill";
               new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;
+            case SkillType::LqrControlSkill:
+              skill_type_name = "LqrControlSkill";
+              new_skill = new LqrControlSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             default:
               std::cout << "Incorrect skill type: " << 
