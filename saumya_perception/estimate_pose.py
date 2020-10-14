@@ -11,6 +11,12 @@ from perception import Kinect2SensorFactory, KinectSensorBridged
 from sensor_msgs.msg import Image
 from perception.camera_intrinsics import CameraIntrinsics
 
+from frankapy import SensorDataMessageType
+from frankapy import FrankaConstants as FC
+from frankapy.proto_utils import sensor_proto2ros_msg, make_sensor_group_msg
+from frankapy.proto import PosePositionSensorMessage
+from franka_interface_msgs.msg import SensorDataGroup
+
 rospy.init_node("estimate_pose")
 
 class Perception():
@@ -18,8 +24,11 @@ class Perception():
         self.bridge = cv_bridge.CvBridge()
         self.visualize=visualize
         self.rate = 10 #Hz publish rate
+        self.id = 0
+        self.init_time = rospy.Time.now().to_time()
         self.setup_perception()
         self.pose_publisher = rospy.Publisher("/block_pose", PoseStamped, queue_size=10)
+        self.franka_sensor_buffer_pub = rospy.Publisher(FC.DEFAULT_SENSOR_PUBLISHER_TOPIC, SensorDataGroup, queue_size=1000)
 
     def setup_perception(self):
         self.cfg = YamlConfig("saumya_ar_cfg.yaml") #TODO replace with your yaml file
@@ -64,7 +73,20 @@ class Perception():
             pose_stamped_msg.pose.orientation.x = T_tag_world.quaternion[1] 
             pose_stamped_msg.pose.orientation.y = T_tag_world.quaternion[2] 
             pose_stamped_msg.pose.orientation.z = T_tag_world.quaternion[3] 
+
+            obj_pose_proto_msg = PosePositionSensorMessage(
+                id=self.id, timestamp=rospy.Time.now().to_time() - self.init_time, 
+                position=T_tag_world.translation,
+                quaternion=T_tag_world.quaternion
+            )
+
+            ros_msg = make_sensor_group_msg(
+                trajectory_generator_sensor_msg=sensor_proto2ros_msg(
+                    traj_gen_proto_msg, SensorDataMessageType.JOINT_POSITION)
+            )
+            self.franka_sensor_buffer_pub.publish(ros_msg)
             self.pose_publisher(pose_stamped_msg)
+            self.id+=1
             rate.sleep() #Maintain speed. Get rid of to run as fast as possible
 def straighten_transform(rt):
     """
