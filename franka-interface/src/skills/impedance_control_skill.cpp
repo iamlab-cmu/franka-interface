@@ -59,7 +59,6 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
 
     traj_generator_->time_ = time;
     traj_generator_->dt_ = current_period_;
-    time += period.toSec();
     log_counter += 1;
 
     try {
