@@ -80,6 +80,11 @@ class RobotStateData {
   std::vector<uint8_t> log_robot_mode_0_{};
   std::vector<double> log_robot_time_0_{};
 
+  std::vector<std::array<double, 49>> log_mass_0_{};
+  std::vector<std::array<double, 7>> log_coriolis_0_{};
+  std::vector<std::array<double, 42>> log_zero_jacobian_0_{};
+  std::vector<std::array<double, 7>> log_gravity_0_{};
+
   std::vector<double> log_gripper_width_0_{};
   std::vector<double> log_gripper_max_width_0_{};
   std::vector<bool> log_gripper_is_grasped_0_{};
@@ -135,6 +140,11 @@ class RobotStateData {
   std::vector<uint8_t> log_robot_mode_1_{};
   std::vector<double> log_robot_time_1_{};
   
+  std::vector<std::array<double, 49>> log_mass_1_{};
+  std::vector<std::array<double, 7>> log_coriolis_1_{};
+  std::vector<std::array<double, 42>> log_zero_jacobian_1_{};
+  std::vector<std::array<double, 7>> log_gravity_1_{};
+
   std::vector<double> log_gripper_width_1_{};
   std::vector<double> log_gripper_max_width_1_{};
   std::vector<bool> log_gripper_is_grasped_1_{};

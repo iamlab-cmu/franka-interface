@@ -13,8 +13,8 @@ void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   const int m = 3;
 
   Eigen::Matrix<double, n, n> Q = 10000*Eigen::Matrix<double, n, n>::Identity(n, n);
-  Q(1,1) = 100000;
-  Q(4,4) = 50000;
+  // Q(1,1) = 10000;
+  // Q(4,4) = 50000;
   // Q(1,1) = 100000;
   // Q(1,1) = 100000;
   Eigen::Matrix<double, m, m> R = Eigen::MatrixXd::Identity(m, m);

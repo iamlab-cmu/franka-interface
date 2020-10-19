@@ -18,7 +18,6 @@ class LqrCartesianFeedbackController : public FeedbackController {
   void get_next_step(const franka::RobotState &robot_state, 
                      TrajectoryGenerator *traj_generator) override;
 
-
  protected:
   CartesianImpedanceFeedbackControllerMessage lqr_cartesian_feedback_params_;
   CartesianImpedanceSensorMessage lqr_cartesian_sensor_msg_;
@@ -29,6 +28,8 @@ class LqrCartesianFeedbackController : public FeedbackController {
   std::array<double, 3> rotational_stiffnesses_ = {{50.0, 50.0, 50.0}};
   Eigen::MatrixXd stiffness_;
   Eigen::MatrixXd damping_;
+  Eigen::MatrixXd jacobian_prev_;
+  
 };
 
 #endif  // FRANKA_INTERFACE_FEEDBACK_CONTROLLER_LQR_CARTESIAN_FEEDBACK_CONTROLLER_H_

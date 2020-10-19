@@ -47,6 +47,10 @@ void LqrCartesianFeedbackController::initialize_controller(FrankaRobot *robot) {
   for (int i = 0; i < 6; i++) {
     damping_(i, i) = 2. * sqrt(stiffness_(i, i));
   }
+  jacobian_prev_ = Eigen::MatrixXd(6,7);
+  jacobian_prev_.setZero();
+  f_task_ = Eigen::VectorXd(6);
+  f_task_.setZero();
 }
 
 void LqrCartesianFeedbackController::parse_sensor_data(const franka::RobotState &robot_state) {
@@ -97,9 +101,9 @@ void LqrCartesianFeedbackController::get_next_step(const franka::RobotState &rob
 
   
   // orientation error
-  Eigen::Matrix<double, 6, 1> ori_error = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
-  Eigen::Matrix<double, 6, 1> ori_error_pos = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
-  Eigen::Matrix<double, 6, 1> ori_error_vel = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
+  // Eigen::Matrix<double, 6, 1> ori_error = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
+  // Eigen::Matrix<double, 6, 1> ori_error_pos = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
+  // Eigen::Matrix<double, 6, 1> ori_error_vel = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
   // "difference" quaternion
   if (goal_orientation.coeffs().dot(orientation.coeffs()) < 0.0) {
     orientation.coeffs() << -orientation.coeffs();
@@ -107,34 +111,38 @@ void LqrCartesianFeedbackController::get_next_step(const franka::RobotState &rob
   Eigen::Quaterniond error_quaternion(orientation * goal_orientation.inverse());
   // convert to axis angle
   Eigen::AngleAxisd error_quaternion_angle_axis(error_quaternion);
-  // compute "orientation error"
-  ori_error_pos.tail(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
-  ori_error.head(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
-  // Velocity error
-  ori_error_vel.tail(3) << (jacobian * dq).tail(3);
-  ori_error.tail(3) << (jacobian * dq).tail(3);
+  // // compute "orientation error"
+  // ori_error_pos.tail(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
+  // ori_error.head(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
+  // // Velocity error
+  // ori_error_vel.tail(3) << (jacobian * dq).tail(3);
+  // ori_error.tail(3) << (jacobian * dq).tail(3);
 
-  // compute control
-  Eigen::Matrix<double, 6, 1> F = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
-  F.head(3) << 1*pose_trajectory_generator->K_[int(time_/dt_)]*pos_error; //LQR
-  // F.tail(3) << 1*pose_trajectory_generator->K_[int(time_/dt_)]*ori_error; //LQR
-  
+  // // compute control
+  // Eigen::Matrix<double, 6, 1> F = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
+  // F.head(3) << 1*pose_trajectory_generator->K_[int(time_/dt_)]*pos_error; //LQR
+  // // F.tail(3) << 1*pose_trajectory_generator->K_[int(time_/dt_)]*ori_error; //LQR
 
-  // std::cout << "ori-error: " << ori_error << "\n";
-  // std::cout << "F: " << F << "\n";
-  // std::cout << "lalal" <<(jacobian*mass.inverse()*jacobian.transpose()) << "\n";
-  Eigen::VectorXd tau_task_pos(7), tau_task_ori(7), tau_d(7);
-  tau_task_pos << jacobian.transpose() * F;
-  tau_task_ori << jacobian.transpose() * (-stiffness_ * ori_error_pos - damping_ * ori_error_vel); // Impendance control
-  // tau_task << jacobian.transpose()*( jacobian*mass.inverse()*jacobian.transpose() ).inverse()*F;
-  tau_d << tau_task_pos + tau_task_ori + coriolis;
-  
-  // The following line is only necessary for printing the rate limited torque. As we activated
-  // rate limiting for the control loop (activated by default), the torque would anyway be
-  // adjusted!
-//   Eigen::Map<std::array<double, 7> > tau_d_calculated(tau_d.data());
-//   std::array<double, 7> tau_d_rate_limited =
-//       franka::limitRate(franka::kMaxTorqueRate, tau_d_calculated, robot_state.tau_J_d);
+  // Eigen::VectorXd tau_task_pos(7), tau_task_ori(7), tau_d(7);
+  // tau_task_pos << mass*jacobian.transpose() * F;
+  // tau_task_ori << jacobian.transpose() * (-stiffness_ * ori_error_pos - damping_ * ori_error_vel); // Impendance control
+  // // tau_task << jacobian.transpose()*( jacobian*mass.inverse()*jacobian.transpose() ).inverse()*F;
+  // tau_d << tau_task_pos + tau_task_ori + coriolis;
+
+  // Cartesian control
+  Eigen::VectorXd tau_task(7), tau_d(7), error(6);
+
+  error.head(3) << position - goal_position;
+  error.tail(3) << error_quaternion_angle_axis.axis() * error_quaternion_angle_axis.angle();
+  Eigen::Matrix<double, 6, 6> delta;
+  Eigen::Matrix<double, 6, 7> Jdot;
+  delta = (jacobian*mass.inverse()*jacobian.transpose()).inverse();
+  Jdot = (jacobian - jacobian_prev_)/0.001;
+  // f_task_.setZero();
+  f_task_ = -stiffness_ * error - damping_ * (jacobian * dq);
+  tau_task << jacobian.transpose() * delta * f_task_;
+  tau_d << tau_task + coriolis - jacobian.transpose()*delta*Jdot*dq;
+  jacobian_prev_ = 1*jacobian;
 
   Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
 }

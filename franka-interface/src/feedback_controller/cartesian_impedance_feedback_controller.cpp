@@ -108,5 +108,7 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
   // Spring damper system with damping ratio=1
   tau_task << jacobian.transpose() * (-stiffness_ * error - damping_ * (jacobian * dq));
   tau_d << tau_task + coriolis;
+  
   Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
+  
 }

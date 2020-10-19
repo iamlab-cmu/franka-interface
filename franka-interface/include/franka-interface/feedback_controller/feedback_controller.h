@@ -2,6 +2,7 @@
 #define FRANKA_INTERFACE_FEEDBACK_CONTROLLER_FEEDBACK_CONTROLLER_H_
 
 #include <iostream>
+#include <Eigen/Dense>
 #include <google/protobuf/message.h>
 #include <array>
 #include <franka/robot_state.h>
@@ -41,6 +42,7 @@ class FeedbackController {
   std::array<double, 7> tau_d_array_{};
   double dt_ = 0.001;
   double time_ = 0.0;
+  Eigen::VectorXd f_task_;
 
  protected:
   SharedBufferTypePtr params_=0;

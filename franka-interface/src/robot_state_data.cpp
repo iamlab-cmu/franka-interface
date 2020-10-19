@@ -99,6 +99,10 @@ void RobotStateData::writeBufferData_0() {
                                               log_control_command_success_rate_0_,
                                               log_robot_mode_0_,
                                               log_robot_time_0_,
+                                              log_mass_0_,
+                                              log_coriolis_0_,
+                                              log_zero_jacobian_0_,
+                                              log_gravity_0_,
                                               log_gripper_width_0_,
                                               log_gripper_max_width_0_,
                                               log_gripper_is_grasped_0_,
@@ -162,6 +166,12 @@ void RobotStateData::writeBufferData_0() {
     log_robot_mode_0_.clear();
     log_robot_time_0_.clear();
     
+    // Model data added by saumya
+    log_mass_0_.clear();
+    log_coriolis_0_.clear();
+    log_zero_jacobian_0_.clear();
+    log_gravity_0_.clear();
+
     log_gripper_width_0_.clear();
     log_gripper_max_width_0_.clear();
     log_gripper_is_grasped_0_.clear();
@@ -233,6 +243,10 @@ void RobotStateData::writeBufferData_1() {
                                               log_control_command_success_rate_1_,
                                               log_robot_mode_1_,
                                               log_robot_time_1_,
+                                              log_mass_1_,
+                                              log_coriolis_1_,
+                                              log_zero_jacobian_1_,
+                                              log_gravity_1_,
                                               log_gripper_width_1_,
                                               log_gripper_max_width_1_,
                                               log_gripper_is_grasped_1_,
@@ -294,6 +308,12 @@ void RobotStateData::writeBufferData_1() {
     log_control_command_success_rate_1_.clear();
     log_robot_mode_1_.clear();
     log_robot_time_1_.clear();
+
+    // Model data added by saumya
+    log_mass_1_.clear();
+    log_coriolis_1_.clear();
+    log_zero_jacobian_1_.clear();
+    log_gravity_1_.clear();
 
     log_gripper_width_1_.clear();
     log_gripper_max_width_1_.clear();
@@ -358,6 +378,12 @@ void RobotStateData::clearAllBuffers() {
   log_robot_mode_0_.clear();
   log_robot_time_0_.clear();
 
+  // Model data added by saumya
+  log_mass_0_.clear();
+  log_coriolis_0_.clear();
+  log_zero_jacobian_0_.clear();
+  log_gravity_0_.clear();
+
   log_gripper_width_0_.clear();
   log_gripper_max_width_0_.clear();
   log_gripper_is_grasped_0_.clear();
@@ -413,6 +439,12 @@ void RobotStateData::clearAllBuffers() {
   log_control_command_success_rate_1_.clear();
   log_robot_mode_1_.clear();
   log_robot_time_1_.clear();
+
+  // Model data added by saumya
+  log_mass_1_.clear();
+  log_coriolis_1_.clear();
+  log_zero_jacobian_1_.clear();
+  log_gravity_1_.clear();
 
   log_gripper_width_1_.clear();
   log_gripper_max_width_1_.clear();
@@ -644,6 +676,12 @@ void RobotStateData::log_robot_state(std::array<double, 16> &desired_pose, frank
       log_robot_mode_0_.push_back(static_cast<uint8_t>(robot_state.robot_mode));
       log_robot_time_0_.push_back(robot_state.time.toSec());
 
+      // Model data added by saumya
+      log_mass_0_.push_back(robot_model->mass(robot_state));
+      log_coriolis_0_.push_back(robot_model->coriolis(robot_state));
+      log_zero_jacobian_0_.push_back(robot_model->zeroJacobian(franka::Frame::kEndEffector, robot_state));
+      log_gravity_0_.push_back(robot_model->gravity(robot_state));
+
       log_gripper_width_0_.push_back(current_gripper_width_);
       log_gripper_max_width_0_.push_back(current_gripper_max_width_);
       log_gripper_is_grasped_0_.push_back(current_gripper_is_grasped_);
@@ -703,6 +741,12 @@ void RobotStateData::log_robot_state(std::array<double, 16> &desired_pose, frank
       log_robot_mode_1_.push_back(static_cast<uint8_t>(robot_state.robot_mode));
       log_robot_time_1_.push_back(robot_state.time.toSec());
       
+      // Model data added by saumya
+      log_mass_1_.push_back(robot_model->mass(robot_state));
+      log_coriolis_1_.push_back(robot_model->coriolis(robot_state));
+      log_zero_jacobian_1_.push_back(robot_model->zeroJacobian(franka::Frame::kEndEffector, robot_state));
+      log_gravity_1_.push_back(robot_model->gravity(robot_state));
+
       log_gripper_width_1_.push_back(current_gripper_width_);
       log_gripper_max_width_1_.push_back(current_gripper_max_width_);
       log_gripper_is_grasped_1_.push_back(current_gripper_is_grasped_);

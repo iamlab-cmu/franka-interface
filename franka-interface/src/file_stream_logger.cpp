@@ -53,6 +53,10 @@ bool FileStreamLogger::writeData(std::vector<double>& time_since_skill_started_v
                                  std::vector<double>& control_command_success_rate_vector,
                                  std::vector<uint8_t>& robot_mode_vector,
                                  std::vector<double>& robot_time_vector,
+                                 std::vector<std::array<double, 49>>& mass_vector,
+                                 std::vector<std::array<double, 7>>& coriolis_vector,
+                                 std::vector<std::array<double, 42>>& zero_jacobian_vector,
+                                 std::vector<std::array<double, 7>>& gravity_vector,
                                  std::vector<double>& gripper_width_vector,
                                  std::vector<double>& gripper_max_width_vector,
                                  std::vector<bool>& gripper_is_grasped_vector,
@@ -202,6 +206,18 @@ bool FileStreamLogger::writeData(std::vector<double>& time_since_skill_started_v
     } else if (time_since_skill_started_vector_size != robot_time_vector.size()) {
         all_sizes_equal = false;
         std::cout << "Time since skill started vector size and robot time vector size do not match\n";
+    } else if (time_since_skill_started_vector_size != mass_vector.size()) {
+        all_sizes_equal = false;
+        std::cout << "Time since skill started vector size and mass vector size do not match\n";
+    } else if (time_since_skill_started_vector_size != coriolis_vector.size()) {
+        all_sizes_equal = false;
+        std::cout << "Time since skill started vector size and coriolis vector size do not match\n";
+    } else if (time_since_skill_started_vector_size != zero_jacobian_vector.size()) {
+        all_sizes_equal = false;
+        std::cout << "Time since skill started vector size and zero jacobian vector size do not match\n";
+    } else if (time_since_skill_started_vector_size != gravity_vector.size()) {
+        all_sizes_equal = false;
+        std::cout << "Time since skill started vector size and gravity vector size do not match\n";
     } else if (time_since_skill_started_vector_size != gripper_width_vector.size()) {
         all_sizes_equal = false;
         std::cout << "Time since skill started vector size and gripper width vector size do not match\n";
@@ -431,6 +447,22 @@ bool FileStreamLogger::writeData(std::vector<double>& time_since_skill_started_v
 
         open_file_stream_ << robot_time_vector[i] << ",";
 
+        for (const auto &e : mass_vector[i]) {
+            open_file_stream_ << e << ",";
+        }
+
+        for (const auto &e : coriolis_vector[i]) {
+            open_file_stream_ << e << ",";
+        }
+
+        for (const auto &e : zero_jacobian_vector[i]) {
+            open_file_stream_ << e << ",";
+        }
+
+        for (const auto &e : gravity_vector[i]) {
+            open_file_stream_ << e << ",";
+        }
+
         open_file_stream_ << gripper_width_vector[i] << ",";
 
         if (write_gripper_max_width_){
@@ -597,6 +629,14 @@ void FileStreamLogger::initializeFile() {
     open_file_stream_ << "robot_mode(1)" << ",";
 
     open_file_stream_ << "robot_time(1)" << ",";
+
+    open_file_stream_ << "mass(49)" << ",";
+
+    open_file_stream_ << "coriolis(7)" << ",";
+
+    open_file_stream_ << "zero_jacobian(42)" << ",";
+
+    open_file_stream_ << "gravity(7)" << ",";
 
     open_file_stream_ << "gripper_width(1)" << ",";
 

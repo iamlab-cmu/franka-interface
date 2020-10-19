@@ -62,7 +62,7 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
     traj_generator_->dt_ = current_period_;
     feedback_controller_->time_ = time;
     feedback_controller_->dt_ = current_period_;
-    time += period.toSec();
+    // time += period.toSec();
     log_counter += 1;
     try {
       sensor_data_manager->getSensorBufferGroupMutex()->try_lock();
@@ -78,7 +78,12 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
     }
 
     if (log_counter % 1 == 0) {
-      pose_desired = robot_state.O_T_EE_d;
+      pose_desired[0] = feedback_controller_->f_task_[0];
+      pose_desired[1] = feedback_controller_->f_task_[1];
+      pose_desired[2] = feedback_controller_->f_task_[2];
+      pose_desired[3] = feedback_controller_->f_task_[3];
+      pose_desired[4] = feedback_controller_->f_task_[4];
+      pose_desired[5] = feedback_controller_->f_task_[5];
       robot_state_data->log_robot_state(pose_desired, robot_state, robot->getModel(), time);
     }
 

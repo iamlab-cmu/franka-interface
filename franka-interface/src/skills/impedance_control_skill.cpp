@@ -61,7 +61,7 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
     traj_generator_->dt_ = current_period_;
     feedback_controller_->time_ = time;
     feedback_controller_->dt_ = current_period_;
-    time += period.toSec();
+    // time += period.toSec();
     log_counter += 1;
     try {
       sensor_data_manager->getSensorBufferGroupMutex()->try_lock();
@@ -89,6 +89,7 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
       try {
         if (lock.try_lock()) {
           run_loop_info->set_time_skill_finished_in_robot_time(robot_state.time.toSec());
+          
           lock.unlock();
         } 
       } catch (boost::interprocess::lock_exception) {
