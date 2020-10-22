@@ -44,6 +44,11 @@ See detailed instructions [here](https://github.com/protocolbuffers/protobuf/blo
    git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git
    cd franka-interface
    ```
+   If your robot is on Firmware 2.x or 4.x, checkout that branch and then running the following command:
+   ```bash
+   git submodule update --recursive --init
+   ```
+   
 All directories below are given relative to `/franka-interface`.
 
 2. Build LibFranka
