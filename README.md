@@ -44,25 +44,26 @@ See detailed instructions [here](https://github.com/protocolbuffers/protobuf/blo
    git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git
    cd franka-interface
    ```
-   If your robot is on Firmware 2.x or 4.x, checkout that branch and then running the following command:
-   ```bash
-   git submodule update --recursive --init
-   ```
    
 All directories below are given relative to `/franka-interface`.
 
-2. Build LibFranka
+2. Clone LibFranka corresponding to your robot version. For example if your firmware is 3.x use the following command:
+   ```bash
+   bash ./bash_scripts/clone_libfranka.sh 3
+   ```
+
+3. Build LibFranka
    ```bash
    bash ./bash_scripts/make_libfranka.sh
    ```
 
-3. Build franka-interface
+4. Build franka-interface
    ```bash
    bash ./bash_scripts/make_franka_interface.sh
    ```
    Once it has finished building, you should see an application named `franka_interface` in the build folder.
 
-4. Build ROS Node franka_ros_interface
+5. Build ROS Node franka_ros_interface
 
    Make sure that you have installed ROS Kinetic / Melodic already and have added the `source /opt/ros/kinetic/setup.bash` or `source /opt/ros/melodic/setup.bash` into your `~/.bashrc` file. Make sure you have also installed catkin-tools either globally or in a virtual environment using the command `pip install catkin-tools`.
 
