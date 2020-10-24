@@ -9,6 +9,8 @@ class MinJerkPoseTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   void get_next_step(const franka::RobotState &robot_state) override;
 
+  void parse_sensor_data(const franka::RobotState &robot_state) override;
+
  private:
   double slerp_t_ = 0.0;
 };

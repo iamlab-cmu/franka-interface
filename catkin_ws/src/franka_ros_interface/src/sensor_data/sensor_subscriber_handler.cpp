@@ -9,7 +9,7 @@ namespace franka_ros_interface
   }
 
   void SensorSubscriberHandler::SensorSubscriberCallback(const franka_interface_msgs::SensorDataGroup::ConstPtr& sensor_group_msg) {
-    ROS_INFO("Got sensor message! TG %s | FC %s | TH %s", 
+    // ROS_INFO("Got sensor message! TG %s | FC %s | TH %s", 
       sensor_group_msg->has_trajectory_generator_sensor_data ? "yes" : "no",
       sensor_group_msg->has_feedback_controller_sensor_data ? "yes" : "no",
       sensor_group_msg->has_termination_handler_sensor_data ? "yes" : "no"

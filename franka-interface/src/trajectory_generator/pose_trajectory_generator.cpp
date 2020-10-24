@@ -65,6 +65,7 @@ void PoseTrajectoryGenerator::initialize_initial_and_desired_poses(const franka:
   initial_orientation_ = Eigen::Quaterniond(initial_transform_.linear());
   desired_position_ = Eigen::Vector3d(initial_transform_.translation());
   desired_orientation_ = Eigen::Quaterniond(initial_transform_.linear());
+  object_position_ = Eigen::VectorXd(7)::Zero();
 }
 
 void PoseTrajectoryGenerator::fix_goal_quaternion(){

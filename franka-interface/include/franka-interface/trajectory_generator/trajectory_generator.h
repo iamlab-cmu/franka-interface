@@ -5,6 +5,7 @@
 #include <google/protobuf/message.h>
 #include <franka/robot_state.h>
 #include <franka-interface-common/definitions.h>
+#include "franka-interface/franka_robot.h"
 
 #include "franka-interface/sensor_data_manager.h"
 #include "trajectory_generator_params_msg.pb.h"
@@ -37,14 +38,19 @@ class TrajectoryGenerator {
    */
   virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
 
+  virtual void initialize_model(FrankaRobot *robot) {};
+
   double run_time_ = 0.0;
   double dt_ = 0.001;
   double time_ = 0.0;
   double t_ = 0.0;
+  double lqrt_ = 0.0;
+  Eigen::VectorXd object_position_;
 
  protected:
   SharedBufferTypePtr params_=0;
   SensorDataManager* sensor_data_manager_;
+  const franka::Model *model_;
 
 };
 

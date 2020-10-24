@@ -13,7 +13,7 @@ class ImpulseTrajectoryGenerator : public TrajectoryGenerator {
   void parse_parameters() override;
 
   void initialize_trajectory(const franka::RobotState &robot_state, SkillType skill_type=SkillType::ForceTorqueSkill) override;
-
+  
   void initialize_initial_states(const franka::RobotState &robot_state, SkillType skill_type);
 
   void get_next_step(const franka::RobotState &robot_state) override;

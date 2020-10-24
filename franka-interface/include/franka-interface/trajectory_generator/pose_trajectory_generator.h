@@ -5,6 +5,7 @@
 #include <Eigen/Dense>
 
 #include "franka-interface/trajectory_generator/trajectory_generator.h"
+#include "franka-interface/franka_robot.h"
 
 class PoseTrajectoryGenerator : public TrajectoryGenerator {
  public:

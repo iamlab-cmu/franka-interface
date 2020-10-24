@@ -38,9 +38,11 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
     current_period_ = period.toSec();
     time += current_period_;
 
+    // std::cout << "current_period_: " << current_period_ << "\n";
+
     if (time == 0.0) {
       traj_generator_->initialize_trajectory(robot_state, SkillType::LqrControlSkill);
-      traj_generator_->get_next_step(robot_state);
+      traj_generator_->initialize_model(robot);
       try {
         if (lock.try_lock()) {
           run_loop_info->set_time_skill_started_in_robot_time(robot_state.time.toSec());
@@ -60,6 +62,7 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
 
     traj_generator_->time_ = time;
     traj_generator_->dt_ = current_period_;
+    traj_generator_->lqrt_ += current_period_;
     feedback_controller_->time_ = time;
     feedback_controller_->dt_ = current_period_;
     // time += period.toSec();
@@ -74,6 +77,7 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
     }
 
     if (time > 0.0) {
+      traj_generator_->get_next_step(robot_state);
       feedback_controller_->get_next_step(robot_state, traj_generator_);
     }
 
@@ -84,6 +88,15 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
       pose_desired[3] = feedback_controller_->f_task_[3];
       pose_desired[4] = feedback_controller_->f_task_[4];
       pose_desired[5] = feedback_controller_->f_task_[5];
+
+      pose_desired[6] = traj_generator_->object_position_[0];
+      pose_desired[7] = traj_generator_->object_position_[1];
+      pose_desired[8] = traj_generator_->object_position_[2];
+      pose_desired[9] = traj_generator_->object_position_[3];
+      pose_desired[10] = traj_generator_->object_position_[4];
+      pose_desired[11] = traj_generator_->object_position_[5];
+      pose_desired[12] = traj_generator_->object_position_[6];
+
       robot_state_data->log_robot_state(pose_desired, robot_state, robot->getModel(), time);
     }
 
