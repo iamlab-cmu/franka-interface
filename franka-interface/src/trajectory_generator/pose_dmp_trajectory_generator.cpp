@@ -51,6 +51,24 @@ void PoseDmpTrajectoryGenerator::parse_parameters() {
   }
 }
 
+void PoseDmpTrajectoryGenerator::parse_sensor_data(const franka::RobotState &robot_state) {
+  SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readTrajectoryGeneratorSensorMessage(pose_sensor_msg_);
+  if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
+    std::cout << "Sensor msg: " << pose_sensor_msg_.position(0) << "\n";
+    std::cout << "Sensor msg: " << pose_sensor_msg_.position(1) << "\n";
+    for (int i = 0; i < 3; i++) {
+      object_position_[i] = pose_sensor_msg_.position(i);
+    }
+
+    object_position_[3] = pose_sensor_msg_.quaternion(0);
+    object_position_[4] = pose_sensor_msg_.quaternion(1);
+    object_position_[5] = pose_sensor_msg_.quaternion(2);
+    object_position_[6] = pose_sensor_msg_.quaternion(3);
+  } else {
+    std::cout << "Parsing PoseDMPTrajectoryGenerator parse_sensor_data failed." << std::endl;
+  }
+}
+
 void PoseDmpTrajectoryGenerator::initialize_trajectory(const franka::RobotState &robot_state,
                                                         SkillType skill_type) {
   initialize_initial_and_desired_poses(robot_state, skill_type);

@@ -28,6 +28,7 @@ class CartesianImpedanceFeedbackController : public FeedbackController {
   std::array<double, 3> rotational_stiffnesses_ = {{50.0, 50.0, 50.0}};
   Eigen::MatrixXd stiffness_;
   Eigen::MatrixXd damping_;
+  Eigen::MatrixXd jacobian_prev_;
 };
 
 #endif  // FRANKA_INTERFACE_FEEDBACK_CONTROLLER_CARTESIAN_IMPEDANCE_FEEDBACK_CONTROLLER_H_

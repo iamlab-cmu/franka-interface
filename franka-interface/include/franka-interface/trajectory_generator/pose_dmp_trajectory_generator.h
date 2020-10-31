@@ -9,6 +9,8 @@ class PoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   void parse_parameters() override;
 
+  void parse_sensor_data(const franka::RobotState &robot_state) override;
+
   void initialize_trajectory(const franka::RobotState &robot_state,
                              SkillType skill_type=SkillType::CartesianPoseSkill) override;
 
@@ -19,6 +21,7 @@ class PoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
  private:
   PoseDMPTrajectoryGeneratorMessage pose_dmp_trajectory_params_;
+  PosePositionSensorMessage pose_sensor_msg_;
 
   bool orientation_only_ = false;
   bool position_only_ = false;
@@ -36,7 +39,7 @@ class PoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   std::array<std::array<std::array<double, 40>, 10>, 6> weights_{};
   std::array<double, 10> initial_sensor_values_{{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}};
   std::array<double, 6> y0_={};
-
+  
   void getInitialMeanAndStd();
 };
 

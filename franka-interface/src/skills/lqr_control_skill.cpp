@@ -90,6 +90,7 @@ void LqrControlSkill::execute_skill_on_franka(run_loop* run_loop,
       pose_desired[5] = feedback_controller_->f_task_[5];
 
       pose_desired[6] = traj_generator_->object_position_[0];
+      // std::cout <<"obj position:" << traj_generator_->object_position_ << "\n";
       pose_desired[7] = traj_generator_->object_position_[1];
       pose_desired[8] = traj_generator_->object_position_[2];
       pose_desired[9] = traj_generator_->object_position_[3];

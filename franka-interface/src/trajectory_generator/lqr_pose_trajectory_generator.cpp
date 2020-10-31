@@ -19,27 +19,29 @@ void LqrPoseTrajectoryGenerator::parse_sensor_data(const franka::RobotState &rob
     desired_orientation_.x() = pose_sensor_msg_.quaternion(1);
     desired_orientation_.y() = pose_sensor_msg_.quaternion(2);
     desired_orientation_.z() = pose_sensor_msg_.quaternion(3);
-  }
+
     object_position_[3] = pose_sensor_msg_.quaternion(0);
     object_position_[4] = pose_sensor_msg_.quaternion(1);
     object_position_[5] = pose_sensor_msg_.quaternion(2);
     object_position_[6] = pose_sensor_msg_.quaternion(3);
+  }
+    
 }
 
 void LqrPoseTrajectoryGenerator::initialize_model(FrankaRobot *robot){
   model_ = robot->getModel();
   controlt_.setZero();
   rho = Eigen::VectorXd(2000).setZero();
-  // rho.head(int(N_lqr/2)) << Eigen::Matrix<double, int(N_lqr/2), 1>::Zero();
-  // rho.tail(int(N_lqr/2)) << rho.head(int(N_lqr/2)).array() + 1;
+  rho.head(int(2000/2)) << Eigen::Matrix<double, int(2000/2), 1>::Zero();
+  rho.tail(int(2000/2)) << rho.head(int(2000/2)).array() + 1;
 }
 
 void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   const int n = 6;
   const int m = 3;
-
   const int N_lqr = 2000;
-  int N_update_mpc = 1000;
+  int N_update_mpc = 1900;
+
   Eigen::Map<const Eigen::Matrix<double, 7, 1> > dq(robot_state.dq.data());
   Eigen::Affine3d transform(Eigen::Matrix4d::Map(robot_state.O_T_EE.data()));
   Eigen::Vector3d position(transform.translation());
@@ -51,9 +53,9 @@ void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   curr_state.tail(3) = (jacobian*dq).head(3);
 
   Eigen::Matrix<double, n, n> Q1 = 1000*Eigen::Matrix<double, n, n>::Identity(n, n);
-  Eigen::Matrix<double, n, n> Q2 = 1000*Eigen::Matrix<double, n, n>::Identity(n, n);
+  Eigen::Matrix<double, n, n> Q2 = 2000*Eigen::Matrix<double, n, n>::Identity(n, n);
   // Q1(0,0) = 5000;
-  // Q2(0,0) = 5000;
+  Q1(0,0) = 2000;
 
   Eigen::Matrix<double, m, m> R1 = Eigen::Matrix<double, m, m>::Identity(m, m);
   Eigen::Matrix<double, m, m> R2 = 0.9*Eigen::Matrix<double, m, m>::Identity(m, m);
@@ -71,10 +73,10 @@ void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
     xf1(i) = desired_position_[i];
     xf2(i) = desired_position_[i];
   }
-  // xf2(0) = 0.45415;
-  // xf2(1) = -0.2576;
-  // xf2(2) = 0.2679;
-  xf2(1) = -0.35;
+  // xf2(0) = 0.53401321;
+  xf2(1) = -0.29;
+  xf2(2) = 0.30053127;
+  // xf2(1) = -0.35;
 
 
   // int N = int (run_time_/dt_) + 2000;
@@ -103,6 +105,9 @@ void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
     
     // iLQR
     std::cout << "Entering iLQR loop at time " << time_ << "\n";
+    rho.head(int(N_lqr/2)) << Eigen::Matrix<double, int(N_lqr/2), 1>::Zero();
+    rho.tail(int(N_lqr/2)) << rho.head(int(N_lqr/2)).array() + 1;
+
     lqrt_ = 0.0;
     while ((thresh>1e-6) && (i < n_iter)){
       if (i > 0){
@@ -148,8 +153,10 @@ void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
 
       //Update rho
       for (int t = 0; t < N_lqr ; t++) {
-        if ( sqrt( square( (x.block(0,t, 3,1)-xf1).array() ).sum() )> 0.06){
-        // if ( x(1,t) < 0){
+        // if ( sqrt( square( (x.block(0,t, 3,1)-xf1).array() ).sum() )> 0.06){
+        // if ( abs(x(1,t)-xf1(1))> 0.01){
+        if ( x(1,t) > -0.03){
+
           rho[t] = 0;
         }
         else {
@@ -163,7 +170,7 @@ void LqrPoseTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
       i = i+1;
       
     }//end while loop
-    // std::cout<< "rho lqr: " << rho << "\n";
+    std::cout<< "rho lqr: " << rho << "\n";
     std::cout<< "Iterations: " << i << "\n";
   // controlt_ = u.col(0);
   } // end of if statements

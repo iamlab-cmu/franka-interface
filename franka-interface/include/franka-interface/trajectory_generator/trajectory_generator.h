@@ -2,6 +2,7 @@
 #define FRANKA_INTERFACE_TRAJECTORY_GENERATOR_TRAJECTORY_GENERATOR_H_
 
 #include <iostream>
+#include <Eigen/Dense>
 #include <google/protobuf/message.h>
 #include <franka/robot_state.h>
 #include <franka-interface-common/definitions.h>

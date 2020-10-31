@@ -47,6 +47,10 @@ void CartesianImpedanceFeedbackController::initialize_controller(FrankaRobot *ro
   for (int i = 0; i < 6; i++) {
     damping_(i, i) = 2. * sqrt(stiffness_(i, i));
   }
+  jacobian_prev_ = Eigen::MatrixXd(6,7);
+  jacobian_prev_.setZero();
+  f_task_ = Eigen::VectorXd(6);
+  f_task_.setZero();
 }
 
 void CartesianImpedanceFeedbackController::parse_sensor_data(const franka::RobotState &robot_state) {
@@ -65,11 +69,13 @@ void CartesianImpedanceFeedbackController::parse_sensor_data(const franka::Robot
 void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotState &robot_state,
                                                          TrajectoryGenerator *traj_generator) {
   std::array<double, 7> coriolis_array = model_->coriolis(robot_state);
+  std::array<double, 49> mass_array = model_->mass(robot_state);
   std::array<double, 7> gravity_array = model_->gravity(robot_state);
   std::array<double, 42> jacobian_array = model_->zeroJacobian(franka::Frame::kEndEffector, robot_state);
 
   // convert to Eigen
   Eigen::Map<const Eigen::Matrix<double, 7, 1> > coriolis(coriolis_array.data());
+  Eigen::Map<Eigen::Matrix<double, 7, 7> > mass(mass_array.data());
   Eigen::Map<Eigen::Matrix<double, 7, 1>> gravity(gravity_array.data());
   Eigen::Map<const Eigen::Matrix<double, 6, 7> > jacobian(jacobian_array.data());
   Eigen::Map<const Eigen::Matrix<double, 7, 1> > dq(robot_state.dq.data());
@@ -106,9 +112,17 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
   Eigen::VectorXd tau_task(7), tau_d(7);
 
   // Spring damper system with damping ratio=1
-  tau_task << jacobian.transpose() * (-stiffness_ * error - damping_ * (jacobian * dq));
-  tau_d << tau_task + coriolis;
+  Eigen::Matrix<double, 6, 6> delta;
+  Eigen::Matrix<double, 6, 7> Jdot;
+  delta = (jacobian*mass.inverse()*jacobian.transpose()).inverse();
+  Jdot = (jacobian - jacobian_prev_)/0.001;
   
+  f_task_ = -stiffness_ * error - damping_ * (jacobian * dq);
+  // tau_task << jacobian.transpose() * delta * f_task_ - jacobian.transpose()*delta*Jdot*dq;
+  tau_task << jacobian.transpose() * f_task_;
+  tau_d << tau_task + coriolis;
+  jacobian_prev_ = 1*jacobian;
+
   Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
   
 }
