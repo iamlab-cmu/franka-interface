@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "franka-interface/franka_robot.h"
+#include "franka-interface/franka_gripper.h"
 
 #include "franka-interface/feedback_controller/feedback_controller.h"
 #include "franka-interface/termination_handler/termination_handler.h"
@@ -79,6 +80,7 @@ class BaseSkill {
    */
   virtual void execute_skill_on_franka(run_loop* run_loop,
                                        FrankaRobot* robot,
+                                       FrankaGripper* gripper,
                                        RobotStateData* robot_state_data) = 0;
 
   virtual bool has_terminated(FrankaRobot* robot);

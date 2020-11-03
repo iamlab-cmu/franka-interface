@@ -2,7 +2,6 @@
 #define FRANKA_INTERFACE_ROBOTS_FRANKA_ROBOT_H_
 
 #include <franka/robot.h>
-#include <franka/gripper.h>
 #include <franka/model.h>
 
 
@@ -12,7 +11,6 @@ class FrankaRobot
 
   FrankaRobot(std::string &robot_ip) : 
                                   robot_(robot_ip),
-                                  gripper_(robot_ip),
                                   model_(robot_.loadModel()) 
   {};
 
@@ -26,13 +24,7 @@ class FrankaRobot
     return robot_.readOnce();
   }
 
-  franka::GripperState getGripperState()
-  {
-    return gripper_.readOnce();
-  }
-
   franka::Robot robot_;
-  franka::Gripper gripper_;
   franka::Model model_;
 
   virtual ~FrankaRobot() = default;

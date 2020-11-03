@@ -25,6 +25,7 @@
 #include "franka-interface/trajectory_generator_factory.h"
 #include "franka-interface/feedback_controller_factory.h"
 #include "franka-interface/termination_handler_factory.h"
+#include "franka-interface/franka_gripper.h"
 #include "franka-interface/franka_robot.h"
 #include "franka-interface/sensor_data_manager.h"
 
@@ -38,10 +39,11 @@ class run_loop {
   run_loop(std::mutex& logger_mutex,
            std::mutex& robot_loop_data_mutex,
            std::string robot_ip,
-           int stop_on_error,
-           int reset_skill_numbering_on_error,
-           int use_new_filestream_on_error,
-           std::string logdir
+           bool stop_on_error,
+           bool reset_skill_numbering_on_error,
+           bool use_new_filestream_on_error,
+           std::string logdir,
+           bool with_gripper
           )  :  logger_(logger_mutex),
                 process_info_requires_update_(false),
                 limit_rate_(false),
@@ -50,11 +52,17 @@ class run_loop {
                 stop_on_error_(stop_on_error),
                 reset_skill_numbering_on_error_(reset_skill_numbering_on_error),
                 use_new_filestream_on_error_(use_new_filestream_on_error),
-                logdir_(logdir)
+                logdir_(logdir),
+                with_gripper_(with_gripper)
   {
 
     robot_state_data_ = new RobotStateData(robot_loop_data_mutex);
     robot_ = new FrankaRobot(robot_ip);
+    if (with_gripper_ == 1) {
+      gripper_ = new FrankaGripper(robot_ip);
+    } else {
+      gripper_ = nullptr;
+    }
 
     if (logdir_.back() == '/') {
       logdir_.pop_back();
@@ -122,10 +130,12 @@ class run_loop {
   static std::atomic<bool> run_loop_ok_;
 
   SensorDataManager* get_sensor_data_manager();
+  bool with_gripper_;
 
  private:
 
   FrankaRobot* robot_;
+  FrankaGripper* gripper_;
   static std::mutex robot_access_mutex_;
 
   std::thread robot_state_read_thread_{};
@@ -144,9 +154,9 @@ class run_loop {
 
   const double cutoff_frequency_; // NOLINT(readability-identifier-naming)
   uint32_t elapsed_time_;
-  int stop_on_error_;
-  int reset_skill_numbering_on_error_;
-  int use_new_filestream_on_error_;
+  bool stop_on_error_;
+  bool reset_skill_numbering_on_error_;
+  bool use_new_filestream_on_error_;
 
   std::string logdir_;
 

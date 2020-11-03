@@ -320,7 +320,11 @@ void run_loop::setup_save_robot_state_thread() {
         // Try to lock data to avoid read write collisions.
         if (robot_access_mutex_.try_lock()) {
           try{
-            franka::GripperState gripper_state = robot_->getGripperState();
+            if (with_gripper_) {
+              franka::GripperState gripper_state = gripper_->getGripperState();
+              robot_state_data_->update_current_gripper_state(gripper_state);
+            }
+            
             franka::RobotState robot_state = robot_->getRobotState();
             
             double duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -328,7 +332,6 @@ void run_loop::setup_save_robot_state_thread() {
                 
             // Make sure update_current_gripper_state is before log_robot_state because log_robot_state will
             // push_back gripper_state info from the current gripper_state
-            robot_state_data_->update_current_gripper_state(gripper_state);
             robot_state_data_->log_robot_state(robot_state.O_T_EE_d, robot_state, robot_->getModel(), duration / 1000.0);
           } catch (const franka::Exception& ex) {
             robot_access_mutex_.unlock();
@@ -478,10 +481,10 @@ void run_loop::run_on_franka() {
           if (!meta_skill->isComposableSkill() && !skill->get_termination_handler()->done_) {
             // Execute skill.
             log_skill_info(skill);
-            meta_skill->execute_skill_on_franka(this, robot_, robot_state_data_);
+            meta_skill->execute_skill_on_franka(this, robot_, gripper_, robot_state_data_);
           } else if (meta_skill->isComposableSkill()) {
             log_skill_info(skill);
-            meta_skill->execute_skill_on_franka(this, robot_, robot_state_data_);
+            meta_skill->execute_skill_on_franka(this, robot_, gripper_, robot_state_data_);
           } else {
             finish_current_skill(skill);
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -530,7 +533,7 @@ void run_loop::run_on_franka() {
           *(shared_memory_handler_->getRunLoopProcessInfoMutex())
         );
 
-      if(reset_skill_numbering_on_error_ == 1) {
+      if (reset_skill_numbering_on_error_) {
         std::cout << "Resetting skill variables. \n";
         run_loop_info->reset_skill_vars();
       } else {
@@ -544,7 +547,7 @@ void run_loop::run_on_franka() {
       shared_memory_handler_->clearAllBuffers();
       robot_state_data_->clearAllBuffers();
 
-      if(use_new_filestream_on_error_ == 1) {
+      if (use_new_filestream_on_error_) {
         // Write new logs to a new log file.
         int logger_integer_suffix = LoggerUtils::integer_suffix_for_new_log_file(logdir_);
         std::string filename = logdir_ + "/" + "robot_state_data_" + std::to_string(logger_integer_suffix) + ".txt";
@@ -564,7 +567,7 @@ void run_loop::run_on_franka() {
       // Giving franka_ros_interface some time to react
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-      if (stop_on_error_ == 1) {
+      if (stop_on_error_) {
         // Stop franka_interface immediately on error. This is important when there are unforeseen errors
         // during continuous data collection, which might corrupt the data and recording such events
         // might be hard. By default, we do not stop on error.

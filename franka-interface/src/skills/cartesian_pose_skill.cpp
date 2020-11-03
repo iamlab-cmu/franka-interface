@@ -142,6 +142,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position_to_stop(std::array<dou
 
 void CartesianPoseSkill::execute_skill_on_franka(run_loop* run_loop,
                                                  FrankaRobot* robot,
+                                                 FrankaGripper* gripper,
                                                  RobotStateData *robot_state_data) {
   double time = 0.0;
   int log_counter = 0;

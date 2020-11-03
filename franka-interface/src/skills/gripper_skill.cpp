@@ -10,6 +10,7 @@
 
 void GripperSkill::execute_skill_on_franka(run_loop* run_loop,
                                            FrankaRobot *robot,
+                                           FrankaGripper *gripper,
                                            RobotStateData *robot_state_data) {
   RunLoopSharedMemoryHandler* shared_memory_handler = run_loop->get_shared_memory_handler();
   RunLoopProcessInfo* run_loop_info = shared_memory_handler->getRunLoopProcessInfo();
@@ -17,7 +18,6 @@ void GripperSkill::execute_skill_on_franka(run_loop* run_loop,
                             *(shared_memory_handler->getRunLoopProcessInfoMutex()),
                             boost::interprocess::defer_lock);
 
-  franka::GripperState gripper_state = robot->getGripperState();
   franka::RobotState robot_state = robot->getRobotState();
 
   try {
@@ -29,31 +29,37 @@ void GripperSkill::execute_skill_on_franka(run_loop* run_loop,
     // Do nothing
   }
 
-  // Check for the maximum grasping width.
-  
-  GripperTrajectoryGenerator *gripper_traj_generator = static_cast<
-      GripperTrajectoryGenerator *>(traj_generator_);
-  double desired_gripper_width = gripper_traj_generator->getWidth();
-  if (gripper_state.max_width < desired_gripper_width) {
-    std::cout << "Object is too large for the current fingers on the gripper." << std::endl;
-    return_status_ = false;
-    return;
-  }
+  if (run_loop->with_gripper_) {
 
-  double desired_gripper_speed = gripper_traj_generator->getSpeed();
-  if (gripper_traj_generator->isGraspSkill()) {
-    // TOOD(Mohit): Maybe stop the gripper before trying to grip again?
-    franka::GripperState gripper_state = robot->getGripperState();
-    if (!gripper_state.is_grasped) {
-      return_status_ = robot->gripper_.grasp(desired_gripper_width, 
-                      desired_gripper_speed, gripper_traj_generator->getForce(),
-                      0.1, 0.1);
+    franka::GripperState gripper_state = gripper->getGripperState();
+
+    // Check for the maximum grasping width.
+    
+    GripperTrajectoryGenerator *gripper_traj_generator = static_cast<
+        GripperTrajectoryGenerator *>(traj_generator_);
+    double desired_gripper_width = gripper_traj_generator->getWidth();
+    if (gripper_state.max_width < desired_gripper_width) {
+      std::cout << "Object is too large for the current fingers on the gripper." << std::endl;
+      return_status_ = false;
+      return;
     }
-  } else {
-    return_status_ = robot->gripper_.move(desired_gripper_width, desired_gripper_speed);
-  }
 
-  gripper_state = robot->getGripperState();
+    double desired_gripper_speed = gripper_traj_generator->getSpeed();
+    if (gripper_traj_generator->isGraspSkill()) {
+      // TOOD(Mohit): Maybe stop the gripper before trying to grip again?
+      franka::GripperState gripper_state = gripper->getGripperState();
+      if (!gripper_state.is_grasped) {
+        return_status_ = gripper->gripper_.grasp(desired_gripper_width, 
+                        desired_gripper_speed, gripper_traj_generator->getForce(),
+                        0.1, 0.1);
+      }
+    } else {
+      return_status_ = gripper->gripper_.move(desired_gripper_width, desired_gripper_speed);
+    }
+
+    gripper_state = gripper->getGripperState();
+  }
+  
   robot_state = robot->getRobotState();
   try {
     if (lock.try_lock()) {
