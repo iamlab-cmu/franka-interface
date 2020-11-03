@@ -22,6 +22,7 @@ class PoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   bool orientation_only_ = false;
   bool position_only_ = false;
+  bool ee_frame_ = false;
 
   // Variables initialized from shared memory should be doubles.
   double alpha_=5.0;
@@ -34,7 +35,7 @@ class PoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   std::array<double, 40> basis_mean_{};
   std::array<double, 40> basis_std_{};
   std::array<std::array<std::array<double, 40>, 10>, 6> weights_{};
-  std::array<double, 10> initial_sensor_values_{{1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}};
+  std::array<std::array<double, 10>, 6> initial_sensor_values_{};
   std::array<double, 6> y0_={};
 
   void getInitialMeanAndStd();

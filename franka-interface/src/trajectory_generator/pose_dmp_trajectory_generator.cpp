@@ -18,6 +18,7 @@ void PoseDmpTrajectoryGenerator::parse_parameters() {
   if(parsed_params){
     orientation_only_ = pose_dmp_trajectory_params_.orientation_only();
     position_only_ = pose_dmp_trajectory_params_.position_only();
+    ee_frame_ = pose_dmp_trajectory_params_.ee_frame();
     run_time_ = pose_dmp_trajectory_params_.run_time();
     tau_ = pose_dmp_trajectory_params_.tau();
     alpha_ = pose_dmp_trajectory_params_.alpha();
@@ -43,8 +44,10 @@ void PoseDmpTrajectoryGenerator::parse_parameters() {
       }
     }
 
-    for (int i = 0; i < num_sensor_values_; i++) {
-      initial_sensor_values_[i] = pose_dmp_trajectory_params_.initial_sensor_values(i);
+    for (int i = 0; i < num_dims_; i++) {
+      for (int j = 0; j < num_sensor_values_; j++) {
+        initial_sensor_values_[i][j] = pose_dmp_trajectory_params_.initial_sensor_values(i*num_sensor_values_ + j);
+      }
     }
   } else {
     std::cout << "Parsing PoseDMPTrajectoryGenerator params failed. Data size = " << data_size << std::endl;
@@ -107,7 +110,7 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
       for (k=0; k < num_basis_; k++) {
         sensor_feature += (factor[k] * weights_[i][j][k]);
       }
-      net_sensor_force += (initial_sensor_values_[j] * sensor_feature);
+      net_sensor_force += (initial_sensor_values_[i][j] * sensor_feature);
     }
     ddy += (alpha_ * beta_ * net_sensor_force);
     ddy *= (tau_ * tau_);
@@ -118,10 +121,30 @@ void PoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_s
   // Update canonical system.
   x_ -= (x_ * tau_) * dt_;
 
-  // Finally set the position we want.
-  desired_position_(0) = y_[0];
-  desired_position_(1) = y_[1];
-  desired_position_(2) = y_[2];
+  if(ee_frame_){
+    Eigen::Matrix3d R0 = initial_orientation_.toRotationMatrix();
+    Eigen::Matrix<double,3,1>pos;
+    Eigen::Matrix<double,3,1>new_pos; 
+    Eigen::Matrix3d R_dmp_to_EE;     
+    // R_dmp_to_EE << 1,0,0,0,-1,0,0,0,-1;
+    R_dmp_to_EE << 0,1,0,1,0,0,0,0,-1;
+
+    pos[0]=y_[0];
+    pos[1]=y_[1];
+    pos[2]=y_[2];  
+
+    new_pos=R0 * (R_dmp_to_EE * (pos-initial_position_)) + initial_position_;
+
+    desired_position_(0) = new_pos[0];
+    desired_position_(1) = new_pos[1];
+    desired_position_(2) = new_pos[2];
+  }
+  else {
+    // Finally set the position we want.
+    desired_position_(0) = y_[0];
+    desired_position_(1) = y_[1];
+    desired_position_(2) = y_[2];
+  }
 
   Eigen::Matrix3d n;
   n = Eigen::AngleAxisd(y_[3], Eigen::Vector3d::UnitX())
