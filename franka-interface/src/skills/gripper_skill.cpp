@@ -29,8 +29,7 @@ void GripperSkill::execute_skill_on_franka(run_loop* run_loop,
     // Do nothing
   }
 
-  if(gripper != 0)
-  {
+  if (run_loop->with_gripper_) {
 
     franka::GripperState gripper_state = gripper->getGripperState();
 

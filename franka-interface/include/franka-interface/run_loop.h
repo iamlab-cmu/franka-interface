@@ -39,11 +39,11 @@ class run_loop {
   run_loop(std::mutex& logger_mutex,
            std::mutex& robot_loop_data_mutex,
            std::string robot_ip,
-           int stop_on_error,
-           int reset_skill_numbering_on_error,
-           int use_new_filestream_on_error,
+           bool stop_on_error,
+           bool reset_skill_numbering_on_error,
+           bool use_new_filestream_on_error,
            std::string logdir,
-           int with_gripper
+           bool with_gripper
           )  :  logger_(logger_mutex),
                 process_info_requires_update_(false),
                 limit_rate_(false),
@@ -130,6 +130,7 @@ class run_loop {
   static std::atomic<bool> run_loop_ok_;
 
   SensorDataManager* get_sensor_data_manager();
+  bool with_gripper_;
 
  private:
 
@@ -153,10 +154,9 @@ class run_loop {
 
   const double cutoff_frequency_; // NOLINT(readability-identifier-naming)
   uint32_t elapsed_time_;
-  int stop_on_error_;
-  int reset_skill_numbering_on_error_;
-  int use_new_filestream_on_error_;
-  int with_gripper_;
+  bool stop_on_error_;
+  bool reset_skill_numbering_on_error_;
+  bool use_new_filestream_on_error_;
 
   std::string logdir_;
 
