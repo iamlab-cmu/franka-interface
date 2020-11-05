@@ -58,7 +58,7 @@ class run_loop {
                 with_gripper_(with_gripper)
   {
 
-    robot_state_data_ = new RobotStateData(robot_loop_data_mutex);
+    robot_state_data_ = new RobotStateData(robot_loop_data_mutex, log_);
     robot_ = new FrankaRobot(robot_ip);
     if (with_gripper_ == 1) {
       gripper_ = new FrankaGripper(robot_ip);

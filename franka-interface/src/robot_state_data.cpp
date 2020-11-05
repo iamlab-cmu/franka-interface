@@ -25,22 +25,26 @@ void printListOfVectors(std::vector<std::array<double, N>> data, int print_last)
 }
 
 void RobotStateData::setFileStreamLogger(FileStreamLogger *logger) {
-  file_logger_ = logger;
-  use_buffer_0 = true;
+  if (log_) {
+    file_logger_ = logger;
+    use_buffer_0 = true;
 
-  file_logger_->initializeFile();
+    file_logger_->initializeFile();
+  }
 }
 
 void RobotStateData::updateFileStreamLogger(std::string new_filename) {
-  file_logger_->updateFileName(new_filename);
-  file_logger_->initializeFile();
+  if (log_) {
+    file_logger_->updateFileName(new_filename);
+    file_logger_->initializeFile();
+  }
 }
 
 void RobotStateData::writeBufferData_0() {
     std::lock_guard<std::mutex> lock(buffer_0_mutex_);
     // std::cout << "Will save buffer 0\n";
 
-    if (file_logger_ != nullptr) {
+    if (log_ && file_logger_ != nullptr) {
         if (log_skill_info_0_.size() > 0) {
           // below line doesn't actually return anything right now
           bool result = file_logger_->writeStringData(log_skill_info_0_);
@@ -175,7 +179,7 @@ void RobotStateData::writeBufferData_1() {
     std::lock_guard<std::mutex> lock(buffer_1_mutex_);
     // std::cout << "Will save buffer 1\n";
 
-    if (file_logger_ != nullptr) {
+    if (log_ && file_logger_ != nullptr) {
         if (log_skill_info_1_.size() > 0) {
           // below line doesn't actually return anythin right now
           bool result = file_logger_->writeStringData(log_skill_info_1_);
