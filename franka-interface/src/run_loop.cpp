@@ -457,7 +457,9 @@ void run_loop::run_on_franka() {
 
   setup_robot_default_behavior();
   setup_watchdog_thread();
-  setup_data_loggers();
+  if (log_) {
+    setup_data_loggers();
+  }
   setup_current_robot_state_io_thread();
   setup_save_robot_state_thread();
 
