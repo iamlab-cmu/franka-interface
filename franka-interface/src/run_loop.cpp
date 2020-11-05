@@ -409,11 +409,14 @@ void run_loop::didFinishSkillInMetaSkill(BaseSkill* skill) {
 
 void run_loop::setup_data_loggers() {
   // LoggerUtils::all_logger_files();
-  int logger_integer_suffix = LoggerUtils::integer_suffix_for_new_log_file(logdir_);
-  std::string filename = logdir_ + "/" + "robot_state_data_" + std::to_string(logger_integer_suffix) + ".txt";
-  std::cout << "Will save data to: " << filename << std::endl;
-  FileStreamLogger *robot_logger = new FileStreamLogger(filename);
-  robot_state_data_->setFileStreamLogger(robot_logger);
+  
+  if (log_) {
+    int logger_integer_suffix = LoggerUtils::integer_suffix_for_new_log_file(logdir_);
+    std::string filename = logdir_ + "/" + "robot_state_data_" + std::to_string(logger_integer_suffix) + ".txt";
+    std::cout << "Will save data to: " << filename << std::endl;
+    FileStreamLogger *robot_logger = new FileStreamLogger(filename);
+    robot_state_data_->setFileStreamLogger(robot_logger);
+  }
   robot_state_data_->startFileLoggerThread();
 }
 
@@ -457,9 +460,7 @@ void run_loop::run_on_franka() {
 
   setup_robot_default_behavior();
   setup_watchdog_thread();
-  if (log_) {
-    setup_data_loggers();
-  }
+  setup_data_loggers();
   setup_current_robot_state_io_thread();
   setup_save_robot_state_thread();
 
