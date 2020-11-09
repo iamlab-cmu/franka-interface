@@ -409,11 +409,14 @@ void run_loop::didFinishSkillInMetaSkill(BaseSkill* skill) {
 
 void run_loop::setup_data_loggers() {
   // LoggerUtils::all_logger_files();
-  int logger_integer_suffix = LoggerUtils::integer_suffix_for_new_log_file(logdir_);
-  std::string filename = logdir_ + "/" + "robot_state_data_" + std::to_string(logger_integer_suffix) + ".txt";
-  std::cout << "Will save data to: " << filename << std::endl;
-  FileStreamLogger *robot_logger = new FileStreamLogger(filename);
-  robot_state_data_->setFileStreamLogger(robot_logger);
+  
+  if (log_) {
+    int logger_integer_suffix = LoggerUtils::integer_suffix_for_new_log_file(logdir_);
+    std::string filename = logdir_ + "/" + "robot_state_data_" + std::to_string(logger_integer_suffix) + ".txt";
+    std::cout << "Will save data to: " << filename << std::endl;
+    FileStreamLogger *robot_logger = new FileStreamLogger(filename);
+    robot_state_data_->setFileStreamLogger(robot_logger);
+  }
   robot_state_data_->startFileLoggerThread();
 }
 
@@ -521,7 +524,7 @@ void run_loop::run_on_franka() {
       set_franka_interface_status(false, error_description);
       std::cerr << error_description << std::endl;
 
-      // Uncommend below to print the last 50 timesteps for debugging.
+      // Uncomment below to print the last 50 timesteps for debugging.
       //robot_state_data_->printData(50);
 
       // Log data
@@ -547,7 +550,7 @@ void run_loop::run_on_franka() {
       shared_memory_handler_->clearAllBuffers();
       robot_state_data_->clearAllBuffers();
 
-      if (use_new_filestream_on_error_) {
+      if (log_ && use_new_filestream_on_error_) {
         // Write new logs to a new log file.
         int logger_integer_suffix = LoggerUtils::integer_suffix_for_new_log_file(logdir_);
         std::string filename = logdir_ + "/" + "robot_state_data_" + std::to_string(logger_integer_suffix) + ".txt";

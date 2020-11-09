@@ -18,7 +18,7 @@ class RobotStateData {
   std::mutex buffer_0_mutex_;
   std::mutex buffer_1_mutex_;
 
-  RobotStateData(std::mutex &m): mutex_(m) {};
+  RobotStateData(std::mutex &m, bool log): mutex_(m), log_(log) {};
 
   std::mutex& mutex_;
   bool has_data_=false;
@@ -205,6 +205,7 @@ class RobotStateData {
 
  private:
   FileStreamLogger *file_logger_ = nullptr;
+  bool log_;
 
   void writeBufferData_0();
 
