@@ -29,6 +29,7 @@ class LqrCartesianFeedbackController : public FeedbackController {
   Eigen::MatrixXd stiffness_;
   Eigen::MatrixXd damping_;
   Eigen::MatrixXd jacobian_prev_;
+  double cost_= 0.0;
   
   const double  FI_11 = 0.54615;
   const double  FI_12 = 0.87224;

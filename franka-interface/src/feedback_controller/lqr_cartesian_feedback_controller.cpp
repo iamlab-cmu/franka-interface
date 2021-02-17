@@ -51,6 +51,7 @@ void LqrCartesianFeedbackController::initialize_controller(FrankaRobot *robot) {
   jacobian_prev_.setZero();
   f_task_ = Eigen::VectorXd(6);
   f_task_.setZero();
+  cost_ = 0.0;
 }
 
 void LqrCartesianFeedbackController::parse_sensor_data(const franka::RobotState &robot_state) {
@@ -82,6 +83,7 @@ void LqrCartesianFeedbackController::get_next_step(const franka::RobotState &rob
   Eigen::Affine3d transform(Eigen::Matrix4d::Map(robot_state.O_T_EE.data()));
   Eigen::Vector3d position(transform.translation());
   Eigen::Quaterniond orientation(transform.linear());
+  Eigen::Matrix<double, 3,6> K_emos = Eigen::Matrix<double, 3,6>::Zero(6, 3);
 
   LqrPoseTrajectoryGenerator* pose_trajectory_generator = dynamic_cast<LqrPoseTrajectoryGenerator*>(traj_generator);
 
@@ -99,9 +101,17 @@ void LqrCartesianFeedbackController::get_next_step(const franka::RobotState &rob
   Eigen::Matrix<double, 6, 1> xf_;
   if (pose_trajectory_generator->rho(int(pose_trajectory_generator->lqrt_/dt_)) == 0){
     xf_ = 1*pose_trajectory_generator->xf1;
+    cost_ += position[0]*position[0]*1000 + position[1]*position[1]*1000 + position[2]*position[2]*1000 + position[3]*position[3]*1000 + position[4]*position[4]*1000 + position[5]*position[5]*1000;
+    cost_ += f_task_[0]*f_task_[0]*1 + f_task_[1]*f_task_[1]*1 + f_task_[2]*f_task_[2]*1 + f_task_[3]*f_task_[3]*1 + f_task_[4]*f_task_[4]*1 + f_task_[5]*f_task_[5]*1;
+    std::cout << "Cost: " << cost_ << "\n";
+    K_emos << -43.989, 0, 0, -32.511, 0, 0, 0, -31.1114, 0, 0, -32.1114, 0, 0, 0, -43.989, 0, 0, -32.511;
   }
   else{
     xf_ = 1*pose_trajectory_generator->xf2;
+    cost_ += position[0]*position[0]*2000 + position[1]*position[1]*2000 + position[2]*position[2]*2000 + position[3]*position[3]*2000 + position[4]*position[4]*2000 + position[5]*position[5]*2000;
+    cost_ += f_task_[0]*f_task_[0]*1 + f_task_[1]*f_task_[1]*1 + f_task_[2]*f_task_[2]*1 + f_task_[3]*f_task_[3]*1 + f_task_[4]*f_task_[4]*1 + f_task_[5]*f_task_[5]*1;
+    std::cout << "Cost: " << cost_ << "\n";
+    K_emos << -43.711, 0, 0, -44.721, 0, 0, 0,  -43.711, 0, 0, -44.721, 0, 0, 0,  -43.711, 0, 0, -44.721;
   }
   Eigen::Matrix<double, 6, 1> pos_error = Eigen::Matrix<double, 6, 1>::Zero(6, 1);
   pos_error.head(3) << position - xf_.head(3);
@@ -143,15 +153,15 @@ void LqrCartesianFeedbackController::get_next_step(const franka::RobotState &rob
   // // tau_task << jacobian.transpose()*( jacobian*mass.inverse()*jacobian.transpose() ).inverse()*F;
   // tau_d << tau_task_pos + tau_task_ori + coriolis;
 
-  // Eigen::Matrix<double, 7, 1> tau_f = Eigen::Matrix<double, 7, 1>::Zero();
+  Eigen::Matrix<double, 7, 1> tau_f = Eigen::Matrix<double, 7, 1>::Zero();
 
-	// tau_f(0) =  FI_11/(1+exp(-FI_21*(dq(0)+FI_31))) - TAU_F_CONST_1;
-	// tau_f(1) =  FI_12/(1+exp(-FI_22*(dq(1)+FI_32))) - TAU_F_CONST_2;
-	// tau_f(2) =  FI_13/(1+exp(-FI_23*(dq(2)+FI_33))) - TAU_F_CONST_3;
-	// tau_f(3) =  FI_14/(1+exp(-FI_24*(dq(3)+FI_34))) - TAU_F_CONST_4;
-	// tau_f(4) =  FI_15/(1+exp(-FI_25*(dq(4)+FI_35))) - TAU_F_CONST_5;
-	// tau_f(5) =  FI_16/(1+exp(-FI_26*(dq(5)+FI_36))) - TAU_F_CONST_6;
-	// tau_f(6) =  FI_17/(1+exp(-FI_27*(dq(6)+FI_37))) - TAU_F_CONST_7;
+	tau_f(0) =  FI_11/(1+exp(-FI_21*(dq(0)+FI_31))) - TAU_F_CONST_1;
+	tau_f(1) =  FI_12/(1+exp(-FI_22*(dq(1)+FI_32))) - TAU_F_CONST_2;
+	tau_f(2) =  FI_13/(1+exp(-FI_23*(dq(2)+FI_33))) - TAU_F_CONST_3;
+	tau_f(3) =  FI_14/(1+exp(-FI_24*(dq(3)+FI_34))) - TAU_F_CONST_4;
+	tau_f(4) =  FI_15/(1+exp(-FI_25*(dq(4)+FI_35))) - TAU_F_CONST_5;
+	tau_f(5) =  FI_16/(1+exp(-FI_26*(dq(5)+FI_36))) - TAU_F_CONST_6;
+	tau_f(6) =  FI_17/(1+exp(-FI_27*(dq(6)+FI_37))) - TAU_F_CONST_7;
 
   // Cartesian control
   Eigen::VectorXd tau_task(7), tau_d(7), error(6), tau_task_hybrid(7);
@@ -167,7 +177,8 @@ void LqrCartesianFeedbackController::get_next_step(const franka::RobotState &rob
 
   f_task_.setZero();
   // f_task_.head(3) << pose_trajectory_generator->controlt_;
-  f_task_.head(3) << pose_trajectory_generator->K_[int(pose_trajectory_generator->lqrt_/dt_)]*pos_error; //LQR
+  // f_task_.head(3) << pose_trajectory_generator->K_[int(pose_trajectory_generator->lqrt_/dt_)]*pos_error; //LQR
+  f_task_.head(3) << K_emos*pos_error; //eMOSAIC
   tau_task << jacobian.transpose() * delta * f_task_ - jacobian.transpose()*delta*Jdot*dq;
 
   // tau_task_hybrid.head(3) << tau_task.head(3);
