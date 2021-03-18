@@ -70,6 +70,11 @@ All directories below are given relative to `/franka-interface`.
    ```bash
    bash ./bash_scripts/make_catkin.sh
    ```
+
+6. To allow asynchronous gripper commands, we use the franka\_ros package, so install libfranka and franka\_ros using the following command (Change melodic to kinetic if you are on Ubuntu 16.04:
+   ```bash
+   sudo apt install ros-melodic-libfranka ros-melodic-franka-ros
+   ```
    
 ## Issues
 
