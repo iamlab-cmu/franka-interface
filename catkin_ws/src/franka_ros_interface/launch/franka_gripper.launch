@@ -8,6 +8,7 @@
 
   <node name="franka_gripper_$(arg robot_num)" pkg="franka_gripper" type="franka_gripper_node" output="screen">
     <param name="robot_ip" value="$(arg robot_ip)"/>
+    <param name="publish_rate" value="100"/>
     <param name="stop_at_shutdown" value="$(arg stop_at_shutdown)" />
     <rosparam command="load" file="$(find franka_gripper)/config/franka_gripper_node.yaml" />
     <rosparam param="joint_names" subst_value="true">$(arg joint_names)</rosparam>
