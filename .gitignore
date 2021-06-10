@@ -97,3 +97,5 @@ outs/
 *.ipynb_checkpoints
 
 libfranka/
+
+docs_src/_build
