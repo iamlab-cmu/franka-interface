@@ -26,7 +26,7 @@
     <param name="franka_interface_status_topic_name" value="/franka_interface_status_publisher_node_$(arg robot_num)/franka_interface_status" />
   </node>
 
-  <node pkg="franka_ros_interface" type="sensor_data_subscriber_node" name="sensor_data_subscriber_node" output="screen">
+  <node pkg="franka_ros_interface" type="sensor_data_subscriber_node" name="sensor_data_subscriber_node_$(arg robot_num)" output="screen">
   </node>
 
 
