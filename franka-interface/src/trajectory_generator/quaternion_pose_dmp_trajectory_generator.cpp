@@ -44,7 +44,7 @@ void QuaternionPoseDmpTrajectoryGenerator::parse_parameters() {
         }
       }
     }
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       for (int j = 0; j < num_sensor_values_quat_; j++) {
         for (int k = 0; k < num_basis_quat_; k++) {
           int index = (i * num_sensor_values_quat_ * num_basis_quat_) + (j * num_basis_quat_) + k;
@@ -59,7 +59,7 @@ void QuaternionPoseDmpTrajectoryGenerator::parse_parameters() {
       }
     }
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 3; i++) {
       for (int j = 0; j < num_sensor_values_quat_; j++) {
         quat_initial_sensor_values_[i][j] = quat_pose_dmp_trajectory_params_.quat_initial_sensor_values(i*num_sensor_values_quat_ + j);
       }

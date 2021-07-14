@@ -50,8 +50,8 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   std::array<double, 40> quat_basis_mean_{};
   std::array<double, 40> quat_basis_std_{};
-  std::array<std::array<std::array<double, 40>, 10>, 4> quat_weights_{};
-  std::array<std::array<double, 10>, 4> quat_initial_sensor_values_{};
+  std::array<std::array<std::array<double, 40>, 20>, 3> quat_weights_{};
+  std::array<std::array<double, 20>, 3> quat_initial_sensor_values_{};
   Eigen::Quaterniond q0_;
 
   void getInitialMeanAndStd();
