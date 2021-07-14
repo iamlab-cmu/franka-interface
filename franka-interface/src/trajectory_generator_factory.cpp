@@ -24,6 +24,7 @@
 #include "franka-interface/trajectory_generator/pass_through_joint_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/pass_through_pose_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/pose_dmp_trajectory_generator.h"
+#include "franka-interface/trajectory_generator/quaternion_pose_dmp_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/relative_linear_pose_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/relative_min_jerk_pose_trajectory_generator.h"
 #include "franka-interface/trajectory_generator/sine_joint_trajectory_generator.h"
@@ -98,6 +99,10 @@ TrajectoryGenerator* TrajectoryGeneratorFactory::getTrajectoryGeneratorForSkill(
     case TrajectoryGeneratorType::PoseDmpTrajectoryGenerator:
       trajectory_generator_type_name = "PoseDmpTrajectoryGenerator";
       trajectory_generator = new PoseDmpTrajectoryGenerator(buffer, sensor_data_manager);
+      break;
+    case TrajectoryGeneratorType::QuaternionPoseDmpTrajectoryGenerator:
+      trajectory_generator_type_name = "QuaternionPoseDmpTrajectoryGenerator";
+      trajectory_generator = new QuaternionPoseDmpTrajectoryGenerator(buffer, sensor_data_manager);
       break;
     case TrajectoryGeneratorType::RelativeLinearPoseTrajectoryGenerator:
       trajectory_generator_type_name = "RelativeLinearPoseTrajectoryGenerator";
