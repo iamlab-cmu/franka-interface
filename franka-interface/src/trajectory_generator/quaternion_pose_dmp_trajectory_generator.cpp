@@ -168,15 +168,15 @@ void QuaternionPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotStat
     * Eigen::AngleAxisd(y_[4], Eigen::Vector3d::UnitY())
     * Eigen::AngleAxisd(y_[5], Eigen::Vector3d::UnitZ());
 
-  desired_pose_[0] = n(0,0);
-  desired_pose_[1] = n(1,0);
-  desired_pose_[2] = n(2,0);
-  desired_pose_[4] = n(0,1);
-  desired_pose_[5] = n(1,1);
-  desired_pose_[6] = n(2,1);
-  desired_pose_[8] = n(0,2);
-  desired_pose_[9] = n(1,2);
-  desired_pose_[10] = n(2,2);
+  desired_pose_[0] = initial_pose_[0];
+  desired_pose_[1] = initial_pose_[1];
+  desired_pose_[2] = initial_pose_[2];
+  desired_pose_[4] = initial_pose_[4];
+  desired_pose_[5] = initial_pose_[5];
+  desired_pose_[6] = initial_pose_[6];
+  desired_pose_[8] = initial_pose_[8];
+  desired_pose_[9] = initial_pose_[9];
+  desired_pose_[10] = initial_pose_[10];
   // The following is done in calculate_desired_position()
   // desired_pose_[12] = desired_position_(0);
   // desired_pose_[13] = desired_position_(1);
