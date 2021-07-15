@@ -27,6 +27,13 @@ void QuaternionPoseDmpTrajectoryGenerator::parse_parameters() {
     num_sensor_values_pos_ = quat_pose_dmp_trajectory_params_.num_sensor_values_pos();
     num_sensor_values_quat_ = quat_pose_dmp_trajectory_params_.num_sensor_values_quat();
 
+    start_time_quat_ = 0.0;
+    goal_time_quat_ = quat_pose_dmp_trajectory_params_.goal_time_quat();
+    goal_quat_ = Eigen::Quaterniond(quat_pose_dmp_trajectory_params_.goal_quat_w(),
+                                    quat_pose_dmp_trajectory_params_.goal_quat_x(),
+                                    quat_pose_dmp_trajectory_params_.goal_quat_y(),
+                                    quat_pose_dmp_trajectory_params_.goal_quat_z());
+
     for (int i = 0; i < num_basis_pos_; i++) {
       pos_basis_mean_[i] = quat_pose_dmp_trajectory_params_.pos_basis_mean(i);
       pos_basis_std_[i] = quat_pose_dmp_trajectory_params_.pos_basis_std(i);
@@ -64,6 +71,7 @@ void QuaternionPoseDmpTrajectoryGenerator::parse_parameters() {
         quat_initial_sensor_values_[i][j] = quat_pose_dmp_trajectory_params_.quat_initial_sensor_values(i*num_sensor_values_quat_ + j);
       }
     }
+
   } else {
     std::cout << "Parsing PoseDMPTrajectoryGenerator params failed. Data size = " << data_size << std::endl;
   }
@@ -84,6 +92,9 @@ void QuaternionPoseDmpTrajectoryGenerator::initialize_trajectory(const franka::R
   q0_ = Eigen::Quaterniond(m);
   q_.clear();
   q_.push_back(q);
+  std::cout <<  "Initial position: " << y0_[0] << ", " << y0_[1] << ", " << y0_[2] << std::endl;
+  std::cout << "Initial orientation: " << q0_.w() << ", " << q0_.x() << ", " << q0_.y() << ", " << q0_.z() << std::endl;
+  std::cout << "Goal orientation: " << goal_quat_.w() << ", " << goal_quat_.x() << ", " << goal_quat_.y() << ", " << goal_quat_.z() << std::endl;
 
   for(size_t i = 0; i < dy_.size(); i++) {
     dy_[i] = robot_state.O_dP_EE_c[i];
@@ -91,7 +102,87 @@ void QuaternionPoseDmpTrajectoryGenerator::initialize_trajectory(const franka::R
 
   x_pos_ = 1.0;
   x_quat_ = 1.0;
+
+  start_time_quat_ = 0.0;
+  curr_time_quat_ = 0.0;
+  // Set last step orientation and orientation velocity, acceleration
+  last_q_quat_ = initial_orientation_;
+  last_qd_.setZero();
+  last_qdd_.setZero();
 }
+
+double QuaternionPoseDmpTrajectoryGenerator::quaternion_phase(double curr_t, double alpha, double goal_t, double start_t, double int_dt) {
+  double exec_time = goal_t - start_t;
+  double b = std::max(1 - alpha * int_dt / exec_time, 1e-8);
+  return pow(b, (curr_t - start_t) / int_dt);
+}
+
+Eigen::Array3d QuaternionPoseDmpTrajectoryGenerator::quaternion_log(const Eigen::Quaterniond& q) {
+  const double len = q.vec().norm();
+  if (len == 0.0) {
+    return Eigen::Array3d::Zero();
+  }
+  return q.vec().array() / len * acos(q.w());
+}
+
+Eigen::Quaterniond QuaternionPoseDmpTrajectoryGenerator::vecExp(const Eigen::Vector3d& input) {
+  const double len = input.norm();
+  if (len != 0) {
+    const Eigen::Array3d  vec = sin(len) * input / len;
+    return Eigen::Quaterniond(cos(len), vec.x(), vec.y(), vec.z());
+  } else {
+    return Eigen::Quaterniond::Identity();
+  }
+}
+
+  void QuaternionPoseDmpTrajectoryGenerator::get_next_quaternion_step(const franka::RobotState &robot_state) {
+    static int quat_i, quat_j, quat_k;
+    // Canonical variable for the quaternion DMPs
+    static double x_quat;
+    static double quat_den = 0;
+    static double quat_net_sensor_force;
+    static double quat_sensor_feature;
+    static std::array<double, 40> quat_factor{};
+
+    // Calculate the canonical system explicitly. In the position DMPs we have an implicit phase.
+    // TODO(Mohit): Should probably convert it
+    x_quat = quaternion_phase(curr_time_quat_, alpha_quat_, goal_time_quat_, start_time_quat_, 0.001);
+
+    // Calculate the RBF activations
+    // First calculate the denominator
+    quat_den = 0.;
+    for (int k = 0; k < num_basis_quat_; k++) {
+      quat_factor[k] = exp(-quat_basis_std_[k] * pow((x_quat - quat_basis_mean_[k]), 2));
+      quat_den += quat_factor[k];
+    }
+
+    for (int k = 1; k < num_basis_quat_; k++) {
+      quat_factor[k] = (quat_factor[k] * x_quat) / (quat_den + 1e-8);
+    }
+
+    double exec_time = goal_time_quat_ - start_time_quat_;
+    double exec_time_squared = exec_time * exec_time;
+
+    Eigen::Array3d f;
+    f.setZero();
+    for (int i = 0; i < 3; i++) {
+      quat_net_sensor_force = 0;
+      for (int j = 0; j < num_sensor_values_quat_; j++) {
+        quat_sensor_feature = 0;
+        for (int k = 0; k < num_basis_quat_; k++) {
+          quat_sensor_feature += (quat_factor[k] * quat_weights_[i][j][k]);
+        }
+        // Assume no sensor value for now.
+        // quat_net_sensor_force += (quat_initial_sensor_values_[i][j] * quat_sensor_feature);
+        quat_net_sensor_force += (1.0 * quat_sensor_feature);
+      }
+      f[i] = quat_net_sensor_force;
+    }
+    next_qdd_ = (alpha_quat_ * (beta_quat_ * 2.0 * quaternion_log(goal_quat_ * last_q_quat_.conjugate()) - exec_time * last_qd_) + f) / exec_time_squared;
+    next_q_quat_ = vecExp(dt_ / 2.0 * last_qd_) * last_q_quat_;
+    next_qd_ = last_qd_ + dt_ * next_qdd_;
+  }
+
 
 void QuaternionPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotState &robot_state) {
   static int i, j, k;
@@ -182,10 +273,21 @@ void QuaternionPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotStat
   // desired_pose_[13] = desired_position_(1);
   // desired_pose_[14] = desired_position_(2);
 
-  desired_orientation_ = Eigen::Quaterniond(n);
+  // desired_orientation_ = Eigen::Quaterniond(n);
+  // desired_orientation_ = initial_orientation_;
+  get_next_quaternion_step(robot_state);
+  desired_orientation_ = next_q_quat_;
+  last_q_quat_ = next_q_quat_;
+  last_qd_ = next_qd_;
+  curr_time_quat_ += dt_;
 
   calculate_desired_position();
 
+  std::cout << "Desired position: " << desired_position_[0] << ", " << desired_position_[1] << ", " << desired_position_[2] << std::endl;
+  std::cout << "Desired orientation: " << desired_orientation_.w() << ", " << desired_orientation_.x() << ", " << desired_orientation_.y() << ", " << desired_orientation_.z() << std::endl;
+  // std::cout << "Desired pose: " << desired_pose_[0] << ", " << desired_pose_[4] << ", " << desired_pose_[8] << std::endl;
+  // std::cout << "Desired pose: " << desired_pose_[1] << ", " << desired_pose_[5] << ", " << desired_pose_[9] << std::endl;
+  // std::cout << "Desired pose: " << desired_pose_[2] << ", " << desired_pose_[6] << ", " << desired_pose_[10] << std::endl;
 }
 
 void QuaternionPoseDmpTrajectoryGenerator::getInitialMeanAndStd() { }

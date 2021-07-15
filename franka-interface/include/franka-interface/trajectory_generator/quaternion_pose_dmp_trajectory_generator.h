@@ -16,6 +16,8 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   void get_next_step(const franka::RobotState &robot_state) override;
 
+  void get_next_quaternion_step(const franka::RobotState &robot_state);
+
   std::array<double, 3> y_={};
   std::array<double, 3> dy_={};
   // std::array<double, 4> q_={};
@@ -23,6 +25,10 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   std::array<double, 3> dq_={};
 
  private:
+  double quaternion_phase(double curr_t, double alpha, double goal_t, double start_t, double int_dt);
+  Eigen::Array3d quaternion_log(const Eigen::Quaterniond& q);
+  Eigen::Quaterniond vecExp(const Eigen::Vector3d& input);
+
   QuaternionPoseDMPTrajectoryGeneratorMessage quat_pose_dmp_trajectory_params_;
 
   bool ee_frame_ = false;
@@ -36,6 +42,10 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   double beta_quat_=5.0/4.0;
   double tau_quat_=0.0;
   double x_quat_=1.0;
+  double curr_time_quat_=0.0;
+  double start_time_quat_=0.0;
+  double goal_time_quat_=5.0;
+  Eigen::Quaterniond goal_quat_;
 
   int num_basis_pos_=40;
   int num_basis_quat_=40;
@@ -53,6 +63,13 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   std::array<std::array<std::array<double, 40>, 20>, 3> quat_weights_{};
   std::array<std::array<double, 20>, 3> quat_initial_sensor_values_{};
   Eigen::Quaterniond q0_;
+
+  Eigen::Quaterniond last_q_quat_;
+  Eigen::Array3d last_qd_;
+  Eigen::Array3d last_qdd_;
+  Eigen::Quaterniond next_q_quat_;
+  Eigen::Array3d next_qd_;
+  Eigen::Array3d next_qdd_;
 
   void getInitialMeanAndStd();
 };
