@@ -40,6 +40,9 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
   double x_pos_=1.0;
   double alpha_quat_=5.0;
   double beta_quat_=5.0/4.0;
+  // This variable is used for calcualating the quaternion phase (canonical variable).
+  // TODO(Mohit): Update this to be similar to the position trajectory.
+  double alpha_quat_phase_=1.0;
   double tau_quat_=0.0;
   double x_quat_=1.0;
   double curr_time_quat_=0.0;

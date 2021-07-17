@@ -146,7 +146,10 @@ Eigen::Quaterniond QuaternionPoseDmpTrajectoryGenerator::vecExp(const Eigen::Vec
 
     // Calculate the canonical system explicitly. In the position DMPs we have an implicit phase.
     // TODO(Mohit): Should probably convert it
-    x_quat = quaternion_phase(curr_time_quat_, alpha_quat_, goal_time_quat_, start_time_quat_, 0.001);
+    x_quat = quaternion_phase(curr_time_quat_, alpha_quat_phase_, goal_time_quat_, start_time_quat_, 0.001);
+    if (curr_time_quat_ > goal_time_quat_) {
+      x_quat = 0.0;
+    }
 
     // Calculate the RBF activations
     // First calculate the denominator
