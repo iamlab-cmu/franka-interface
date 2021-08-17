@@ -73,7 +73,7 @@ void QuaternionPoseDmpTrajectoryGenerator::parse_parameters() {
     }
 
   } else {
-    std::cout << "Parsing PoseDMPTrajectoryGenerator params failed. Data size = " << data_size << std::endl;
+    std::cout << "Parsing QuaternionPoseDMPTrajectoryGenerator params failed. Data size = " << data_size << std::endl;
   }
 }
 
@@ -286,8 +286,8 @@ void QuaternionPoseDmpTrajectoryGenerator::get_next_step(const franka::RobotStat
 
   calculate_desired_position();
 
-  std::cout << "Desired position: " << desired_position_[0] << ", " << desired_position_[1] << ", " << desired_position_[2] << std::endl;
-  std::cout << "Desired orientation: " << desired_orientation_.w() << ", " << desired_orientation_.x() << ", " << desired_orientation_.y() << ", " << desired_orientation_.z() << std::endl;
+  // std::cout << "Desired position: " << desired_position_[0] << ", " << desired_position_[1] << ", " << desired_position_[2] << std::endl;
+  // std::cout << "Desired orientation: " << desired_orientation_.w() << ", " << desired_orientation_.x() << ", " << desired_orientation_.y() << ", " << desired_orientation_.z() << std::endl;
   // std::cout << "Desired pose: " << desired_pose_[0] << ", " << desired_pose_[4] << ", " << desired_pose_[8] << std::endl;
   // std::cout << "Desired pose: " << desired_pose_[1] << ", " << desired_pose_[5] << ", " << desired_pose_[9] << std::endl;
   // std::cout << "Desired pose: " << desired_pose_[2] << ", " << desired_pose_[6] << ", " << desired_pose_[10] << std::endl;

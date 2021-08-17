@@ -20,7 +20,6 @@ class QuaternionPoseDmpTrajectoryGenerator : public PoseTrajectoryGenerator {
 
   std::array<double, 3> y_={};
   std::array<double, 3> dy_={};
-  // std::array<double, 4> q_={};
   std::vector<Eigen::Quaternion<double>> q_={};
   std::array<double, 3> dq_={};
 
