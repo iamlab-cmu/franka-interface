@@ -51,6 +51,7 @@ enum class TrajectoryGeneratorType : uint8_t {
     PassThroughJointTrajectoryGenerator,
     PassThroughPoseTrajectoryGenerator,
     PoseDmpTrajectoryGenerator,
+    QuaternionPoseDmpTrajectoryGenerator,
     RelativeLinearPoseTrajectoryGenerator,
     RelativeMinJerkPoseTrajectoryGenerator,
     SineJointTrajectoryGenerator,

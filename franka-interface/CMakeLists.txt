@@ -68,6 +68,7 @@ add_library(franka-interface SHARED
   src/trajectory_generator/pass_through_pose_trajectory_generator.cpp
   src/trajectory_generator/pose_dmp_trajectory_generator.cpp
   src/trajectory_generator/pose_trajectory_generator.cpp
+  src/trajectory_generator/quaternion_pose_dmp_trajectory_generator.cpp
   src/trajectory_generator/relative_linear_pose_trajectory_generator.cpp
   src/trajectory_generator/relative_min_jerk_pose_trajectory_generator.cpp
   src/trajectory_generator/relative_pose_trajectory_generator.cpp
