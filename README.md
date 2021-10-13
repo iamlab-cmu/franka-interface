@@ -13,8 +13,8 @@ This is a software package used for controlling and learning skills on the Frank
 This library is intended to be installed on the computer that interfaces with the Franka (we call this the Control PC).
 To use this library, refer to [FrankaPy](https://github.com/iamlab-cmu/frankapy), which can be run on any computer on the same ROS network and sends commands to `franka-interface`.
 
-1. The Control PC should have an OS with real time kernel. The instructions for setting up a computer with the Ubuntu 16.04 / 18.04 Realtime Kernel from scratch are located here: [control pc ubuntu setup guide](docs/control_pc_ubuntu_setup_guide.md)
-2. Instructions for setting up the computer specifically for Franka Robots is located here: [franka control pc setup guide](docs/franka_control_pc_setup_guide.md)
+1. The Control PC should have an OS with real time kernel. The instructions for setting up a computer with the Ubuntu 16.04 / 18.04 Realtime Kernel from scratch are located here: [control pc ubuntu setup guide](old_docs/control_pc_ubuntu_setup_guide.md)
+2. Instructions for setting up the computer specifically for Franka Robots is located here: [franka control pc setup guide](old_docs/franka_control_pc_setup_guide.md)
 
 ## Install ProtoBuf
 
