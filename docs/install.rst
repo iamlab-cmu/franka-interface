@@ -167,11 +167,11 @@ The ``.sign`` files are used to verify the files (if you’d like -- it’s opti
 10. Select the default [hit enter] for everything EXCEPT the kernel preemption model. It will look like this::
 
     Preemption Model
-      1. No Forced Preemption (Server) (PREEMPT_NONE)
-      2. Voluntary Kernel Preemption (Desktop) (PREEMPT_VOLUNTARY)
-      3. Preemptible Kernel (Low-Latency Desktop) (PREEMPT__LL) (NEW)
-      4. Preemptible Kernel (Basic RT) (PREEMPT_RTB) (NEW)
-      5. Fully Preemptible Kernel (RT) (PREEMPT_RT_FULL) (NEW)
+    1. No Forced Preemption (Server) (PREEMPT_NONE)
+    2. Voluntary Kernel Preemption (Desktop) (PREEMPT_VOLUNTARY)
+    3. Preemptible Kernel (Low-Latency Desktop) (PREEMPT__LL) (NEW)
+    4. Preemptible Kernel (Basic RT) (PREEMPT_RTB) (NEW)
+    5. Fully Preemptible Kernel (RT) (PREEMPT_RT_FULL) (NEW)
     choice[1-5?]:
 
 Input ``5`` to choose the full preemptible kernel.
@@ -244,9 +244,9 @@ Now, we want to install some utilities and files that will maintain the correct 
     # bits.
     #
     # By default this script does nothing.
-
+    
     /etc/init.d/cpu.sh &
-
+    
     exit 0
 
 11. Make rc.local executable::
