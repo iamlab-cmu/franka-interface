@@ -4,6 +4,8 @@ This is a software package used for controlling and learning skills on the Frank
 
 Installation Instructions and Robot Setup Instructions are also available here: [https://iamlab-cmu.github.io/franka-interface](https://iamlab-cmu.github.io/franka-interface)
 
+To join the Discord community, click the link [here](https://discord.gg/jMzpGRpSN2).
+
 ## Requirements
 
 * A computer with the Ubuntu 18.04 Realtime Kernel and at least 1 ethernet port.
@@ -78,6 +80,18 @@ All directories below are given relative to `/franka-interface`.
    sudo apt install ros-melodic-libfranka ros-melodic-franka-ros
    ```
    
+## Citation
+
+If this library proves useful to your research, please cite the paper below::
+```
+@article{zhang2020modular,
+title={A modular robotic arm control stack for research: Franka-interface and frankapy},
+author={Zhang, Kevin and Sharma, Mohit and Liang, Jacky and Kroemer, Oliver},
+journal={arXiv preprint arXiv:2011.02398},
+year={2020}
+}
+```
+
 ## Issues
 
 #### LibPoco issue
