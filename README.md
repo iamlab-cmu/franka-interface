@@ -2,6 +2,8 @@
 
 This is a software package used for controlling and learning skills on the Franka Emika Panda Research Robot Arm.
 
+Installation Instructions and Robot Setup Instructions are also available here: [https://iamlab-cmu.github.io/franka-interface](https://iamlab-cmu.github.io/franka-interface)
+
 ## Requirements
 
 * A computer with the Ubuntu 18.04 Realtime Kernel and at least 1 ethernet port.
