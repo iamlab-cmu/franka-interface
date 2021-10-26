@@ -166,30 +166,30 @@ The ``.sign`` files are used to verify the files (if you’d like -- it’s opti
 
 10. Select the default [hit enter] for everything EXCEPT the kernel preemption model. It will look like this::
 
-    Preemption Model
-    1. No Forced Preemption (Server) (PREEMPT_NONE)
-    2. Voluntary Kernel Preemption (Desktop) (PREEMPT_VOLUNTARY)
-    3. Preemptible Kernel (Low-Latency Desktop) (PREEMPT__LL) (NEW)
-    4. Preemptible Kernel (Basic RT) (PREEMPT_RTB) (NEW)
-    5. Fully Preemptible Kernel (RT) (PREEMPT_RT_FULL) (NEW)
-    choice[1-5?]:
+     Preemption Model
+     1. No Forced Preemption (Server) (PREEMPT_NONE)
+     2. Voluntary Kernel Preemption (Desktop) (PREEMPT_VOLUNTARY)
+     3. Preemptible Kernel (Low-Latency Desktop) (PREEMPT__LL) (NEW)
+     4. Preemptible Kernel (Basic RT) (PREEMPT_RTB) (NEW)
+     5. Fully Preemptible Kernel (RT) (PREEMPT_RT_FULL) (NEW)
+     choice[1-5?]:
 
 Input ``5`` to choose the full preemptible kernel.
 
 11. Build the kernel where ``N`` represents the number of threads in your processor::
 
-    fakeroot make -jN deb-pkg
+     fakeroot make -jN deb-pkg
 
 12. This will take some time so grab a coffee and wait until it finishes.
 
 13. Now, we want to install the new ``.deb`` packages, but not ones with ``dbg`` in the file name::
 
-    cd ..
-    sudo dpkg -i linux-headers-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-image-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-libc-dev_5.4.3-rt1-1_amd64.deb
+     cd ..
+     sudo dpkg -i linux-headers-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-image-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-libc-dev_5.4.3-rt1-1_amd64.deb
 
 14. Restart your computer after it has finished installing::
 
-    sudo reboot
+     sudo reboot
 
 CPU Monitoring Utilities
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -203,6 +203,7 @@ Now, we want to install some utilities and files that will maintain the correct 
 2. Restart the computer and then confirm that ``indicator-cpufreq`` starts when logged in. You should see what looks like a CPU icon in the system toolbar, with a drop-down menu that shows the current CPU governor. You can select the ``performance`` mode here, but we will now add files to do this automatically. Run the following terminal commands in order.
 
 3. Defining the default CPU governor::
+
     echo "GOVERNOR="performance"" | sudo tee /etc/default/cpufrequtils
 
 4. Restarting ``cpufrequtils`` so that performance mode is selected::
@@ -232,30 +233,30 @@ Now, we want to install some utilities and files that will maintain the correct 
 
 10. Add the following lines to /etc/rc.local::
 
-    #!/bin/sh -e
-    #
-    # rc.local
-    #
-    # This script is executed at the end of each multiuser runlevel.
-    # Make sure that the script will "exit 0" on success or any other
-    # value on error.
-    #
-    # In order to enable or disable this script just change the execution
-    # bits.
-    #
-    # By default this script does nothing.
-    
-    /etc/init.d/cpu.sh &
-    
-    exit 0
+     #!/bin/sh -e
+     #
+     # rc.local
+     #
+     # This script is executed at the end of each multiuser runlevel.
+     # Make sure that the script will "exit 0" on success or any other
+     # value on error.
+     #
+     # In order to enable or disable this script just change the execution
+     # bits.
+     #
+     # By default this script does nothing.
+     
+     /etc/init.d/cpu.sh &
+     
+     exit 0
 
 11. Make rc.local executable::
 
-    sudo chmod +x /etc/rc.local
+     sudo chmod +x /etc/rc.local
 
 12. Reboot the computer::
 
-    sudo reboot
+     sudo reboot
 
 In short, we have defined the default CPU governor, then created several processes for Ubuntu to automatically select this governor when you log in.
 
