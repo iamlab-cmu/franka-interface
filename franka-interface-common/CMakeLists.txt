@@ -26,9 +26,6 @@ add_library(franka-interface-common SHARED
   src/SharedMemoryInfo.cpp
 )
 
-# Add namespace
-# add_library(FrankaInterface::FrankaInterface ALIAS franka-interface)
-
 target_link_libraries(franka-interface-common PUBLIC
   Threads::Threads
   ${Boost_LIBRARIES}
@@ -39,9 +36,8 @@ target_link_libraries(franka-interface-common PUBLIC
 target_include_directories(franka-interface-common PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
+  PRIVATE src
 )
-target_include_directories(franka-interface-common PRIVATE src)
-
 
 ## Installation
 include(GNUInstallDirs)

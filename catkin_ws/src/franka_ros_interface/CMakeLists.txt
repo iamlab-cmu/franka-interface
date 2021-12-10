@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.4)
 project(franka_ros_interface)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
@@ -20,6 +20,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 find_package(Eigen3 REQUIRED)
 find_package(Protobuf REQUIRED)
+find_package(franka-interface-common REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -36,8 +37,8 @@ include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${franka-interface-common_INCLUDE_DIRS})
 include_directories(${proto_INCLUDE_DIRS})
 
-LINK_DIRECTORIES(${franka-interface-common_lib})
-LINK_DIRECTORIES(${proto})
+link_directories(${franka-interface-common_lib})
+link_directories(${proto})
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -126,21 +127,49 @@ add_library(${PROJECT_NAME}
 ## either from message generation or dynamic reconfigure
 add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
+target_link_libraries(${PROJECT_NAME} 
+  Threads::Threads
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  rt
+  proto
+  franka-interface-common
+  ${Protobuf_LIBRARIES}
+)
+
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/franka_ros_interface_node.cpp)
-add_executable(execute_skill_action_server_node src/execute_skill_action_server.cpp src/execute_skill_action_server_node.cpp)
+add_executable(execute_skill_action_server_node 
+ src/execute_skill_action_server.cpp 
+ src/execute_skill_action_server_node.cpp
+)
 
 add_executable(robot_state_publisher_node 
   src/robot_state_publisher.cpp 
   src/robot_state_publisher_node.cpp
 )
  
-add_executable(franka_interface_status_publisher_node src/franka_interface_status_publisher.cpp src/franka_interface_status_publisher_node.cpp)
-add_executable(run_loop_process_info_state_publisher_node src/run_loop_process_info_state_publisher.cpp src/run_loop_process_info_state_publisher_node.cpp)
-add_executable(get_current_robot_state_server_node src/get_current_robot_state_server.cpp src/get_current_robot_state_server_node.cpp)
-add_executable(get_current_franka_interface_status_server_node src/get_current_franka_interface_status_server.cpp src/get_current_franka_interface_status_server_node.cpp)
+add_executable(franka_interface_status_publisher_node 
+  src/franka_interface_status_publisher.cpp 
+  src/franka_interface_status_publisher_node.cpp
+)
+
+add_executable(run_loop_process_info_state_publisher_node 
+  src/run_loop_process_info_state_publisher.cpp 
+  src/run_loop_process_info_state_publisher_node.cpp
+)
+
+add_executable(get_current_robot_state_server_node 
+  src/get_current_robot_state_server.cpp 
+  src/get_current_robot_state_server_node.cpp
+
+)
+
+add_executable(get_current_franka_interface_status_server_node 
+  src/get_current_franka_interface_status_server.cpp 
+  src/get_current_franka_interface_status_server_node.cpp
+)
 
 # Sensor data 
 add_executable(sensor_data_subscriber_node 
@@ -160,10 +189,19 @@ add_executable(sensor_data_subscriber_node
 add_dependencies( execute_skill_action_server_node
 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-add_dependencies( get_current_robot_state_server_node
+add_dependencies( robot_state_publisher_node
+${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_dependencies( franka_interface_status_publisher_node
+${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_dependencies( run_loop_process_info_state_publisher_node
 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_dependencies( get_current_robot_state_server_node
+${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_dependencies( get_current_franka_interface_status_server_node
 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_dependencies( sensor_data_subscriber_node
@@ -221,6 +259,7 @@ target_link_libraries(
   ${catkin_LIBRARIES}
   rt
   proto
+  franka-interface-common
   ${PROJECT_NAME}
   ${Protobuf_LIBRARIES}
 )
@@ -231,6 +270,7 @@ target_link_libraries(
   ${catkin_LIBRARIES}
   rt
   proto
+  franka-interface-common
   ${PROJECT_NAME}
   ${Protobuf_LIBRARIES}
 )

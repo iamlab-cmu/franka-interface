@@ -278,7 +278,7 @@ Franka-Interface Installation Steps
 
 1. Clone the Franka-interface Repository and its Submodules::
 
-    git clone --recurse-submodules git@github.com/iamlab-cmu/franka-interface.git
+    git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git
     cd franka-interface
 
 2. To allow asynchronous gripper commands, we use the ``franka_ros`` package, so install libfranka and franka_ros using the following command::
