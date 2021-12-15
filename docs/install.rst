@@ -4,8 +4,8 @@ Installation
 Requirements
 ------------
 
-* A computer with Ubuntu 18.04 Realtime Kernel and at least 1 ethernet port.
-* ROS Melodic
+* A computer with Ubuntu 18.04 / 20.04 Realtime Kernel and at least 1 ethernet port.
+* ROS Melodic / Noetic
 * `Google Protocol Buffer <https://developers.google.com/protocol-buffers>`_
 
 Recommended Computer Configuration
@@ -21,7 +21,7 @@ Recommended Computer Configuration
 Computer Setup Instructions
 ---------------------------
 
-These instructions are assuming that you just freshly installed `Ubuntu 18.04 <https://ubuntu.com/tutorials/install-ubuntu-desktop#1-overview>`_ on the computer, which we will call the Control PC.
+These instructions are assuming that you just freshly installed `Ubuntu 18.04 / 20.04 <https://ubuntu.com/tutorials/install-ubuntu-desktop#1-overview>`_ on the computer, which we will call the Control PC.
 
 1. First make sure your computer is completely up to date with all packages::
 
@@ -32,7 +32,7 @@ These instructions are assuming that you just freshly installed `Ubuntu 18.04 <h
 
     sudo apt install curl openssh-server git vim terminator
 
-3. Install `ROS Melodic <http://wiki.ros.org/melodic/Installation/Ubuntu>`_. Make sure that ``source /opt/ros/melodic/setup.bash`` is in your ``~/.bashrc`` file. 
+3. Install `ROS Melodic <http://wiki.ros.org/melodic/Installation/Ubuntu>`_ or `ROS Noetic <http://wiki.ros.org/noetic/Installation/Ubuntu>`_. Make sure that ``source /opt/ros/melodic/setup.bash`` or ``source /opt/ros/noetic/setup.bash`` is in your ``~/.bashrc`` file. 
 
 Protobuf
 ~~~~~~~~
@@ -86,7 +86,7 @@ Virtual Environment
 Realtime Kernel
 ~~~~~~~~~~~~~~~
 
-If you don't want to go through the hassle of compiling the realtime kernel yourself, feel free to download a precompiled version for **Ubuntu 18.04 ONLY** `here <https://drive.google.com/file/d/1Rp3_1nebSAAK8ViMMa9XX-efbWWYB7tw/view?usp=sharing>`_. Otherwise skip down to the next section first and then come back to this section and start from step 5.
+If you don't want to go through the hassle of compiling the realtime kernel yourself, feel free to download a precompiled version for Ubuntu 18.04 `here <https://drive.google.com/file/d/1VCPCe8m0CsgBUkfk2D_89UBAVW3QKjAQ/view?usp=sharing>`_ or Ubuntu 20.04 `here <https://drive.google.com/file/d/1ZCXyuqAJQptzTCBLtG0S_BQMXcRnmb0o/view?usp=sharing>`_. Otherwise skip down to the next section first and then come back to this section and start from step 5.
 
 1. Simply unzip the packages into your ``Downloads`` folder.
 
@@ -94,7 +94,7 @@ If you don't want to go through the hassle of compiling the realtime kernel your
 
     cd Downloads/Realtime\ Kernel\ Files/
 
-3. Install the realtime kernel by typing the following command::
+3. Install the realtime kernel by typing the following command. If you are using Ubuntu 20.04, switch all of the 5.4.3-rt1 to 5.11.2-rt8::
 
     sudo dpkg -i linux-headers-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-image-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-libc-dev_5.4.3-rt1-1_amd64.deb
 
@@ -102,7 +102,7 @@ If you don't want to go through the hassle of compiling the realtime kernel your
 
     sudo reboot
 
-5. Once your computer has finished rebooting, ``uname -r`` should show the new kernel: 5.4.3-rt1 and ``cat /sys/kernel/realtime`` should show an output of ``1``.
+5. Once your computer has finished rebooting, ``uname -r`` should show the new kernel: 5.4.3-rt1 or 5.11.2-rt8 and ``cat /sys/kernel/realtime`` should show an output of ``1``.
 
 6. Next you need to set realtime settings::
 
@@ -132,12 +132,12 @@ In order to communicate with the Franka Panda Research Arm at 1 kHz, we need Ubu
 
 2. Secondly, you need to pick a mainline kernel version that has a preempt_rt [“RT”] patch. What worked best was selecting the next closest RT kernel available to what was installed on the system. (List of RT versions: `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/ <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/>`_) 
 
-3. Out of the box, Ubuntu 18.04.6 LTS comes with kernel “5.4.0”. So we picked 5.4.3 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.4/older/>`_.
+3. Out of the box, Ubuntu 18.04.6 LTS comes with kernel "5.4.0". So we picked 5.4.3 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.4/older/>`_. For Ubuntu 20.04.3 LTS, it comes with kernel "5.11.0" so we picked 5.11.2 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.11/older/>`_.
 You can identify what kernel version you are currently using with the command ``uname -r``.
 
 4. We will download both the mainline version of the kernel we want along with the RT patch, extract the mainline kernel and apply the RT patch, then compile the kernel and install it.
 
-5. Create the directory and download the kernel files::
+5. Create the directory and download the kernel files (if you are using Ubuntu 20.04, we used 5.11.2 with patch 5.11.2-rt8)::
 
     mkdir -p ~/Downloads/preempt_rt_5.4.3
     cd ~/Downloads/preempt_rt_5.4.3
@@ -180,7 +180,7 @@ Input ``5`` to choose the full preemptible kernel.
 
      fakeroot make -jN deb-pkg
 
-12. This will take some time so grab a coffee and wait until it finishes.
+12. This will take some time so grab a coffee and wait until it finishes. If you run into errors with certificates, I followed instructions `here <https://unix.stackexchange.com/questions/293642/attempting-to-compile-kernel-yields-a-certification-error/294116#294116>`_. and `here <https://stackoverflow.com/questions/61657707/btf-tmp-vmlinux-btf-pahole-pahole-is-not-available>`_. 
 
 13. Now, we want to install the new ``.deb`` packages, but not ones with ``dbg`` in the file name::
 
@@ -281,7 +281,7 @@ Franka-Interface Installation Steps
     git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git
     cd franka-interface
 
-2. To allow asynchronous gripper commands, we use the ``franka_ros`` package, so install libfranka and franka_ros using the following command::
+2. To allow asynchronous gripper commands, we use the ``franka_ros`` package, so install libfranka and franka_ros using the following command. Switch melodic to noetic if you are on Ubuntu 20.04::
 
     sudo apt install ros-melodic-libfranka ros-melodic-franka-ros
 
@@ -299,7 +299,7 @@ Franka-Interface Installation Steps
 
 6. Enter the franka virtual environment (:ref:`Virtual Environment`) and then run the following commands::
 
-    pip install catkin-tools
+    pip install catkin-tools empy
     bash ./bash_scripts/make_catkin.sh
 
 7. Afterwards source the ``catkin_ws`` using the following command::
