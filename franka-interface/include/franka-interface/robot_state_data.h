@@ -79,6 +79,7 @@ class RobotStateData {
   std::vector<double> log_control_command_success_rate_0_{};
   std::vector<uint8_t> log_robot_mode_0_{};
   std::vector<double> log_robot_time_0_{};
+  std::vector<std::array<double, 42>> log_zero_jacobian_0_{};
 
   std::vector<double> log_gripper_width_0_{};
   std::vector<double> log_gripper_max_width_0_{};
@@ -134,6 +135,7 @@ class RobotStateData {
   std::vector<double> log_control_command_success_rate_1_{};
   std::vector<uint8_t> log_robot_mode_1_{};
   std::vector<double> log_robot_time_1_{};
+  std::vector<std::array<double, 42>> log_zero_jacobian_1_{};
   
   std::vector<double> log_gripper_width_1_{};
   std::vector<double> log_gripper_max_width_1_{};

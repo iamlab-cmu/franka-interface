@@ -4,6 +4,7 @@
 #include <iostream>
 #include <google/protobuf/message.h>
 #include <array>
+#include <Eigen/Dense>
 #include <franka/robot_state.h>
 #include <franka-interface-common/definitions.h>
 
@@ -39,6 +40,8 @@ class FeedbackController {
   virtual void parse_sensor_data(const franka::RobotState &robot_state) {};
 
   std::array<double, 7> tau_d_array_{};
+  Eigen::VectorXd f_task_;
+  Eigen::VectorXd object_position_;
 
  protected:
   SharedBufferTypePtr params_=0;

@@ -48,6 +48,10 @@ void CartesianImpedanceFeedbackController::initialize_controller(FrankaRobot *ro
   for (int i = 0; i < 6; i++) {
     damping_(i, i) = 2. * sqrt(stiffness_(i, i));
   }
+  f_task_ = Eigen::VectorXd(6);
+  f_task_.setZero();
+  object_position_ = Eigen::VectorXd(3);
+  object_position_.setZero();
 }
 
 void CartesianImpedanceFeedbackController::parse_sensor_data(const franka::RobotState &robot_state) {
@@ -89,6 +93,7 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
   // position error
   Eigen::Matrix<double, 6, 1> error;
   error.head(3) << position - position_d;
+  object_position_ << position_d;
 
   // orientation error
   // "difference" quaternion
@@ -105,7 +110,9 @@ void CartesianImpedanceFeedbackController::get_next_step(const franka::RobotStat
   Eigen::VectorXd tau_task(7), tau_d(7);
 
   // Spring damper system with damping ratio=1
-  tau_task << jacobian.transpose() * (-stiffness_ * error - damping_ * (jacobian * dq));
+  f_task_.setZero();
+  f_task_ << (-stiffness_ * error - damping_ * (jacobian * dq));
+  tau_task << jacobian.transpose() * (f_task_);
   tau_d << tau_task + coriolis;
 
   Eigen::VectorXd::Map(&tau_d_array_[0], 7) = tau_d;
