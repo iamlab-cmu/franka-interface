@@ -86,7 +86,7 @@ Virtual Environment
 Realtime Kernel
 ~~~~~~~~~~~~~~~
 
-If you don't want to go through the hassle of compiling the realtime kernel yourself, feel free to download a precompiled version for Ubuntu 18.04 `here <https://drive.google.com/file/d/1VCPCe8m0CsgBUkfk2D_89UBAVW3QKjAQ/view?usp=sharing>`_ or Ubuntu 20.04 `here <https://drive.google.com/file/d/1ZCXyuqAJQptzTCBLtG0S_BQMXcRnmb0o/view?usp=sharing>`_. Otherwise skip down to the next section first and then come back to this section and start from step 5.
+If you don't want to go through the hassle of compiling the realtime kernel yourself, feel free to download a precompiled version for Ubuntu 18.04 `here <https://drive.google.com/file/d/1VCPCe8m0CsgBUkfk2D_89UBAVW3QKjAQ/view?usp=sharing>`_ or Ubuntu 20.04 `here <https://drive.google.com/file/d/1T38biusKijTVuJR2XWjL3O7K6XPFdxVu/view?usp=sharing>`_. Otherwise skip down to the next section first and then come back to this section and start from step 5.
 
 1. Simply unzip the packages into your ``Downloads`` folder.
 
@@ -94,7 +94,7 @@ If you don't want to go through the hassle of compiling the realtime kernel your
 
     cd Downloads/Realtime\ Kernel\ Files/
 
-3. Install the realtime kernel by typing the following command. If you are using Ubuntu 20.04, switch all of the 5.4.3-rt1 to 5.11.2-rt8::
+3. Install the realtime kernel by typing the following command. If you are using Ubuntu 20.04, switch all of the 5.4.3-rt1 to 5.14.2-rt21::
 
     sudo dpkg -i linux-headers-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-image-5.4.3-rt1_5.4.3-rt1-1_amd64.deb linux-libc-dev_5.4.3-rt1-1_amd64.deb
 
@@ -102,7 +102,7 @@ If you don't want to go through the hassle of compiling the realtime kernel your
 
     sudo reboot
 
-5. Once your computer has finished rebooting, ``uname -r`` should show the new kernel: 5.4.3-rt1 or 5.11.2-rt8 and ``cat /sys/kernel/realtime`` should show an output of ``1``.
+5. Once your computer has finished rebooting, ``uname -r`` should show the new kernel: 5.4.3-rt1 or 5.14.2-rt21 and ``cat /sys/kernel/realtime`` should show an output of ``1``.
 
 6. Next you need to set realtime settings::
 
@@ -132,12 +132,12 @@ In order to communicate with the Franka Panda Research Arm at 1 kHz, we need Ubu
 
 2. Secondly, you need to pick a mainline kernel version that has a preempt_rt [“RT”] patch. What worked best was selecting the next closest RT kernel available to what was installed on the system. (List of RT versions: `https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/ <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/>`_) 
 
-3. Out of the box, Ubuntu 18.04.6 LTS comes with kernel "5.4.0". So we picked 5.4.3 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.4/older/>`_. For Ubuntu 20.04.3 LTS, it comes with kernel "5.11.0" so we picked 5.11.2 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.11/older/>`_.
+3. Out of the box, Ubuntu 18.04.6 LTS comes with kernel "5.4.0". So we picked 5.4.3 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.4/older/>`_. For Ubuntu 20.04.3 LTS, it comes with kernel "5.13.0" so we picked 5.14.2 `here <https://mirrors.edge.kernel.org/pub/linux/kernel/projects/rt/5.14/>`_.
 You can identify what kernel version you are currently using with the command ``uname -r``.
 
 4. We will download both the mainline version of the kernel we want along with the RT patch, extract the mainline kernel and apply the RT patch, then compile the kernel and install it.
 
-5. Create the directory and download the kernel files (if you are using Ubuntu 20.04, we used 5.11.2 with patch 5.11.2-rt8)::
+5. Create the directory and download the kernel files (if you are using Ubuntu 20.04, we used 5.14.2 with patch 5.14.2-rt21)::
 
     mkdir -p ~/Downloads/preempt_rt_5.4.3
     cd ~/Downloads/preempt_rt_5.4.3
