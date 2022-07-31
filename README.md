@@ -45,7 +45,7 @@ See detailed instructions [here](https://github.com/protocolbuffers/protobuf/blo
 1. Clone Repo and its Submodules:
 
    ```bash
-   git clone --recurse-submodules git@github.com:iamlab-cmu/franka-interface.git   
+   git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git   
    cd franka-interface
    ```
    
