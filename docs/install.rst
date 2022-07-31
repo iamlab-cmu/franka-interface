@@ -158,7 +158,7 @@ The ``.sign`` files are used to verify the files (if you’d like -- it’s opti
     cd linux-5.15.55/
     patch -p1 < ../patch-5.15.55-rt48.patch
 
-9. Follow additional kernel configuration options `here <https://docs.ros.org/en/foxy/Tutorials/Miscellaneous/Building-Realtime-rt_preempt-kernel-for-ROS-2.html/>`_.
+9. Follow additional kernel configuration options `here <https://docs.ros.org/en/foxy/Tutorials/Miscellaneous/Building-Realtime-rt_preempt-kernel-for-ROS-2.html>`_.
 
 10. If you run into errors with certificates, I followed instructions `here <https://askubuntu.com/questions/1329538/compiling-the-kernel-5-11-11>`_. and `here <https://stackoverflow.com/questions/61657707/btf-tmp-vmlinux-btf-pahole-pahole-is-not-available>`_. 
 
