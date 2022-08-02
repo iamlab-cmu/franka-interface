@@ -50,9 +50,9 @@ class TerminationHandler {
   bool has_terminated_by_virt_coll();
 
   /**
-   * Sets done_ to true if preempt flag is true.
+   * Sets done_ to true if skill cancelled flag is true.
    */
-  void check_terminate_preempt();
+  void check_skill_cancelled();
 
   void check_terminate_time(TrajectoryGenerator *trajectory_generator);
 

@@ -4,9 +4,9 @@
 
 #include "franka-interface/termination_handler/termination_handler.h"
 
-void TerminationHandler::check_terminate_preempt() {
+void TerminationHandler::check_skill_cancelled() {
   if (!done_) {
-    done_ = run_loop_info_->get_skill_preempted();
+    done_ = run_loop_info_->get_skill_cancelled();
   }
 }
 

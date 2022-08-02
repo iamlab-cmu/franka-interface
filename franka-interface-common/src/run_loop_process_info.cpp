@@ -179,12 +179,12 @@ void RunLoopProcessInfo::set_is_running_skill(bool is_running_skill) {
   is_running_skill_ = is_running_skill;
 }
 
-bool RunLoopProcessInfo::get_skill_preempted() {
-  return skill_preempted_;
+bool RunLoopProcessInfo::get_skill_cancelled() {
+  return skill_cancelled_;
 }
 
-void RunLoopProcessInfo::set_skill_preempted(bool skill_preempted) {
-  skill_preempted_ = skill_preempted;
+void RunLoopProcessInfo::set_skill_cancelled(bool skill_cancelled) {
+  skill_cancelled_ = skill_cancelled;
 }
 
 int RunLoopProcessInfo::get_done_skill_id() {
@@ -254,7 +254,7 @@ void RunLoopProcessInfo::reset_skill_vars() {
   new_skill_description_len_ = 0;
 
   is_running_skill_ = false;
-  skill_preempted_ = false;
+  skill_cancelled_ = false;
   
   done_skill_id_ = -1;
   result_skill_id_ = -1;
@@ -268,7 +268,7 @@ void RunLoopProcessInfo::set_skill_done_when_error_occurs(int skill_id) {
   // current hacky way of setting done skill id to the current skill id.
 
   is_running_skill_ = false;
-  skill_preempted_ = false;
+  skill_cancelled_ = false;
   
   done_skill_id_ = skill_id;
   result_skill_id_ = skill_id;

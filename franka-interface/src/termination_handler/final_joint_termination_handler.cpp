@@ -34,8 +34,8 @@ bool FinalJointTerminationHandler::should_terminate(const franka::RobotState &ro
                                                               franka::Model *model,
                                                               TrajectoryGenerator *trajectory_generator) {
 
+  check_skill_cancelled();
   check_terminate_virtual_wall_collisions(robot_state, model);
-  check_terminate_preempt();
   check_terminate_time(trajectory_generator);
 
   if (!done_) {

@@ -96,8 +96,8 @@ class RunLoopProcessInfo {
   bool get_is_running_skill();
   void set_is_running_skill(bool is_running_skill);
 
-  bool get_skill_preempted();
-  void set_skill_preempted(bool skill_preempted);
+  bool get_skill_cancelled();
+  void set_skill_cancelled(bool skill_cancelled);
 
   int get_done_skill_id();
   void set_done_skill_id(int done_skill_id);
@@ -140,7 +140,7 @@ class RunLoopProcessInfo {
   size_t new_skill_description_len_=1;
 
   bool is_running_skill_{false};
-  bool skill_preempted_{false};
+  bool skill_cancelled_{false};
   
   int done_skill_id_{-1};
   int result_skill_id_{-1};

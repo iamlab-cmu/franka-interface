@@ -62,13 +62,9 @@ CMakeCache.txt
 franka-interface/cmake-build-debug/
 
 # Add workspace build files
-catkin_ws/build
-catkin_ws/devel
-src/catkin_ws/build
-src/catkin_ws/devel
-catkin_ws/src/CMakeLists.txt
-catkin_ws/.catkin_tools
-catkin_ws/logs
+ros2_ws/build
+ros2_ws/install
+ros2_ws/log
 
 build
 Release
@@ -85,9 +81,6 @@ notebooks/.ipynb_checkpoints
 
 # Vscode
 .vscode
-
-# Saved data
-catkin_ws/src/franka_ros_interface/out*
 
 # Docker
 .docker_tmp
