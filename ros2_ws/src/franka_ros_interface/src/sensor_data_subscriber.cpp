@@ -4,8 +4,10 @@ namespace franka_ros_interface
 {
   SensorDataSubscriber::SensorDataSubscriber() : Node("sensor_data_subscriber")
   {
+    this->declare_parameter<std::string>("sensor_data_topic_name", "/sensor_data_node_1/sensor_data");
+    this->get_parameter("sensor_data_topic_name", sensor_data_topic_name_);
     sensor_data_subscriber_ = this->create_subscription<franka_interface_msgs::msg::SensorDataGroup>(
-      "franka_ros_interface/sensor", 10, std::bind(&SensorDataSubscriber::sensor_data_callback, this, _1));
+      sensor_data_topic_name_, 10, std::bind(&SensorDataSubscriber::sensor_data_callback, this, _1));
     RCLCPP_INFO(this->get_logger(), "Sensor Data Subscriber Started");
   }
 

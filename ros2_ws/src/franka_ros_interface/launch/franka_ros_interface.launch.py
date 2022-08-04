@@ -46,11 +46,12 @@ def generate_launch_description():
             package='franka_ros_interface',
             executable='get_current_franka_interface_status_server',
             name=['get_current_franka_interface_status_server_node_', robot_num],
-            parameters=[{'franka_interface_status_topic_name': "franka_interface_status_publisher_node_"+robot_num+"/franka_interface_status"}],
+            parameters=[{'franka_interface_status_topic_name': "/franka_interface_status_publisher_node_"+robot_num+"/franka_interface_status"}],
         ),
         Node(
             package='franka_ros_interface',
             executable='sensor_data_subscriber',
             name=['sensor_data_subscriber_node_', robot_num],
+            parameters=[{'sensor_data_topic_name': "/sensor_data_publisher_node_"+robot_num+"/sensor_data"}],
         ),
     ])

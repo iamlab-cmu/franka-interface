@@ -15,6 +15,7 @@ namespace franka_ros_interface
     protected:
 
       SharedMemoryHandler shared_memory_handler_;
+      std::string sensor_data_topic_name_;
 
     public:
 
