@@ -23,6 +23,7 @@ find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(franka_interface_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -144,6 +145,20 @@ target_include_directories(get_current_robot_state_server
 
 target_link_libraries(get_current_robot_state_server shared_memory_handler)
 
+add_executable(get_current_gripper_state_server src/get_current_gripper_state_server.cpp)
+ament_target_dependencies(get_current_gripper_state_server
+    franka_interface_msgs
+    rclcpp
+    sensor_msgs
+)
+
+target_include_directories(get_current_gripper_state_server
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+
+target_link_libraries(get_current_gripper_state_server shared_memory_handler)
+
 add_library(execute_skill_action_server SHARED
   src/execute_skill_action_server.cpp)
 target_include_directories(execute_skill_action_server PRIVATE
@@ -183,6 +198,7 @@ install(TARGETS
     robot_state_publisher
     run_loop_process_info_state_publisher
     franka_interface_status_publisher
+    get_current_gripper_state_server
     get_current_franka_interface_status_server
     get_current_robot_state_server
     sensor_data_subscriber

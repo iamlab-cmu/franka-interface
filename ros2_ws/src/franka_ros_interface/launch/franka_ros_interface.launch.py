@@ -52,6 +52,6 @@ def generate_launch_description():
             package='franka_ros_interface',
             executable='sensor_data_subscriber',
             name=['sensor_data_subscriber_node_', robot_num],
-            parameters=[{'sensor_data_topic_name': "/sensor_data_publisher_node_"+robot_num+"/sensor_data"}],
+            parameters=[{'sensor_data_topic_name': "/sensor_data_"+robot_num+"/sensor_data"}],
         ),
     ])

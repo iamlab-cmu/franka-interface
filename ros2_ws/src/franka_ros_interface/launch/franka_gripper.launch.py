@@ -71,6 +71,13 @@ def generate_launch_description():
             condition=UnlessCondition(use_fake_hardware)
         ),
         Node(
+            package='franka_ros_interface',
+            executable='get_current_gripper_state_server',
+            name=['get_current_gripper_state_server_node_', robot_num],
+            parameters=[{'gripper_state_topic_name': "/gripper_state_publisher_node_"+robot_num+"/gripper_state"}],
+            condition=UnlessCondition(use_fake_hardware)
+        ),
+        Node(
             package='franka_gripper',
             executable='fake_gripper_state_publisher.py',
             name=[arm_id, '_gripper'],
