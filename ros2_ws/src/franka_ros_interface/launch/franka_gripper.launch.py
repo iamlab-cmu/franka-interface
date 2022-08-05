@@ -18,7 +18,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 
 
@@ -74,7 +74,7 @@ def generate_launch_description():
             package='franka_ros_interface',
             executable='get_current_gripper_state_server',
             name=['get_current_gripper_state_server_node_', robot_num],
-            parameters=[{'gripper_state_topic_name': "/gripper_state_publisher_node_"+robot_num+"/gripper_state"}],
+            parameters=[{'gripper_state_topic_name': PythonExpression("/gripper_state_publisher_node_"+robot_num+"/gripper_state")}],
             condition=UnlessCondition(use_fake_hardware)
         ),
         Node(
