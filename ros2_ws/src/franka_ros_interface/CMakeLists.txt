@@ -77,6 +77,27 @@ ament_target_dependencies(shared_memory_handler
     franka_interface_msgs
 )
 
+ament_export_libraries(shared_memory_handler)
+ament_export_include_directories(include)
+ament_export_dependencies(
+    ament_cmake
+    rclcpp
+    rclcpp_action
+    rclcpp_components
+    franka_interface_msgs
+)
+install(
+    TARGETS shared_memory_handler
+    EXPORT shared_memory_handler
+    LIBRARY DESTINATION lib/${PROJECT_NAME}
+    ARCHIVE DESTINATION lib/${PROJECT_NAME}
+    RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+install(
+    DIRECTORY include/
+    DESTINATION include
+)
+
 add_executable(robot_state_publisher src/robot_state_publisher.cpp)
 ament_target_dependencies(robot_state_publisher
     franka_interface_msgs
