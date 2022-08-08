@@ -1,4 +1,4 @@
-<library path="franka_ros_interface">
+<library path="shared_memory_handler">
   <class type="franka_ros_interface::SharedMemoryHandler" base_class_type="franka_ros_interface::BaseSharedMemoryHandler">
     <description>This is a shared memory handler plugin.</description>
   </class>

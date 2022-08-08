@@ -118,6 +118,16 @@ ament_target_dependencies(robot_state_publisher
     pluginlib
 )
 
+target_link_libraries(robot_state_publisher 
+  Threads::Threads
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  rt
+  proto
+  franka-interface-common
+  ${Protobuf_LIBRARIES}
+)
+
 target_include_directories(robot_state_publisher
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -130,6 +140,16 @@ ament_target_dependencies(run_loop_process_info_state_publisher
     pluginlib
 )
 
+target_link_libraries(run_loop_process_info_state_publisher 
+  Threads::Threads
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  rt
+  proto
+  franka-interface-common
+  ${Protobuf_LIBRARIES}
+)
+
 target_include_directories(run_loop_process_info_state_publisher
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -140,6 +160,16 @@ ament_target_dependencies(franka_interface_status_publisher
     franka_interface_msgs
     rclcpp
     pluginlib
+)
+
+target_link_libraries(franka_interface_status_publisher 
+  Threads::Threads
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  rt
+  proto
+  franka-interface-common
+  ${Protobuf_LIBRARIES}
 )
 
 target_include_directories(franka_interface_status_publisher
@@ -196,6 +226,16 @@ ament_target_dependencies(execute_skill_action_server
   pluginlib
 )
 
+target_link_libraries(execute_skill_action_server 
+  Threads::Threads
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  rt
+  proto
+  franka-interface-common
+  ${Protobuf_LIBRARIES}
+)
+
 rclcpp_components_register_node(execute_skill_action_server PLUGIN "franka_ros_interface::ExecuteSkillActionServer" EXECUTABLE franka_ros_interface_execute_skill_action_server)
 install(TARGETS
   execute_skill_action_server
@@ -208,6 +248,16 @@ ament_target_dependencies(sensor_data_subscriber
     franka_interface_msgs
     rclcpp
     pluginlib
+)
+
+target_link_libraries(sensor_data_subscriber 
+  Threads::Threads
+  ${Boost_LIBRARIES}
+  ${catkin_LIBRARIES}
+  rt
+  proto
+  franka-interface-common
+  ${Protobuf_LIBRARIES}
 )
 
 target_include_directories(sensor_data_subscriber
