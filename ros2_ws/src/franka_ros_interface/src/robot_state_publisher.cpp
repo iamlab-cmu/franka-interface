@@ -6,6 +6,7 @@ namespace franka_ros_interface
   {
     robot_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RobotState>("~/robot_state", 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&RobotStatePublisher::timer_callback, this));
+    tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
 
     RCLCPP_INFO(this->get_logger(), "Robot State Publisher Started");
   }
