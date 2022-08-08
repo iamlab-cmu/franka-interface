@@ -44,7 +44,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             robot_num_parameter_name,
-            default_value=1,
+            default_value='1',
             description='Robot number.'),
         DeclareLaunchArgument(
             robot_ip_parameter_name,
