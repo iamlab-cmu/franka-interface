@@ -17,7 +17,6 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(action_tutorials_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
@@ -31,7 +30,7 @@ find_package(Eigen3 REQUIRED)
 find_package(Protobuf REQUIRED)
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
@@ -67,12 +66,8 @@ target_include_directories(shared_memory_handler PUBLIC
 
 target_link_libraries(shared_memory_handler 
   Threads::Threads
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
   proto
   franka-interface-common
-  ${Protobuf_LIBRARIES}
 )
 
 ament_target_dependencies(shared_memory_handler
@@ -118,14 +113,8 @@ ament_target_dependencies(robot_state_publisher
     pluginlib
 )
 
-target_link_libraries(robot_state_publisher 
-  Threads::Threads
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
-  proto
-  franka-interface-common
-  ${Protobuf_LIBRARIES}
+target_link_libraries(robot_state_publisher
+    proto
 )
 
 target_include_directories(robot_state_publisher
@@ -140,14 +129,8 @@ ament_target_dependencies(run_loop_process_info_state_publisher
     pluginlib
 )
 
-target_link_libraries(run_loop_process_info_state_publisher 
-  Threads::Threads
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
-  proto
-  franka-interface-common
-  ${Protobuf_LIBRARIES}
+target_link_libraries(run_loop_process_info_state_publisher
+    proto
 )
 
 target_include_directories(run_loop_process_info_state_publisher
@@ -162,14 +145,8 @@ ament_target_dependencies(franka_interface_status_publisher
     pluginlib
 )
 
-target_link_libraries(franka_interface_status_publisher 
-  Threads::Threads
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
-  proto
-  franka-interface-common
-  ${Protobuf_LIBRARIES}
+target_link_libraries(franka_interface_status_publisher
+    proto
 )
 
 target_include_directories(franka_interface_status_publisher
@@ -226,14 +203,8 @@ ament_target_dependencies(execute_skill_action_server
   pluginlib
 )
 
-target_link_libraries(execute_skill_action_server 
-  Threads::Threads
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
-  proto
-  franka-interface-common
-  ${Protobuf_LIBRARIES}
+target_link_libraries(execute_skill_action_server
+    proto
 )
 
 rclcpp_components_register_node(execute_skill_action_server PLUGIN "franka_ros_interface::ExecuteSkillActionServer" EXECUTABLE franka_ros_interface_execute_skill_action_server)
@@ -250,14 +221,8 @@ ament_target_dependencies(sensor_data_subscriber
     pluginlib
 )
 
-target_link_libraries(sensor_data_subscriber 
-  Threads::Threads
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
-  proto
-  franka-interface-common
-  ${Protobuf_LIBRARIES}
+target_link_libraries(sensor_data_subscriber
+    proto
 )
 
 target_include_directories(sensor_data_subscriber
