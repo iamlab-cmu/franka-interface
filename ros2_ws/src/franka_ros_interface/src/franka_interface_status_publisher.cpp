@@ -3,8 +3,10 @@
 namespace franka_ros_interface
 {
   FrankaInterfaceStatusPublisher::FrankaInterfaceStatusPublisher(std::string name) :  Node("franka_interface_status_publisher"),
-                                                                topic_name_(name)
+                          shared_memory_handler_loader_("franka_ros_interface", "franka_ros_interface::BaseSharedMemoryHandler"),
+                          topic_name_(name)
   {
+    shared_memory_handler_ = shared_memory_handler_loader_.createSharedInstance("franka_ros_interface::SharedMemoryHandler");
     franka_interface_status_pub_ = this->create_publisher<franka_interface_msgs::msg::FrankaInterfaceStatus>(topic_name_, 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&FrankaInterfaceStatusPublisher::timer_callback, this));
 
@@ -13,7 +15,7 @@ namespace franka_ros_interface
 
   void FrankaInterfaceStatusPublisher::timer_callback()
   {
-    franka_interface_msgs::msg::FrankaInterfaceStatus franka_interface_status_ = shared_memory_handler_.getFrankaInterfaceStatus();
+    franka_interface_msgs::msg::FrankaInterfaceStatus franka_interface_status_ = shared_memory_handler_->getFrankaInterfaceStatus();
     franka_interface_status_.header.stamp = this->get_clock()->now();
 
     if (franka_interface_status_.is_fresh) {
@@ -39,7 +41,7 @@ namespace franka_ros_interface
       franka_interface_status_pub_->publish(franka_interface_status_);
 
       // increment watchdog counter
-      shared_memory_handler_.incrementWatchdogCounter();
+      shared_memory_handler_->incrementWatchdogCounter();
     }
   }
 }

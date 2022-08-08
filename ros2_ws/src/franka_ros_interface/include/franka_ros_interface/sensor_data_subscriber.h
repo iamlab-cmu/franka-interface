@@ -4,6 +4,8 @@
 #include <memory>
 
 #include <rclcpp/rclcpp.hpp>
+#include <pluginlib/class_loader.hpp>
+#include <franka_ros_interface/base_shared_memory_handler.hpp>
 #include "franka_interface_msgs/msg/sensor_data_group.hpp"
 #include "franka_ros_interface/shared_memory_handler.h"
 
@@ -14,7 +16,8 @@ namespace franka_ros_interface
   {
     protected:
 
-      SharedMemoryHandler shared_memory_handler_;
+      pluginlib::ClassLoader<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_loader_;
+      std::shared_ptr<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_;
       std::string sensor_data_topic_name_;
 
     public:

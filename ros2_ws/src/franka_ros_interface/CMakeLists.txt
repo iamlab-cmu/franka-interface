@@ -17,20 +17,20 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(action_tutorials_interfaces REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(franka_interface_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(pluginlib REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Protobuf REQUIRED)
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
@@ -51,12 +51,16 @@ include_directories(
   include
 )
 
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
 
 add_library(shared_memory_handler SHARED
   src/shared_memory_handler.cpp
 )
 
-target_include_directories(shared_memory_handler PRIVATE
+target_include_directories(shared_memory_handler PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
@@ -66,7 +70,6 @@ target_link_libraries(shared_memory_handler
   proto
   rt
   franka-interface-common
-  ${Protobuf_LIBRARIES}
 )
 
 ament_target_dependencies(shared_memory_handler
@@ -74,9 +77,16 @@ ament_target_dependencies(shared_memory_handler
     rclcpp_action
     rclcpp_components
     franka_interface_msgs
+    pluginlib
 )
 
+pluginlib_export_plugin_description_file(franka_ros_interface plugins.xml)
+
 ament_export_libraries(shared_memory_handler)
+ament_export_targets(
+  export_${PROJECT_NAME}
+)
+
 ament_export_include_directories(include)
 ament_export_dependencies(
     ament_cmake
@@ -84,6 +94,7 @@ ament_export_dependencies(
     rclcpp_action
     rclcpp_components
     franka_interface_msgs
+    pluginlib
 )
 
 install(
@@ -105,6 +116,11 @@ ament_target_dependencies(robot_state_publisher
     rclcpp
     tf2
     tf2_ros
+    pluginlib
+)
+
+target_link_libraries(robot_state_publisher
+    proto
 )
 
 target_include_directories(robot_state_publisher
@@ -112,12 +128,15 @@ target_include_directories(robot_state_publisher
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(robot_state_publisher shared_memory_handler)
-
 add_executable(run_loop_process_info_state_publisher src/run_loop_process_info_state_publisher.cpp)
 ament_target_dependencies(run_loop_process_info_state_publisher
     franka_interface_msgs
     rclcpp
+    pluginlib
+)
+
+target_link_libraries(run_loop_process_info_state_publisher
+    proto
 )
 
 target_include_directories(run_loop_process_info_state_publisher
@@ -125,20 +144,21 @@ target_include_directories(run_loop_process_info_state_publisher
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(run_loop_process_info_state_publisher shared_memory_handler)
-
 add_executable(franka_interface_status_publisher src/franka_interface_status_publisher.cpp)
 ament_target_dependencies(franka_interface_status_publisher
     franka_interface_msgs
     rclcpp
+    pluginlib
+)
+
+target_link_libraries(franka_interface_status_publisher
+    proto
 )
 
 target_include_directories(franka_interface_status_publisher
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-
-target_link_libraries(franka_interface_status_publisher shared_memory_handler)
 
 add_executable(get_current_franka_interface_status_server src/get_current_franka_interface_status_server.cpp)
 ament_target_dependencies(get_current_franka_interface_status_server
@@ -186,9 +206,13 @@ ament_target_dependencies(execute_skill_action_server
   rclcpp
   rclcpp_action
   rclcpp_components
+  pluginlib
 )
 
-target_link_libraries(execute_skill_action_server shared_memory_handler)
+target_link_libraries(execute_skill_action_server
+    proto
+)
+
 rclcpp_components_register_node(execute_skill_action_server PLUGIN "franka_ros_interface::ExecuteSkillActionServer" EXECUTABLE franka_ros_interface_execute_skill_action_server)
 install(TARGETS
   execute_skill_action_server
@@ -200,14 +224,17 @@ add_executable(sensor_data_subscriber src/sensor_data_subscriber.cpp)
 ament_target_dependencies(sensor_data_subscriber
     franka_interface_msgs
     rclcpp
+    pluginlib
+)
+
+target_link_libraries(sensor_data_subscriber
+    proto
 )
 
 target_include_directories(sensor_data_subscriber
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-
-target_link_libraries(sensor_data_subscriber shared_memory_handler)
 
 install(TARGETS
     robot_state_publisher

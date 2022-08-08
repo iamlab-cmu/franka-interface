@@ -3,8 +3,10 @@
 namespace franka_ros_interface
 {
   RobotStatePublisher::RobotStatePublisher(std::string name) :  Node("robot_state_publisher"),
-                                                                topic_name_(name)
+      shared_memory_handler_loader_("franka_ros_interface", "franka_ros_interface::BaseSharedMemoryHandler"),
+      topic_name_(name)
   {
+    shared_memory_handler_ = shared_memory_handler_loader_.createSharedInstance("franka_ros_interface::SharedMemoryHandler");
     robot_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RobotState>(topic_name_, 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&RobotStatePublisher::timer_callback, this));
 
@@ -13,7 +15,7 @@ namespace franka_ros_interface
 
   void RobotStatePublisher::timer_callback()
   {
-    franka_interface_msgs::msg::RobotState robot_state_ = shared_memory_handler_.getRobotState(last_robot_frames_);
+    franka_interface_msgs::msg::RobotState robot_state_ = shared_memory_handler_->getRobotState(last_robot_frames_);
     robot_state_.header.stamp = this->get_clock()->now();
 
     if (robot_state_.is_fresh) {

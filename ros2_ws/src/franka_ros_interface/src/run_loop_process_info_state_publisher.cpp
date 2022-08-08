@@ -3,8 +3,10 @@
 namespace franka_ros_interface
 {
   RunLoopProcessInfoStatePublisher::RunLoopProcessInfoStatePublisher(std::string name) :  Node("run_loop_process_info_state_publisher"),
-                                                                                          topic_name_(name)
+        shared_memory_handler_loader_("franka_ros_interface", "franka_ros_interface::BaseSharedMemoryHandler"),
+        topic_name_(name)
   {
+    shared_memory_handler_ = shared_memory_handler_loader_.createSharedInstance("franka_ros_interface::SharedMemoryHandler");
     run_loop_process_info_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RunLoopProcessInfoState>(topic_name_, 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&RunLoopProcessInfoStatePublisher::timer_callback, this));
 
@@ -13,7 +15,7 @@ namespace franka_ros_interface
 
   void RunLoopProcessInfoStatePublisher::timer_callback()
   {
-    franka_interface_msgs::msg::RunLoopProcessInfoState run_loop_process_info_state_ = shared_memory_handler_.getRunLoopProcessInfoState();
+    franka_interface_msgs::msg::RunLoopProcessInfoState run_loop_process_info_state_ = shared_memory_handler_->getRunLoopProcessInfoState();
     run_loop_process_info_state_.header.stamp = this->get_clock()->now();
 
     if (run_loop_process_info_state_.is_fresh) {

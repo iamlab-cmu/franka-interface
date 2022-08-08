@@ -9,6 +9,8 @@
 #include <memory>
 #include <vector>
 #include <rclcpp/rclcpp.hpp>
+#include <pluginlib/class_loader.hpp>
+#include <franka_ros_interface/base_shared_memory_handler.hpp>
 #include <franka_interface_msgs/msg/run_loop_process_info_state.hpp> 
 
 #include "franka_ros_interface/shared_memory_handler.h"
@@ -21,12 +23,14 @@ namespace franka_ros_interface
   {
     protected:
 
+      pluginlib::ClassLoader<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_loader_;
+      
       rclcpp::TimerBase::SharedPtr timer_;
 
       rclcpp::Publisher<franka_interface_msgs::msg::RunLoopProcessInfoState>::SharedPtr  run_loop_process_info_state_pub_;
       std::string topic_name_;
 
-      franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
+      std::shared_ptr<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_;
       
       bool has_seen_one_run_loop_process_info_state_;
       franka_interface_msgs::msg::RunLoopProcessInfoState last_run_loop_process_info_state_;
