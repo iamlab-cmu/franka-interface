@@ -4,3 +4,6 @@
 [submodule "ros2_ws/src/franka_interface_msgs"]
 	path = ros2_ws/src/franka_interface_msgs
 	url = https://github.com/iamlab-cmu/franka_interface_msgs.git
+[submodule "ros2_ws/src/franka_ros2"]
+	path = ros2_ws/src/franka_ros2
+	url = https://github.com/frankaemika/franka_ros2.git

@@ -63,9 +63,8 @@ target_include_directories(shared_memory_handler PRIVATE
 target_link_libraries(shared_memory_handler 
   Threads::Threads
   ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  rt
   proto
+  rt
   franka-interface-common
   ${Protobuf_LIBRARIES}
 )
@@ -86,12 +85,13 @@ ament_export_dependencies(
     rclcpp_components
     franka_interface_msgs
 )
+
 install(
     TARGETS shared_memory_handler
     EXPORT shared_memory_handler
-    LIBRARY DESTINATION lib/${PROJECT_NAME}
-    ARCHIVE DESTINATION lib/${PROJECT_NAME}
-    RUNTIME DESTINATION lib/${PROJECT_NAME}
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION lib
 )
 install(
     DIRECTORY include/
@@ -151,8 +151,6 @@ target_include_directories(get_current_franka_interface_status_server
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(get_current_franka_interface_status_server shared_memory_handler)
-
 add_executable(get_current_robot_state_server src/get_current_robot_state_server.cpp)
 ament_target_dependencies(get_current_robot_state_server
     franka_interface_msgs
@@ -163,8 +161,6 @@ target_include_directories(get_current_robot_state_server
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-
-target_link_libraries(get_current_robot_state_server shared_memory_handler)
 
 add_executable(get_current_gripper_state_server src/get_current_gripper_state_server.cpp)
 ament_target_dependencies(get_current_gripper_state_server
@@ -177,8 +173,6 @@ target_include_directories(get_current_gripper_state_server
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
-
-target_link_libraries(get_current_gripper_state_server shared_memory_handler)
 
 add_library(execute_skill_action_server SHARED
   src/execute_skill_action_server.cpp)
@@ -240,3 +234,4 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
