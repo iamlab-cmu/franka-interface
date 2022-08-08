@@ -8,7 +8,7 @@ namespace franka_ros_interface
     this->get_parameter("robot_state_topic_name", robot_state_topic_name_);
     robot_state_subscriber_ = this->create_subscription<franka_interface_msgs::msg::RobotState>(
       robot_state_topic_name_, 10, std::bind(&GetCurrentRobotStateServer::robot_state_subscriber_callback, this, _1));
-    get_current_robot_state_server_ = this->create_service<franka_interface_msgs::srv::GetCurrentRobotState>("get_current_robot_state_server", 
+    get_current_robot_state_server_ = this->create_service<franka_interface_msgs::srv::GetCurrentRobotState>("~/robot_state", 
                                       std::bind(&GetCurrentRobotStateServer::get_current_robot_state_service, this, _1, _2));
     RCLCPP_INFO(this->get_logger(), "Get Current Robot State Server Started");
   }

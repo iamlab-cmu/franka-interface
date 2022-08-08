@@ -9,7 +9,7 @@ namespace franka_ros_interface
     this->get_parameter("franka_interface_status_topic_name", franka_interface_status_topic_name_);
     franka_interface_status_subscriber_ = this->create_subscription<franka_interface_msgs::msg::FrankaInterfaceStatus>(
       franka_interface_status_topic_name_, 10, std::bind(&GetCurrentFrankaInterfaceStatusServer::franka_interface_status_subscriber_callback, this, _1));
-    get_current_franka_interface_status_server_ = this->create_service<franka_interface_msgs::srv::GetCurrentFrankaInterfaceStatus>("get_current_franka_interface_status_server", 
+    get_current_franka_interface_status_server_ = this->create_service<franka_interface_msgs::srv::GetCurrentFrankaInterfaceStatus>("~/franka_interface_status", 
                                                   std::bind(&GetCurrentFrankaInterfaceStatusServer::get_current_franka_interface_status_service, this, _1, _2));
     RCLCPP_INFO(this->get_logger(), "Get Current Franka Interface Status Server Started");
   }

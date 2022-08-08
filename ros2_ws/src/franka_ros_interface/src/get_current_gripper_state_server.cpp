@@ -9,7 +9,7 @@ namespace franka_ros_interface
     this->get_parameter("gripper_state_topic_name", gripper_state_topic_name_);
     gripper_state_subscriber_ = this->create_subscription<sensor_msgs::msg::JointState>(
       gripper_state_topic_name_, 10, std::bind(&GetCurrentGripperStateServer::gripper_state_subscriber_callback, this, _1));
-    get_current_gripper_state_server_ = this->create_service<franka_interface_msgs::srv::GetCurrentGripperState>("get_current_gripper_state_server", 
+    get_current_gripper_state_server_ = this->create_service<franka_interface_msgs::srv::GetCurrentGripperState>("~/gripper_state", 
                                         std::bind(&GetCurrentGripperStateServer::get_current_gripper_state_service, this, _1, _2));
     RCLCPP_INFO(this->get_logger(), "Get Current Gripper State Server Started");
   }
