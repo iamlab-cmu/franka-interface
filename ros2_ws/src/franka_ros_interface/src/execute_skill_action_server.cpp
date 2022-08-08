@@ -3,8 +3,10 @@
 namespace franka_ros_interface
 {
   ExecuteSkillActionServer::ExecuteSkillActionServer(const rclcpp::NodeOptions & options = rclcpp::NodeOptions())
-  : Node("execute_skill_action_server", options)
+  : Node("execute_skill_action_server", options),
+    shared_memory_handler_loader_("franka_ros_interface", "franka_ros_interface::BaseSharedMemoryHandler")
   {
+    shared_memory_handler_ = shared_memory_handler_loader_.createSharedInstance("franka_ros_interface::SharedMemoryHandler");
     this->execute_skill_action_server_ = rclcpp_action::create_server<ExecuteSkill>(
       this,
       "execute_skill",
@@ -42,7 +44,7 @@ namespace franka_ros_interface
     std::shared_ptr<franka_interface_msgs::action::ExecuteSkill::Feedback> feedback = std::make_shared<ExecuteSkill::Feedback>();
     std::shared_ptr<franka_interface_msgs::action::ExecuteSkill::Result> result = std::make_shared<ExecuteSkill::Result>();
 
-    franka_interface_status_ = shared_memory_handler_.getFrankaInterfaceStatus();
+    franka_interface_status_ = shared_memory_handler_->getFrankaInterfaceStatus();
     if (!franka_interface_status_.is_ready) {
       RCLCPP_ERROR(this->get_logger(), "Franka Interface is not ready yet!");
       goal_handle->abort(result);
@@ -53,29 +55,29 @@ namespace franka_ros_interface
     rclcpp::Rate r(10.0);
 
     // Load skill parameters into shared memory and returns the skill_id
-    int skill_id = shared_memory_handler_.loadSkillParametersIntoSharedMemory(goal);
+    int skill_id = shared_memory_handler_->loadSkillParametersIntoSharedMemory(goal);
 
     while(skill_id == -1) {
       r.sleep();
 
-      skill_id = shared_memory_handler_.loadSkillParametersIntoSharedMemory(goal);
+      skill_id = shared_memory_handler_->loadSkillParametersIntoSharedMemory(goal);
     }
 
     RCLCPP_INFO(this->get_logger(), "New Skill id = %d", skill_id);
 
     // Loop until skill is complete from shared memory or is cancelled
-    int done_skill_id = shared_memory_handler_.getDoneSkillIdInSharedMemory();
+    int done_skill_id = shared_memory_handler_->getDoneSkillIdInSharedMemory();
 
     RCLCPP_INFO(this->get_logger(), "Done getting done_skill_id");
 
     // Ensure cancelled flag is set to false
-    shared_memory_handler_.setSkillCancelledFlagInSharedMemory(false);
+    shared_memory_handler_->setSkillCancelledFlagInSharedMemory(false);
     while (done_skill_id < skill_id) {
       // this sleep is not necessary, the execution_feedback is computed at 10 Hz for demonstration purposes
       r.sleep();
 
       RCLCPP_DEBUG(this->get_logger(), "Getting Franka Interface Status");
-      franka_interface_status_ = shared_memory_handler_.getFrankaInterfaceStatus();
+      franka_interface_status_ = shared_memory_handler_->getFrankaInterfaceStatus();
       RCLCPP_DEBUG(this->get_logger(), "Done Getting Franka Interface Status");
 
       if (!franka_interface_status_.is_ready) {
@@ -89,13 +91,13 @@ namespace franka_ros_interface
         RCLCPP_INFO(this->get_logger(), "%s: Cancelled", goal->skill_description);
         // set the action state to cancelled
         goal_handle->canceled(result);
-        shared_memory_handler_.setSkillCancelledFlagInSharedMemory(true);
+        shared_memory_handler_->setSkillCancelledFlagInSharedMemory(true);
         break;
       }
 
       // TODO fill in execution_feedback from shared memory
       RCLCPP_DEBUG(this->get_logger(), "Getting Skill Feedback");
-      feedback_ = shared_memory_handler_.getSkillFeedback();
+      feedback_ = shared_memory_handler_->getSkillFeedback();
       // TODO(jacky) remove this check (and the logic in shared mem handler) once run_loop_info is no longer used
       if (feedback_.num_execution_feedback == -1) continue;
 
@@ -105,13 +107,13 @@ namespace franka_ros_interface
       goal_handle->publish_feedback(feedback);
       
       RCLCPP_DEBUG(this->get_logger(), "Getting Done Skill Id");
-      done_skill_id = shared_memory_handler_.getDoneSkillIdInSharedMemory();
+      done_skill_id = shared_memory_handler_->getDoneSkillIdInSharedMemory();
       RCLCPP_DEBUG(this->get_logger(), "Done Skill Id = %d", done_skill_id);
     }
     RCLCPP_INFO(this->get_logger(), "Skill Terminated Id = %d", skill_id);
 
-    shared_memory_handler_.setNewSkillDescriptionInSharedMemory("");
-    result_ = shared_memory_handler_.getSkillResult(skill_id);
+    shared_memory_handler_->setNewSkillDescriptionInSharedMemory("");
+    result_ = shared_memory_handler_->getSkillResult(skill_id);
     result = std::make_shared<ExecuteSkill::Result>(result_);
     if (done_skill_id != -1 && (done_skill_id == skill_id || done_skill_id == skill_id + 1)) {
       // Get execution result from shared memory

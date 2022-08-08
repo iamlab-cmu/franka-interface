@@ -15,6 +15,8 @@
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/msg/transform_stamped.hpp>
 
+#include <pluginlib/class_loader.hpp>
+#include <franka_ros_interface/base_shared_memory_handler.hpp>
 #include <franka_interface_msgs/msg/robot_state.hpp>
 
 #include "franka_ros_interface/shared_memory_handler.h"
@@ -28,11 +30,13 @@ namespace franka_ros_interface
   {
     protected:
 
+      pluginlib::ClassLoader<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_loader_;
+      
       rclcpp::TimerBase::SharedPtr timer_;
       rclcpp::Publisher<franka_interface_msgs::msg::RobotState>::SharedPtr robot_state_pub_;
       std::string topic_name_;
 
-      franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
+      std::shared_ptr<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_;
       
       bool has_seen_one_robot_state_;
       franka_interface_msgs::msg::RobotState last_robot_state_;

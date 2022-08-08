@@ -2,8 +2,10 @@
 
 namespace franka_ros_interface
 {
-  SensorDataSubscriber::SensorDataSubscriber() : Node("sensor_data_subscriber")
+  SensorDataSubscriber::SensorDataSubscriber() : Node("sensor_data_subscriber"),
+      shared_memory_handler_loader_("franka_ros_interface", "franka_ros_interface::BaseSharedMemoryHandler")
   {
+    shared_memory_handler_ = shared_memory_handler_loader_.createSharedInstance("franka_ros_interface::SharedMemoryHandler");
     this->declare_parameter<std::string>("sensor_data_topic_name", "/sensor_data_1/sensor_data");
     this->get_parameter("sensor_data_topic_name", sensor_data_topic_name_);
     sensor_data_subscriber_ = this->create_subscription<franka_interface_msgs::msg::SensorDataGroup>(
@@ -18,7 +20,7 @@ namespace franka_ros_interface
       sensor_group_msg->has_termination_handler_sensor_data ? "yes" : "no"
     );
 
-    shared_memory_handler_.loadSensorDataGroupIntoSharedMemory(sensor_group_msg);
+    shared_memory_handler_->loadSensorDataGroupIntoSharedMemory(sensor_group_msg);
   }
 }
 

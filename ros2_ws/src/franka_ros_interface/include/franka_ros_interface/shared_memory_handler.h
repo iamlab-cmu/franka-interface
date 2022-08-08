@@ -29,15 +29,17 @@
 #include <franka-interface-common/run_loop_process_info.h>
 #include <franka-interface-common/SharedMemoryInfo.h>
 
+#include <franka_ros_interface/base_shared_memory_handler.hpp>
+
 namespace franka_ros_interface
 {
-  class SharedMemoryHandler {
+  class SharedMemoryHandler : public BaseSharedMemoryHandler
+  {
     public:
+
       SharedMemoryHandler();
 
-      ~SharedMemoryHandler(void){}
-
-      int loadSkillParametersIntoSharedMemory(const std::shared_ptr<const franka_interface_msgs::action::ExecuteSkill::Goal> goal);
+      int loadSkillParametersIntoSharedMemory(const std::shared_ptr<const franka_interface_msgs::action::ExecuteSkill::Goal> goal) override;
 
       /**
        * The protocol for writing data to the shared memory is the following. Note that the shared memory is of type
@@ -64,31 +66,31 @@ namespace franka_ros_interface
        * sensor data parts of shared memory. If successful, it writes the data into shared memory, else if it cannot
        * acquire the lock it does not do anything.
        */
-      void loadSensorDataGroupIntoSharedMemory(const franka_interface_msgs::msg::SensorDataGroup::SharedPtr sensor_data_group_ptr);
+      void loadSensorDataGroupIntoSharedMemory(const franka_interface_msgs::msg::SensorDataGroup::SharedPtr sensor_data_group_ptr) override;
 
-      bool getSkillRunningFlagInSharedMemory();
+      bool getSkillRunningFlagInSharedMemory() override;
 
-      int getDoneSkillIdInSharedMemory();
+      int getDoneSkillIdInSharedMemory() override;
 
-      void setSkillCancelledFlagInSharedMemory(bool skill_cancelled_flag);
+      void setSkillCancelledFlagInSharedMemory(bool skill_cancelled_flag) override;
 
-      void setNewSkillDescriptionInSharedMemory(std::string description);
+      void setNewSkillDescriptionInSharedMemory(std::string description) override;
 
-      franka_interface_msgs::action::ExecuteSkill::Feedback getSkillFeedback();
+      franka_interface_msgs::action::ExecuteSkill::Feedback getSkillFeedback() override;
 
-      franka_interface_msgs::action::ExecuteSkill::Result getSkillResult(int skill_id);
+      franka_interface_msgs::action::ExecuteSkill::Result getSkillResult(int skill_id) override;
 
-      franka_interface_msgs::msg::RobotState getRobotState(std::array<double, 144> &robot_frames);
+      franka_interface_msgs::msg::RobotState getRobotState(std::array<double, 144> &robot_frames) override;
 
-      franka_interface_msgs::msg::FrankaInterfaceStatus getFrankaInterfaceStatus();
+      franka_interface_msgs::msg::FrankaInterfaceStatus getFrankaInterfaceStatus() override;
 
-      franka_interface_msgs::msg::RunLoopProcessInfoState getRunLoopProcessInfoState();
+      franka_interface_msgs::msg::RunLoopProcessInfoState getRunLoopProcessInfoState() override;
       
-      bool getNewSkillAvailableFlagInSharedMemory();
+      bool getNewSkillAvailableFlagInSharedMemory() override;
 
-      int getNewSkillIdInSharedMemory();
+      int getNewSkillIdInSharedMemory() override;
 
-      void incrementWatchdogCounter();
+      void incrementWatchdogCounter() override;
 
     private:
 
@@ -190,6 +192,5 @@ namespace franka_ros_interface
       void loadTimerParamsUnprotected(const std::shared_ptr<const franka_interface_msgs::action::ExecuteSkill::Goal> goal, int current_free_shared_memory_index);
   };
 }
-
 
 #endif // FRANKA_ROS_INTERFACE_SHARED_MEMORY_HANDLER_H

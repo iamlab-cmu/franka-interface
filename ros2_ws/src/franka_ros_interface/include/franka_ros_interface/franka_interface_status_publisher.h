@@ -10,6 +10,8 @@
 #include <vector>
 #include <rclcpp/rclcpp.hpp>
 
+#include <pluginlib/class_loader.hpp>
+#include <franka_ros_interface/base_shared_memory_handler.hpp>
 #include "franka_interface_msgs/msg/franka_interface_status.hpp"
 #include "franka_ros_interface/shared_memory_handler.h"
 
@@ -20,6 +22,8 @@ namespace franka_ros_interface
   {
     protected:
 
+      pluginlib::ClassLoader<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_loader_;
+      
       rclcpp::TimerBase::SharedPtr timer_;
       rclcpp::Publisher<franka_interface_msgs::msg::FrankaInterfaceStatus>::SharedPtr franka_interface_status_pub_;
       std::string topic_name_;
@@ -31,7 +35,7 @@ namespace franka_ros_interface
       // Signal not ok if 10 consecutive franka_interface statuses have been stale. Roughly 100 ms
       int stale_count_max = 10;
 
-      franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
+      std::shared_ptr<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_;
 
     private:
       void timer_callback();

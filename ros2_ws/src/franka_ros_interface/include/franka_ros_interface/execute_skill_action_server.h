@@ -13,6 +13,8 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <rclcpp_components/register_node_macro.hpp>
 
+#include <pluginlib/class_loader.hpp>
+#include <franka_ros_interface/base_shared_memory_handler.hpp>
 #include <franka_interface_msgs/action/execute_skill.hpp>
 #include <franka_interface_msgs/msg/franka_interface_status.hpp>
 
@@ -27,11 +29,13 @@ namespace franka_ros_interface
   {
     protected:
 
+      pluginlib::ClassLoader<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_loader_;
+
       // create messages that are used to published feedback/result
       franka_interface_msgs::action::ExecuteSkill::Feedback feedback_;
       franka_interface_msgs::action::ExecuteSkill::Result result_;
 
-      franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
+      std::shared_ptr<franka_ros_interface::BaseSharedMemoryHandler> shared_memory_handler_;
       franka_interface_msgs::msg::FrankaInterfaceStatus franka_interface_status_;
 
     public:

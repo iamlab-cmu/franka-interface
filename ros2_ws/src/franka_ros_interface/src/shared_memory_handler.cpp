@@ -966,3 +966,7 @@ namespace franka_ros_interface
   }
 
 }
+
+#include <pluginlib/class_list_macros.hpp>
+
+PLUGINLIB_EXPORT_CLASS(franka_ros_interface::SharedMemoryHandler, franka_ros_interface::BaseSharedMemoryHandler)
