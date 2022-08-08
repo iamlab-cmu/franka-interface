@@ -66,7 +66,9 @@ target_include_directories(shared_memory_handler PUBLIC
 
 target_link_libraries(shared_memory_handler 
   Threads::Threads
+  ${Boost_LIBRARIES}
   proto
+  rt
   franka-interface-common
 )
 
@@ -97,10 +99,14 @@ ament_export_dependencies(
 
 install(
     TARGETS shared_memory_handler
-    EXPORT export_${PROJECT_NAME}
-    ARCHIVE DESTINATION lib
+    EXPORT shared_memory_handler
     LIBRARY DESTINATION lib
-    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    RUNTIME DESTINATION lib
+)
+install(
+    DIRECTORY include/
+    DESTINATION include
 )
 
 add_executable(robot_state_publisher src/robot_state_publisher.cpp)
@@ -255,3 +261,4 @@ if(BUILD_TESTING)
 endif()
 
 ament_package()
+
