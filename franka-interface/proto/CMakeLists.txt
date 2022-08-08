@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 3.4)
 
-project(proto CXX)
+project(proto 
+  VERSION 0.0.1 
+  LANGUAGES CXX
+)
 
 set(CMAKE_CXX_STANDARD 14)
 
@@ -23,5 +26,14 @@ add_library(proto SHARED ${PROTO_FEEDBACK_CONTROLLER_PARAMS_MSG} ${PROTO_FEEDBAC
                          ${PROTO_TRAJECTORY_GENERATOR_PARAMS_MSG} ${PROTO_TRAJECTORY_GENERATOR_PARAMS_MSG_HDRS})
 target_link_libraries(proto ${PROTOBUF_LIBRARIES})
 target_include_directories(proto PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "protoConfig.cmake"
+    VERSION ${proto_VERSION}
+    COMPATIBILITY AnyNewerVersion)
+
+install(FILES "protoConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/protoConfig.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/proto)
 
 # set_target_properties(proto PROPERTIES POSITION_INDEPENDENT_CODE ON)

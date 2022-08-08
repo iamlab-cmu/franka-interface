@@ -30,26 +30,34 @@ find_package(Eigen3 REQUIRED)
 find_package(Protobuf REQUIRED)
 
 ## System dependencies are found with CMake's conventions
+# find_package(Boost REQUIRED COMPONENTS system)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 set(franka-interface-common_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../../franka-interface-common/include")
-#set(franka-interface-common_lib "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface-common/")
+set(franka-interface-common_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface-common/")
 set(proto_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface/proto/")
-#set(proto "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface/proto/")
+set(proto_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface/proto/")
+
+message(${proto_DIR})
 
 find_package(Boost COMPONENTS REQUIRED filesystem system thread)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${franka-interface-common_INCLUDE_DIRS})
 include_directories(${proto_INCLUDE_DIRS})
 
-#link_directories(${franka-interface-common_lib})
-#link_directories(${proto})
+link_directories(${franka-interface-common_DIR})
+link_directories(${proto_DIR})
 
-add_library(proto STATIC IMPORTED)
+add_library(proto STATIC IMPORTED SHARED)
 set_target_properties(proto PROPERTIES IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface/proto/libproto.so")
-add_library(franka-interface-common STATIC IMPORTED)
+add_library(franka-interface-common STATIC IMPORTED SHARED)
 set_target_properties(franka-interface-common PROPERTIES IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface-common/libfranka-interface-common.so")
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../build/franka-interface-common/")
+
+find_package(proto REQUIRED)
+find_package(franka-interface-common REQUIRED)
 
 include_directories(
   include

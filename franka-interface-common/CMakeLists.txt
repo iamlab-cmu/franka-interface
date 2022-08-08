@@ -32,7 +32,6 @@ target_link_libraries(franka-interface-common PUBLIC
   rt
 )
 
-
 target_include_directories(franka-interface-common PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
@@ -49,3 +48,12 @@ install(TARGETS franka-interface-common
 )
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "franka-interface-commonConfig.cmake"
+    VERSION ${franka-interface-common_VERSION}
+    COMPATIBILITY AnyNewerVersion)
+
+install(FILES "franka-interface-commonConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/franka-interface-commonConfig.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/franka-interface-common)
