@@ -7,7 +7,7 @@ namespace franka_ros_interface
   {
     this->execute_skill_action_server_ = rclcpp_action::create_server<ExecuteSkill>(
       this,
-      "execute_skill",
+      "~/execute_skill",
       std::bind(&ExecuteSkillActionServer::handle_goal, this, _1, _2),
       std::bind(&ExecuteSkillActionServer::handle_cancel, this, _1),
       std::bind(&ExecuteSkillActionServer::handle_accepted, this, _1));

@@ -2,10 +2,9 @@
 
 namespace franka_ros_interface
 {
-  FrankaInterfaceStatusPublisher::FrankaInterfaceStatusPublisher(std::string name) :  Node("franka_interface_status_publisher"),
-                                                                topic_name_(name)
+  FrankaInterfaceStatusPublisher::FrankaInterfaceStatusPublisher() :  Node("franka_interface_status_publisher")
   {
-    franka_interface_status_pub_ = this->create_publisher<franka_interface_msgs::msg::FrankaInterfaceStatus>(topic_name_, 100);
+    franka_interface_status_pub_ = this->create_publisher<franka_interface_msgs::msg::FrankaInterfaceStatus>("~/franka_interface_status", 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&FrankaInterfaceStatusPublisher::timer_callback, this));
 
     RCLCPP_INFO(this->get_logger(), "Franka Interface Status Publisher Started");
@@ -47,7 +46,7 @@ namespace franka_ros_interface
 int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<franka_ros_interface::FrankaInterfaceStatusPublisher>("franka_interface_status"));
+  rclcpp::spin(std::make_shared<franka_ros_interface::FrankaInterfaceStatusPublisher>());
   rclcpp::shutdown();
 
   return 0;

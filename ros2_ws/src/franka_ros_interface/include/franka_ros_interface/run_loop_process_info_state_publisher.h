@@ -24,7 +24,6 @@ namespace franka_ros_interface
       rclcpp::TimerBase::SharedPtr timer_;
 
       rclcpp::Publisher<franka_interface_msgs::msg::RunLoopProcessInfoState>::SharedPtr  run_loop_process_info_state_pub_;
-      std::string topic_name_;
 
       franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
       
@@ -36,7 +35,7 @@ namespace franka_ros_interface
 
     public:
 
-      RunLoopProcessInfoStatePublisher(std::string name);
+      RunLoopProcessInfoStatePublisher();
 
       ~RunLoopProcessInfoStatePublisher(void){}
 

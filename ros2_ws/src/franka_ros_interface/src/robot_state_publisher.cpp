@@ -2,10 +2,9 @@
 
 namespace franka_ros_interface
 {
-  RobotStatePublisher::RobotStatePublisher(std::string name) :  Node("robot_state_publisher"),
-                                                                topic_name_(name)
+  RobotStatePublisher::RobotStatePublisher() :  Node("robot_state_publisher")
   {
-    robot_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RobotState>(topic_name_, 100);
+    robot_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RobotState>("~/robot_state", 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&RobotStatePublisher::timer_callback, this));
 
     RCLCPP_INFO(this->get_logger(), "Robot State Publisher Started");
@@ -112,7 +111,7 @@ namespace franka_ros_interface
 int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<franka_ros_interface::RobotStatePublisher>("robot_state"));
+  rclcpp::spin(std::make_shared<franka_ros_interface::RobotStatePublisher>());
   rclcpp::shutdown();
 
   return 0;

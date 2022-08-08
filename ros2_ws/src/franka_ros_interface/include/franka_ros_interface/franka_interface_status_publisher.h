@@ -22,7 +22,6 @@ namespace franka_ros_interface
 
       rclcpp::TimerBase::SharedPtr timer_;
       rclcpp::Publisher<franka_interface_msgs::msg::FrankaInterfaceStatus>::SharedPtr franka_interface_status_pub_;
-      std::string topic_name_;
 
       franka_interface_msgs::msg::FrankaInterfaceStatus last_franka_interface_status_;
       bool has_seen_one_franka_interface_status_;
@@ -38,7 +37,7 @@ namespace franka_ros_interface
 
     public:
 
-      FrankaInterfaceStatusPublisher(std::string name);
+      FrankaInterfaceStatusPublisher();
 
       ~FrankaInterfaceStatusPublisher(void){}
 

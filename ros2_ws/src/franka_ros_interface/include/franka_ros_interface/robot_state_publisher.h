@@ -30,7 +30,6 @@ namespace franka_ros_interface
 
       rclcpp::TimerBase::SharedPtr timer_;
       rclcpp::Publisher<franka_interface_msgs::msg::RobotState>::SharedPtr robot_state_pub_;
-      std::string topic_name_;
 
       franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
       
@@ -50,7 +49,7 @@ namespace franka_ros_interface
 
     public:
 
-      RobotStatePublisher(std::string name);
+      RobotStatePublisher();
 
       ~RobotStatePublisher(void){}
 

@@ -2,10 +2,9 @@
 
 namespace franka_ros_interface
 {
-  RunLoopProcessInfoStatePublisher::RunLoopProcessInfoStatePublisher(std::string name) :  Node("run_loop_process_info_state_publisher"),
-                                                                                          topic_name_(name)
+  RunLoopProcessInfoStatePublisher::RunLoopProcessInfoStatePublisher() :  Node("run_loop_process_info_state_publisher")
   {
-    run_loop_process_info_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RunLoopProcessInfoState>(topic_name_, 100);
+    run_loop_process_info_state_pub_ = this->create_publisher<franka_interface_msgs::msg::RunLoopProcessInfoState>("~/run_loop_process_info_state", 100);
     timer_ = this->create_wall_timer(10ms, std::bind(&RunLoopProcessInfoStatePublisher::timer_callback, this));
 
     RCLCPP_INFO(this->get_logger(), "Run Loop Process Info State Publisher Started");
@@ -33,7 +32,7 @@ namespace franka_ros_interface
 int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<franka_ros_interface::RunLoopProcessInfoStatePublisher>("run_loop_process_info_state"));
+  rclcpp::spin(std::make_shared<franka_ros_interface::RunLoopProcessInfoStatePublisher>());
   rclcpp::shutdown();
 
   return 0;
