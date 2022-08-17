@@ -87,7 +87,8 @@ namespace franka_ros_interface
       // check that client has not requested to cancel the skill
       if (goal_handle->is_canceling() || !rclcpp::ok()) {
         RCLCPP_INFO(this->get_logger(), "%s: Cancelled", goal->skill_description);
-        // set the action state to cancelled
+        // set the skill cancelled flag in shared memory to true and break from while loop
+        skill_cancelled_ = true;
         goal_handle->canceled(result);
         shared_memory_handler_.setSkillCancelledFlagInSharedMemory(true);
         break;
@@ -113,14 +114,16 @@ namespace franka_ros_interface
     shared_memory_handler_.setNewSkillDescriptionInSharedMemory("");
     result_ = shared_memory_handler_.getSkillResult(skill_id);
     result = std::make_shared<ExecuteSkill::Result>(result_);
-    if (done_skill_id != -1 && (done_skill_id == skill_id || done_skill_id == skill_id + 1)) {
+
+    if(skill_cancelled_) {
+      RCLCPP_INFO(this->get_logger(), "Skill was cancelled. Skill Id = %d", skill_id);
+      skill_cancelled_ = false;
+    }
+    else if (done_skill_id != -1 && (done_skill_id == skill_id || done_skill_id == skill_id + 1)) {
       // Get execution result from shared memory
       RCLCPP_INFO(this->get_logger(), "%s: Succeeded", goal->skill_description);
       // set the action state to succeeded
       goal_handle->succeed(result);
-    } else if (goal_handle->is_canceling()) {
-      RCLCPP_INFO(this->get_logger(), "Skill was cancelled. Skill Id = %d", skill_id);
-      goal_handle->canceled(result);
     } else {
       RCLCPP_ERROR(this->get_logger(), "Done Skill Id Error: Done Skill Id = %d, Skill Id = %d", done_skill_id, skill_id);
       goal_handle->canceled(result);

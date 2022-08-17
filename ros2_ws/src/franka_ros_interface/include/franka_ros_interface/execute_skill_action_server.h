@@ -34,6 +34,8 @@ namespace franka_ros_interface
       franka_ros_interface::SharedMemoryHandler shared_memory_handler_;
       franka_interface_msgs::msg::FrankaInterfaceStatus franka_interface_status_;
 
+      bool skill_cancelled_ = false;
+
     public:
       using ExecuteSkill = franka_interface_msgs::action::ExecuteSkill;
       using ExecuteSkillGoalHandle = rclcpp_action::ServerGoalHandle<ExecuteSkill>;
