@@ -99,6 +99,9 @@ class RunLoopProcessInfo {
   bool get_skill_cancelled();
   void set_skill_cancelled(bool skill_cancelled);
 
+  bool get_skill_failed();
+  void set_skill_failed(bool skill_failed);
+
   int get_done_skill_id();
   void set_done_skill_id(int done_skill_id);
   
@@ -141,6 +144,7 @@ class RunLoopProcessInfo {
 
   bool is_running_skill_{false};
   bool skill_cancelled_{false};
+  bool skill_failed_{false};
   
   int done_skill_id_{-1};
   int result_skill_id_{-1};

@@ -8,6 +8,8 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <google/protobuf/message.h>
+#include <result_msg.pb.h>
 
 #include <rclcpp/rclcpp.hpp>
 #include <rclcpp_action/rclcpp_action.hpp>

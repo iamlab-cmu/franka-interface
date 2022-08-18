@@ -87,6 +87,7 @@ enum class SkillStatus : uint8_t {
   RUNNING,
   FINISHED,
   VIRT_COLL_ERR,
+  FRANKA_ERR,
 }; 
 
 enum class SensorDataManagerReadStatus : uint8_t {

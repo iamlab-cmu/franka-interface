@@ -98,7 +98,7 @@ namespace franka_ros_interface
       RCLCPP_DEBUG(this->get_logger(), "Getting Skill Feedback");
       feedback_ = shared_memory_handler_.getSkillFeedback();
       // TODO(jacky) remove this check (and the logic in shared mem handler) once run_loop_info is no longer used
-      if (feedback_.num_execution_feedback == -1) continue;
+      if (feedback_.num_execution_feedback == 0) continue;
 
       feedback = std::make_shared<ExecuteSkill::Feedback>(feedback_);
 
@@ -112,21 +112,28 @@ namespace franka_ros_interface
     RCLCPP_INFO(this->get_logger(), "Skill Terminated Id = %d", skill_id);
 
     shared_memory_handler_.setNewSkillDescriptionInSharedMemory("");
+    ExecuteSkillResultMessage result_msg = shared_memory_handler_.getSkillResultMessage(skill_id);
     result_ = shared_memory_handler_.getSkillResult(skill_id);
     result = std::make_shared<ExecuteSkill::Result>(result_);
 
     if(skill_cancelled_) {
       RCLCPP_INFO(this->get_logger(), "Skill was cancelled. Skill Id = %d", skill_id);
       skill_cancelled_ = false;
-    }
-    else if (done_skill_id != -1 && (done_skill_id == skill_id || done_skill_id == skill_id + 1)) {
-      // Get execution result from shared memory
+    } else if(result_msg.skill_result() == 0) {
       RCLCPP_INFO(this->get_logger(), "%s: Succeeded", goal->skill_description);
       // set the action state to succeeded
       goal_handle->succeed(result);
+    } else if (result_msg.skill_result() == 1) {
+      RCLCPP_INFO(this->get_logger(), "%s: Virtual Wall Collision", goal->skill_description);
+      // set the action state to succeeded
+      goal_handle->abort(result);
+    } else if (result_msg.skill_result() == 2) {
+      RCLCPP_INFO(this->get_logger(), "%s: Franka Exception ", goal->skill_description);
+      // set the action state to succeeded
+      goal_handle->abort(result);
     } else {
       RCLCPP_ERROR(this->get_logger(), "Done Skill Id Error: Done Skill Id = %d, Skill Id = %d", done_skill_id, skill_id);
-      goal_handle->canceled(result);
+      goal_handle->abort(result);
     }
   }
 }

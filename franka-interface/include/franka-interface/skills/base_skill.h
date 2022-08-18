@@ -3,6 +3,8 @@
 
 #include <franka-interface-common/definitions.h>
 #include <iostream>
+#include <cstring>
+#include <google/protobuf/message.h>
 
 #include "franka-interface/franka_robot.h"
 #include "franka-interface/franka_gripper.h"
@@ -10,6 +12,8 @@
 #include "franka-interface/feedback_controller/feedback_controller.h"
 #include "franka-interface/termination_handler/termination_handler.h"
 #include "franka-interface/trajectory_generator/trajectory_generator.h"
+
+#include "result_msg.pb.h"
 
 class run_loop;
 

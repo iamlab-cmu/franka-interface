@@ -148,7 +148,11 @@ void run_loop::write_skill_result_to_shared_memory(BaseSkill* skill) {
   
   if (skill->has_terminated_by_virt_coll()) {
     skill->set_skill_status(SkillStatus::VIRT_COLL_ERR);
-  } else {
+  }
+  else if (status == SkillStatus::FRANKA_ERR) {
+    // Do nothing here
+  }
+  else {
     skill->set_skill_status(SkillStatus::FINISHED);
   }
   
@@ -440,7 +444,6 @@ void run_loop::set_franka_interface_status(bool is_ready, std::string error_mess
                 *(shared_memory_handler_->getFrankaInterfaceStateInfoMutex()),
                 boost::interprocess::defer_lock);
   try {
-    std::cout << "Will try to acquire lock while setting franka_interface status\n";
     if (lock.try_lock()) {
       franka_interface_state_info->set_is_ready(is_ready);
       franka_interface_state_info->set_error_description(error_message);
@@ -542,13 +545,13 @@ void run_loop::run_on_franka() {
       } else {
         // Set done_skill_id in run loop info
         std::cout << "Setting done skill id to " << skill->get_skill_id() << ".\n";
+        skill->set_skill_status(SkillStatus::FRANKA_ERR);
         write_skill_result_to_shared_memory(skill);
         run_loop_info->set_skill_done_when_error_occurs(skill->get_skill_id());
       }
 
       skill_manager_.clear_skill_and_meta_skill_list();
       shared_memory_handler_->clearAllBuffers();
-      robot_state_data_->clearAllBuffers();
 
       if (log_ && use_new_filestream_on_error_) {
         // Write new logs to a new log file.

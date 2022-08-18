@@ -11,6 +11,7 @@
 #include <std_msgs/msg/float64.hpp>
 #include <google/protobuf/message.h>
 #include <robot_state_msg.pb.h>
+#include <result_msg.pb.h>
 
 #include <rclcpp/rclcpp.hpp>
 #include <array>
@@ -77,6 +78,8 @@ namespace franka_ros_interface
       franka_interface_msgs::action::ExecuteSkill::Feedback getSkillFeedback();
 
       franka_interface_msgs::action::ExecuteSkill::Result getSkillResult(int skill_id);
+
+      ExecuteSkillResultMessage getSkillResultMessage(int skill_id);
 
       franka_interface_msgs::msg::RobotState getRobotState(std::array<double, 144> &robot_frames);
 

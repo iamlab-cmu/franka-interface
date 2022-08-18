@@ -419,6 +419,47 @@ namespace franka_ros_interface
     // The lock of the run_loop_info_mutex_ should be released automatically
   }
 
+  ExecuteSkillResultMessage SharedMemoryHandler::getSkillResultMessage(int skill_id)
+  {
+    // Grab the lock of the run_loop_info_mutex_
+    boost::interprocess::scoped_lock<boost::interprocess::interprocess_mutex> run_loop_info_lock(*run_loop_info_mutex_);
+
+    int result_memory_index = skill_id % 2;
+
+    ExecuteSkillResultMessage execute_skill_result_msg;
+
+    if(result_memory_index == 0)
+    {
+      int num_bytes = (execution_result_buffer_0_[0] + 
+                      (execution_result_buffer_0_[1] << 8) + 
+                      (execution_result_buffer_0_[2] << 16) + 
+                      (execution_result_buffer_0_[3] << 24));
+
+      if(execute_skill_result_msg.ParseFromArray(execution_result_buffer_0_ + 4, num_bytes) == false) {
+        std::cout << "ParsingFromArray Exception occurred when parsing ExecuteSkillResultMessage.\n"; 
+      }
+      
+      // The lock of the shared_execution_response_0_mutex_ should be released automatically
+    }
+    else if(result_memory_index == 1)
+    {
+      int num_bytes = (execution_result_buffer_1_[0] + 
+                      (execution_result_buffer_1_[1] << 8) + 
+                      (execution_result_buffer_1_[2] << 16) + 
+                      (execution_result_buffer_1_[3] << 24));
+
+      if(execute_skill_result_msg.ParseFromArray(execution_result_buffer_1_ + 4, num_bytes) == false) {
+        std::cout << "ParsingFromArray Exception occurred when parsing ExecuteSkillResultMessage.\n"; 
+      }
+
+      // The lock of the shared_execution_response_1_mutex_ should be released automatically
+    }
+
+    return execute_skill_result_msg;
+
+    // The lock of the run_loop_info_mutex_ should be released automatically
+  }
+
   franka_interface_msgs::action::ExecuteSkill::Result SharedMemoryHandler::getSkillResult(int skill_id)
   {
     franka_interface_msgs::action::ExecuteSkill::Result result;
@@ -684,6 +725,7 @@ namespace franka_ros_interface
       run_loop_process_info_state.new_skill_description = run_loop_process_info_->get_new_skill_description();
       run_loop_process_info_state.is_running_skill = run_loop_process_info_->get_is_running_skill();
       run_loop_process_info_state.skill_cancelled = run_loop_process_info_->get_skill_cancelled();
+      run_loop_process_info_state.skill_failed = run_loop_process_info_->get_skill_failed();
       run_loop_process_info_state.done_skill_id = run_loop_process_info_->get_done_skill_id();
       run_loop_process_info_state.result_skill_id = run_loop_process_info_->get_result_skill_id();
       run_loop_process_info_state.time_skill_started_in_robot_time = run_loop_process_info_->get_time_skill_started_in_robot_time();

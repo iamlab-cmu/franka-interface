@@ -187,6 +187,14 @@ void RunLoopProcessInfo::set_skill_cancelled(bool skill_cancelled) {
   skill_cancelled_ = skill_cancelled;
 }
 
+bool RunLoopProcessInfo::get_skill_failed() {
+  return skill_failed_;
+}
+
+void RunLoopProcessInfo::set_skill_failed(bool skill_failed) {
+  skill_failed_ = skill_failed;
+}
+
 int RunLoopProcessInfo::get_done_skill_id() {
   return done_skill_id_;
 }
@@ -255,6 +263,7 @@ void RunLoopProcessInfo::reset_skill_vars() {
 
   is_running_skill_ = false;
   skill_cancelled_ = false;
+  skill_failed_ = false;
   
   done_skill_id_ = -1;
   result_skill_id_ = -1;
@@ -269,6 +278,7 @@ void RunLoopProcessInfo::set_skill_done_when_error_occurs(int skill_id) {
 
   is_running_skill_ = false;
   skill_cancelled_ = false;
+  skill_failed_ = true;
   
   done_skill_id_ = skill_id;
   result_skill_id_ = skill_id;

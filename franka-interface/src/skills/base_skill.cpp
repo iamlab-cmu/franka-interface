@@ -59,7 +59,31 @@ bool BaseSkill::has_terminated_by_virt_coll() {
 }
 
 void BaseSkill::write_result_to_shared_memory(SharedBufferTypePtr result_buffer, FrankaRobot* robot) {
-  std::cout << "Should write result to shared memory\n";
+
+  ExecuteSkillResultMessage execute_skill_result_msg;
+  if (skill_status_ == SkillStatus::FINISHED) {
+    execute_skill_result_msg.set_skill_result(0);
+  }
+  else if (skill_status_ == SkillStatus::VIRT_COLL_ERR) {
+    execute_skill_result_msg.set_skill_result(1);
+  }
+  else if (skill_status_ == SkillStatus::FRANKA_ERR) {
+    execute_skill_result_msg.set_skill_result(2);
+  }
+
+  std::string execute_skill_result_msg_string;
+
+  execute_skill_result_msg.SerializeToString(&execute_skill_result_msg_string);
+
+  int num_bytes = execute_skill_result_msg_string.length();
+
+  result_buffer[0] = (num_bytes & 0xFF);
+  result_buffer[1] = ((num_bytes >> 8) & 0xFF);
+  result_buffer[2] = ((num_bytes >> 16) & 0xFF);
+  result_buffer[3] = ((num_bytes >> 24) & 0xFF);
+
+  // Now mem copy all of the data in the form of bytes
+  memcpy(result_buffer + 4, &execute_skill_result_msg_string[0], num_bytes * sizeof(uint8_t));
 }
 
 void BaseSkill::write_feedback_to_shared_memory(SharedBufferTypePtr feedback_buffer) {
