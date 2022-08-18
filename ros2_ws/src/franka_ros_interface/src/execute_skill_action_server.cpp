@@ -97,14 +97,14 @@ namespace franka_ros_interface
       // TODO fill in execution_feedback from shared memory
       RCLCPP_DEBUG(this->get_logger(), "Getting Skill Feedback");
       feedback_ = shared_memory_handler_.getSkillFeedback();
-      // TODO(jacky) remove this check (and the logic in shared mem handler) once run_loop_info is no longer used
-      if (feedback_.num_execution_feedback == 0) continue;
 
-      feedback = std::make_shared<ExecuteSkill::Feedback>(feedback_);
+      if (feedback_.num_execution_feedback != 0){
+        feedback = std::make_shared<ExecuteSkill::Feedback>(feedback_);
 
-      // publish the feedback
-      goal_handle->publish_feedback(feedback);
-      
+        // publish the feedback
+        goal_handle->publish_feedback(feedback);
+      }
+
       RCLCPP_DEBUG(this->get_logger(), "Getting Done Skill Id");
       done_skill_id = shared_memory_handler_.getDoneSkillIdInSharedMemory();
       RCLCPP_DEBUG(this->get_logger(), "Done Skill Id = %d", done_skill_id);
