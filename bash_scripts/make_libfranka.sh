@@ -11,7 +11,7 @@ n_cores=$(grep ^cpu\\scores /proc/cpuinfo | uniq |  awk '{print $4}')
 # Build
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . --config -- -j$n_cores
+cmake --build . -j$n_cores
 
 cd ../..
 
