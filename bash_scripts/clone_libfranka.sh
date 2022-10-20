@@ -14,9 +14,12 @@ case $firmware_version in
 5)
   commit=c452ba2
   ;;
+6)
+  commit=4f9e3cc
+  ;;
 *)
   valid_version=false
-  echo "Please enter your robot's firmware version as 2, 3, 4, or 5."
+  echo "Please enter your robot's firmware version as 2, 3, 4, 5, or 6."
   ;;
 esac
 
