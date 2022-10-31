@@ -44,9 +44,9 @@ Protobuf
 2. Execute the following commands::
 
     sudo apt-get install autoconf automake libtool curl make g++ unzip
-    wget https://github.com/protocolbuffers/protobuf/releases/download/v3.11.4/protobuf-all-3.11.4.zip
-    unzip protobuf-all-3.11.4.zip
-    cd protobuf-3.11.4
+    wget https://github.com/protocolbuffers/protobuf/releases/download/v21.8/protobuf-all-21.8.zip
+    unzip protobuf-all-21.8.zip
+    cd protobuf-21.8
     ./configure
 
 3. Use the number that was previously printed out using the ``nproc`` command above and substitute it as ``N`` below::
@@ -59,21 +59,21 @@ Protobuf
 Virtual Environment
 ~~~~~~~~~~~~~~~~~~~
 
-1. Install Python3.6::
+1. Install Python3::
 
     sudo apt install -y python3-distutils
 
 2. Install Pip::
 
-    curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3.6
+    curl https://bootstrap.pypa.io/get-pip.py | sudo -H python3
 
 3. Install Virtual Environment and Other Useful Python Packages::
 
-    sudo -H pip3.6 install numpy matplotlib virtualenv
+    sudo -H pip3 install numpy matplotlib virtualenv
 
 4. Create a Virtual Environment for Franka-interface::
 
-    virtualenv -p python3.6 franka_virtual_env
+    virtualenv -p python3 franka_virtual_env
 
 5. Enter into the Virtual Environment::
 
