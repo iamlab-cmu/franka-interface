@@ -45,6 +45,7 @@ add_library(franka-interface SHARED
   src/skills/impedance_control_skill.cpp
   src/skills/joint_position_continuous_skill.cpp
   src/skills/joint_position_skill.cpp
+  src/skills/joint_velocity_skill.cpp
   src/termination_handler/contact_termination_handler.cpp
   src/termination_handler/final_joint_termination_handler.cpp
   src/termination_handler/final_pose_termination_handler.cpp
@@ -58,6 +59,7 @@ add_library(franka-interface SHARED
   src/trajectory_generator/impulse_trajectory_generator.cpp
   src/trajectory_generator/joint_dmp_trajectory_generator.cpp
   src/trajectory_generator/joint_trajectory_generator.cpp
+  src/trajectory_generator/joint_velocity_trajectory_generator.cpp
   src/trajectory_generator/linear_force_position_trajectory_generator.cpp
   src/trajectory_generator/linear_joint_trajectory_generator.cpp
   src/trajectory_generator/linear_pose_trajectory_generator.cpp
@@ -65,6 +67,7 @@ add_library(franka-interface SHARED
   src/trajectory_generator/min_jerk_pose_trajectory_generator.cpp
   src/trajectory_generator/pass_through_force_position_trajectory_generator.cpp
   src/trajectory_generator/pass_through_joint_trajectory_generator.cpp
+  src/trajectory_generator/pass_through_joint_velocity_trajectory_generator.cpp
   src/trajectory_generator/pass_through_pose_trajectory_generator.cpp
   src/trajectory_generator/pose_dmp_trajectory_generator.cpp
   src/trajectory_generator/pose_trajectory_generator.cpp

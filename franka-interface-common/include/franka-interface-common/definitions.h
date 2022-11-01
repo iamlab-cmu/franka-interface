@@ -26,6 +26,7 @@ enum class SkillType : uint8_t {
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
+    JointVelocitySkill,
 };
 
 // Enum for Meta Skill Types
@@ -49,6 +50,7 @@ enum class TrajectoryGeneratorType : uint8_t {
     MinJerkPoseTrajectoryGenerator,
     PassThroughForcePositionTrajectoryGenerator,
     PassThroughJointTrajectoryGenerator,
+    PassThroughJointVelocityTrajectoryGenerator,
     PassThroughPoseTrajectoryGenerator,
     PoseDmpTrajectoryGenerator,
     QuaternionPoseDmpTrajectoryGenerator,
