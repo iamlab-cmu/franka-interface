@@ -269,24 +269,28 @@ Franka-Interface Installation Steps
 
     bash ./bash_scripts/clone_libfranka.sh 3
 
-4. Build LibFranka::
+4. If you are using a Franka Research 3, you should use the following command::
+
+    bash ./bash_scripts/clone_libfranka.sh 6
+
+5. Build LibFranka::
 
     bash ./bash_scripts/make_libfranka.sh
 
-5. Build franka-interface::
+6. Build franka-interface::
 
     bash ./bash_scripts/make_franka_interface.sh
 
-6. Enter the franka virtual environment (:ref:`Virtual Environment`) and then run the following commands::
+7. Enter the franka virtual environment (:ref:`Virtual Environment`) and then run the following commands::
 
     pip install catkin-tools empy
     bash ./bash_scripts/make_catkin.sh
 
-7. Afterwards source the ``catkin_ws`` using the following command::
+8. Afterwards source the ``catkin_ws`` using the following command::
 
     source catkin_ws/devel/setup.bash
 
-8. Add the following lines to the end of your ``~/.bashrc`` file::
+9. Add the following lines to the end of your ``~/.bashrc`` file::
 
     source /path/to/franka_virtual_env/franka/bin/activate
     source /path/to/franka-interface/catkin_ws/devel/setup.bash --extend

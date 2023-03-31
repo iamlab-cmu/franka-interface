@@ -4,6 +4,8 @@ This is a software package used for controlling and learning skills on the Frank
 
 Installation Instructions and Robot Setup Instructions are also available here: [https://iamlab-cmu.github.io/franka-interface](https://iamlab-cmu.github.io/franka-interface)
 
+For the Franka Research 3, you will first need to download the FCI package from Franka World. Then in order to use the FCI, you must disable all of the safety features in the Watchman by creating a Watchman account and deleting all of the safety policies and then the robot should be able to connect to the FCI.
+
 To join the Discord community, click the link [here](https://discord.gg/r6r7dttMwZ).
 
 ## Requirements
@@ -55,6 +57,12 @@ All directories below are given relative to `/franka-interface`.
    ```bash
    bash ./bash_scripts/clone_libfranka.sh 3
    ```
+
+   If you are using the Franka Research 3 use the following command:
+   ```bash
+   bash ./bash_scripts/clone_libfranka.sh 6
+   ```
+
 
 3. Build LibFranka
    ```bash
