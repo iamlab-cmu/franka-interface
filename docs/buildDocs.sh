@@ -42,6 +42,7 @@ make -C docs html
  
 git config --global user.name "${GITHUB_ACTOR}"
 git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+git config --global --add safe.directory /__w/franka-interface/franka-interface
  
 docroot=`mktemp -d`
 rsync -av "docs/_build/html/" "${docroot}/"
