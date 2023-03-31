@@ -147,6 +147,6 @@ void JointPositionContinuousSkill::execute_skill_on_franka(run_loop *run_loop,
     return joint_desired;
   };
 
-  robot->robot_.control(joint_pose_callback, true);
+  robot->robot_.control(joint_pose_callback, franka::ControllerMode::kJointImpedance, true);
 }
 
