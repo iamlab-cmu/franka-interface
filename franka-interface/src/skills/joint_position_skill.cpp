@@ -101,9 +101,9 @@ void JointPositionSkill::execute_skill_on_franka(run_loop* run_loop,
   };
 
   if (internal_feedback_controller->set_cartesian_impedance_) {
-    robot->robot_.control(joint_pose_callback, franka::ControllerMode::kCartesianImpedance, limit_rate = true);
+    robot->robot_.control(joint_pose_callback, franka::ControllerMode::kCartesianImpedance, true);
   } else {
-    robot->robot_.control(joint_pose_callback, franka::ControllerMode::kJointImpedance, limit_rate = true);
+    robot->robot_.control(joint_pose_callback, franka::ControllerMode::kJointImpedance, true);
   }
 }
 

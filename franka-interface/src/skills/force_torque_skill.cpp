@@ -96,6 +96,6 @@ void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
     return feedback_controller_->tau_d_array_;
   };
 
-  robot->robot_.control(force_control_callback, limit_rate = true);
+  robot->robot_.control(force_control_callback, true);
 }
 
