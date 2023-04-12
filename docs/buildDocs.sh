@@ -22,7 +22,8 @@ apt-get -y install git rsync python3-sphinx python3-sphinx-rtd-theme
 #####################
 # DECLARE VARIABLES #
 #####################
- 
+
+git config --global --add safe.directory /__w/franka-interface/franka-interface
 pwd
 ls -lah
 export SOURCE_DATE_EPOCH=$(git log -1 --pretty=%ct)
