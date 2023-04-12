@@ -5,7 +5,7 @@ Requirements
 ------------
 
 * A computer with Ubuntu 18.04 / 20.04 Realtime Kernel and at least 1 ethernet port.
-* ROS Melodic / Noetic
+* ROS Melodic / Noetic or ROS2 Foxy / Humble
 * `Google Protocol Buffer <https://developers.google.com/protocol-buffers>`_
 
 Recommended Computer Configuration

@@ -6,7 +6,7 @@
 Welcome to franka-interface's Documentation!
 ============================================
 
-This library was designed to be used on an Ubuntu 18.04 / 20.04 PC with a Realtime Kernel Patch. The instructions in the Installation page will guide you through the process of installing a Realtime Kernel Patch. We are currently not supporting ROS2 at the moment.
+This library was designed to be used on an Ubuntu 18.04 / 20.04 PC with a Realtime Kernel Patch. The instructions in the Installation page will guide you through the process of installing a Realtime Kernel Patch. We are currently supporting ROS Melodic / Noetic and ROS2 Foxy / Humble at the moment.
 
 To join the Discord community, click the link `here <https://discord.gg/jMzpGRpSN2>`_. 
 
@@ -19,7 +19,7 @@ If this library proves useful to your research, please cite the paper below::
       year={2020}
     }
 
-Note that this library has been released with the Apache v2.0 license.
+Note that this library has been released with the MIT license.
 
 .. toctree::
    :maxdepth: 2

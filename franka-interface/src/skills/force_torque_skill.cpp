@@ -17,6 +17,32 @@
 #include <franka-interface-common/definitions.h>
 #include <franka-interface-common/run_loop_process_info.h>
 
+
+void ForceTorqueSkill::limit_current_joint_torques(double period) {
+
+  for(int i = 0; i < 7; i++) {
+    if(std::abs(current_joint_torques_[i]) > max_joint_torques_[i] * safety_factor) {
+      if(current_joint_torques_[i] > 0) {
+        current_joint_torques_[i] = max_joint_torques_[i] * safety_factor;
+      } else {
+        current_joint_torques_[i] = -max_joint_torques_[i] * safety_factor;
+      }
+    }
+
+    current_joint_rotatums_[i] = (current_joint_torques_[i] - previous_joint_torques_[i]) / period;
+
+    if(std::abs(current_joint_rotatums_[i]) > max_joint_rotatums_[i] * safety_factor) {
+      if(current_joint_rotatums_[i] > 0) {
+        current_joint_rotatums_[i] = max_joint_rotatums_[i] * safety_factor;
+      } else {
+        current_joint_rotatums_[i] = -max_joint_rotatums_[i] * safety_factor;
+      }
+    }
+
+    current_joint_torques_[i] = previous_joint_torques_[i] + current_joint_rotatums_[i] * period;
+  }
+}
+
 void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
                                                FrankaRobot* robot,
                                                FrankaGripper* gripper,
@@ -42,6 +68,12 @@ void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
 
     if (time == 0.0) {
       traj_generator_->initialize_trajectory(robot_state, SkillType::ForceTorqueSkill);
+
+      for(int i = 0; i < 7; i++) {
+        current_joint_torques_[i] = 0;
+        previous_joint_torques_[i] = 0;
+      }
+
       try {
         if (lock.try_lock()) {
           run_loop_info->set_time_skill_started_in_robot_time(robot_state.time.toSec());
@@ -93,7 +125,17 @@ void ForceTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
 
     feedback_controller_->get_next_step(robot_state, traj_generator_);
 
-    return feedback_controller_->tau_d_array_;
+    for(int i = 0; i < 7; i++) {
+      current_joint_torques_[i] = feedback_controller_->tau_d_array_[i];
+    }
+
+    limit_current_joint_torques(current_period_); 
+
+    for(int i = 0; i < 7; i++) {
+      previous_joint_torques_[i] = current_joint_torques_[i];
+    }   
+
+    return current_joint_torques_;
   };
 
   robot->robot_.control(force_control_callback, true);

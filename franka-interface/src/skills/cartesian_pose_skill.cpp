@@ -22,7 +22,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position(std::array<double, 16>
     next_position_[i] = desired_pose[12+i];
     next_velocity_[i] = (next_position_[i] - current_position_[i]) / period;
 
-    if(std::abs(next_velocity_[i]) > max_cartesian_translation_velocity_) {
+    if(std::abs(next_velocity_[i]) > max_cartesian_translation_velocity_ * safety_factor) {
       if(next_velocity_[i] > 0) {
         next_velocity_[i] = max_cartesian_translation_velocity_ * safety_factor;
       } else {
@@ -32,7 +32,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position(std::array<double, 16>
 
     next_acceleration_[i] = (next_velocity_[i] - current_velocity_[i]) / period;
 
-    if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_) {
+    if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_ * safety_factor) {
       if(next_acceleration_[i] > 0) {
         next_acceleration_[i] = max_cartesian_translation_acceleration_ * safety_factor;
       } else {
@@ -42,7 +42,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position(std::array<double, 16>
 
     next_jerk_[i] = (next_acceleration_[i] - current_acceleration_[i]) / period;
 
-    if(std::abs(next_jerk_[i]) > max_cartesian_translation_jerk_) {
+    if(std::abs(next_jerk_[i]) > max_cartesian_translation_jerk_ * safety_factor) {
       if(next_jerk_[i] > 0) {
         next_jerk_[i] = max_cartesian_translation_jerk_ * safety_factor;
       } else {
@@ -52,7 +52,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position(std::array<double, 16>
 
     next_acceleration_[i] = current_acceleration_[i] + next_jerk_[i] * period;
 
-    if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_) {
+    if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_ * safety_factor) {
       if(next_acceleration_[i] > 0) {
         next_acceleration_[i] = max_cartesian_translation_acceleration_ * safety_factor;
       } else {
@@ -62,7 +62,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position(std::array<double, 16>
 
     next_velocity_[i] = current_velocity_[i] + next_acceleration_[i] * period;
 
-    if(std::abs(next_velocity_[i]) > max_cartesian_translation_velocity_) {
+    if(std::abs(next_velocity_[i]) > max_cartesian_translation_velocity_ * safety_factor) {
       if(next_velocity_[i] > 0) {
         next_velocity_[i] = max_cartesian_translation_velocity_ * safety_factor;
       } else {
@@ -93,7 +93,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position_to_stop(std::array<dou
 
       previous_error_ = current_error_;
 
-      if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_) {
+      if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_ * safety_factor) {
         if(next_acceleration_[i] > 0) {
           next_acceleration_[i] = max_cartesian_translation_acceleration_ * safety_factor;
         } else {
@@ -103,7 +103,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position_to_stop(std::array<dou
 
       next_jerk_[i] = (next_acceleration_[i] - current_acceleration_[i]) / period;
 
-      if(std::abs(next_jerk_[i]) > max_cartesian_translation_jerk_) {
+      if(std::abs(next_jerk_[i]) > max_cartesian_translation_jerk_ * safety_factor) {
         if(next_jerk_[i] > 0) {
           next_jerk_[i] = max_cartesian_translation_jerk_ * safety_factor;
         } else {
@@ -113,7 +113,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position_to_stop(std::array<dou
 
       next_acceleration_[i] = current_acceleration_[i] + next_jerk_[i] * period;
 
-      if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_) {
+      if(std::abs(next_acceleration_[i]) > max_cartesian_translation_acceleration_ * safety_factor) {
         if(next_acceleration_[i] > 0) {
           next_acceleration_[i] = max_cartesian_translation_acceleration_ * safety_factor;
         } else {
@@ -123,7 +123,7 @@ std::array<double, 16> CartesianPoseSkill::limit_position_to_stop(std::array<dou
 
       next_velocity_[i] = current_velocity_[i] + next_acceleration_[i] * period;
 
-      if(std::abs(next_velocity_[i]) > max_cartesian_translation_velocity_) {
+      if(std::abs(next_velocity_[i]) > max_cartesian_translation_velocity_ * safety_factor) {
         if(next_velocity_[i] > 0) {
           next_velocity_[i] = max_cartesian_translation_velocity_ * safety_factor;
         } else {
