@@ -12,7 +12,7 @@ case $firmware_version in
   commit=f1f46fb
   ;;
 5)
-  commit=c452ba2
+  commit=83e931c
   ;;
 6)
   commit=4f9e3cc
