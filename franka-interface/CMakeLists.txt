@@ -28,6 +28,7 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 ## Library
 
 add_library(franka-interface SHARED
+  src/feedback_controller/torque_feedback_controller.cpp
   src/feedback_controller/cartesian_impedance_feedback_controller.cpp
   src/feedback_controller/ee_cartesian_impedance_feedback_controller.cpp
   src/feedback_controller/feedback_controller.cpp

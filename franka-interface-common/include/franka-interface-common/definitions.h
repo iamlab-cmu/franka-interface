@@ -70,6 +70,7 @@ enum class FeedbackControllerType : uint8_t {
     NoopFeedbackController,
     PassThroughFeedbackController,
     SetInternalImpedanceFeedbackController,
+    TorqueFeedbackController
 };
 
 // Enum for Termination Handler Types
