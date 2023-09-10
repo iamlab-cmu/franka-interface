@@ -17,7 +17,14 @@ class TorqueFeedbackController : public FeedbackController{
   
   protected: 
     TorqueControllerSensorMessage torque_feedback_sensor_msg_;
+<<<<<<< HEAD
     Eigen::VectorXd tau_d(7);    
 }
 
 #endif 
+=======
+    Eigen::VectorXd tau_d;    
+};
+
+#endif  // FRANKA_INTERFACE_FEEDBACK_CONTROLLER_TORQUE_FEEDBACK_CONTROLLER_H_
+>>>>>>> 8b6b9eda0fb60a730c360055d3649f1331db5d2c
