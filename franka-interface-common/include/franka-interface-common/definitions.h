@@ -26,7 +26,15 @@ enum class SkillType : uint8_t {
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     JointTorqueSkill,
+=======
+    JointTorqueSkill,    
+>>>>>>> Stashed changes
+=======
+    JointTorqueSkill,    
+>>>>>>> Stashed changes
 };
 
 // Enum for Meta Skill Types
