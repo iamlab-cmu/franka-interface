@@ -23,6 +23,7 @@
 #include "franka-interface/skills/cartesian_pose_skill.h"
 #include "franka-interface/skills/force_torque_skill.h"
 #include "franka-interface/skills/gripper_skill.h"
+#include "franka-interface/skills/joint_torque_skill.h"
 #include "franka-interface/skills/impedance_control_skill.h"
 #include "franka-interface/skills/joint_position_continuous_skill.h"
 #include "franka-interface/skills/joint_position_skill.h"
@@ -255,6 +256,14 @@ void run_loop::update_process_info() {
               skill_type_name = "JointPositionSkill";
               new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
+            case SkillType::JointPositionSkill:
+              skill_type_name = "JointPositionSkill";
+              new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;     
+            case SkillType::JointtTorqueSkill:
+              skill_type_name = "JointtTorqueSkill";
+              new_skill = new JointtTorqueSkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;                        
             default:
               std::cout << "Incorrect skill type: " << 
               static_cast<std::underlying_type<SkillType>::type>(new_skill_type) << 

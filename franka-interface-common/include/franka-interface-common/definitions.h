@@ -26,15 +26,7 @@ enum class SkillType : uint8_t {
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    JointTorqueSkill,
-=======
-    JointTorqueSkill,    
->>>>>>> Stashed changes
-=======
-    JointTorqueSkill,    
->>>>>>> Stashed changes
+    JointTorqueSkill,   
 };
 
 // Enum for Meta Skill Types
@@ -79,10 +71,10 @@ enum class FeedbackControllerType : uint8_t {
     NoopFeedbackController,
     PassThroughFeedbackController,
     SetInternalImpedanceFeedbackController,
-    TorqueFeedbackController
+    TorqueFeedbackController                
 };
 
-// Enum for Termination Handler Types
+// Enum for Termination Handler Types#end_if 
 enum class TerminationHandlerType : uint8_t {
     ContactTerminationHandler,
     FinalJointTerminationHandler,
