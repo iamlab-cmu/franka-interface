@@ -19,3 +19,5 @@ class TorqueFeedbackController : public FeedbackController{
     TorqueControllerSensorMessage torque_feedback_sensor_msg_;
     Eigen::VectorXd tau_d(7);    
 }
+
+#endif 

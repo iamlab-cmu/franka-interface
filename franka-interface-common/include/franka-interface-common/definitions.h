@@ -26,6 +26,7 @@ enum class SkillType : uint8_t {
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
+    JointTorqueSkill,
 };
 
 // Enum for Meta Skill Types
