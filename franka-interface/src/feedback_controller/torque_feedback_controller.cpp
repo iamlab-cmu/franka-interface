@@ -5,6 +5,12 @@
 #include <exception>
 #include "franka-interface/feedback_controller/torque_feedback_controller.h"
 
+void TorqueFeedbackController::parse_parameters(){
+
+}
+void TorqueFeedbackController::initialize_controller(FrankaRobot *robot) {
+
+}
 
 void TorqueFeedbackController::parse_sensor_data(const franka::RobotState &robot_state){
     tau_d.resize(7);

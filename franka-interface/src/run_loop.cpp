@@ -255,14 +255,10 @@ void run_loop::update_process_info() {
             case SkillType::JointPositionSkill:
               skill_type_name = "JointPositionSkill";
               new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
-              break;
-            case SkillType::JointPositionSkill:
-              skill_type_name = "JointPositionSkill";
-              new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
-              break;     
-            case SkillType::JointtTorqueSkill:
-              skill_type_name = "JointtTorqueSkill";
-              new_skill = new JointtTorqueSkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;   
+            case SkillType::JointTorqueSkill:
+              skill_type_name = "JointTorqueSkill";
+              new_skill = new JointTorqueSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;                        
             default:
               std::cout << "Incorrect skill type: " << 
