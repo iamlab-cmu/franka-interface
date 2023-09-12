@@ -137,6 +137,7 @@ TrajectoryGenerator* TrajectoryGeneratorFactory::getTrajectoryGeneratorForSkill(
   std::cout << "Trajectory Generator Type: " << trajectory_generator_type_name << std::endl;
 
   trajectory_generator->parse_parameters();
+std::cout<<"parsed parametrs\n";
   return trajectory_generator;
 }
 

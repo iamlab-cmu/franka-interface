@@ -53,23 +53,24 @@ void JointTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
     SensorDataManager* sensor_data_manager = run_loop->get_sensor_data_manager();
 
     std::cout << "Will run the control loop\n";
-    /* Unneccessary for torque skill
-    JointTrajectoryGenerator* joint_trajectory_generator = dynamic_cast<JointTrajectoryGenerator*>(traj_generator_);
-    SetInternalImpedanceFeedbackController* internal_feedback_controller = dynamic_cast<SetInternalImpedanceFeedbackController*>(feedback_controller_);
+    //Unneccessary for torque skill
+    //JointTrajectoryGenerator* joint_trajectory_generator = dynamic_cast<JointTrajectoryGenerator*>(traj_generator_);
+    //SetInternalImpedanceFeedbackController* internal_feedback_controller = dynamic_cast<SetInternalImpedanceFeedbackController*>(feedback_controller_);
 
-    if(joint_trajectory_generator == nullptr) {
-        throw std::bad_cast();
-    }*/
+    //if(joint_trajectory_generator == nullptr) {
+    //    throw std::bad_cast();
+    //}
 
     std::function<franka::Torques(const franka::RobotState&, franka::Duration)>
         joint_torque_callback = [&](
         const franka::RobotState& robot_state,
-        franka::Duration period) -> franka::Torques {    
+        franka::Duration period) -> franka::Torques {
+	   std::cout<<"Control loop\n";	      
             current_period_ = period.toSec();
             time += current_period_;        
             if(time == 0.0 ){
                 //////
-                traj_generator_->initialize_trajectory(robot_state, SkillType::JointTorqueSkill);
+                //traj_generator_->initialize_trajectory(robot_state, SkillType::JointTorqueSkill);
                 for(int i = 0; i < 7; i++) {
                     current_joint_torques_[i] = 0;
                     previous_joint_torques_[i] = 0;
@@ -92,8 +93,8 @@ void JointTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
             robot_state_data->mutex_.unlock();
             }
 
-            traj_generator_->time_ = time;//////
-            traj_generator_->dt_ = current_period_;//////
+            //traj_generator_->time_ = time;//////
+            //traj_generator_->dt_ = current_period_;//////
 
             log_counter += 1;            
             try {
@@ -104,18 +105,21 @@ void JointTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
                 } catch (boost::interprocess::lock_exception) {
                     }
             log_counter += 1;
-
+	   std::cout<<"Trying\n";
             if (log_counter % 1 == 0) {
             pose_desired = robot_state.O_T_EE_d;
             robot_state_data->log_robot_state(pose_desired, robot_state, robot->getModel(), time);
             }            
 
-            if (time > 0.0) {//////
-                traj_generator_->get_next_step(robot_state);
-            }
+            //if (time > 0.0) {//////
+            //    traj_generator_->get_next_step(robot_state);
+            //}
+            std::cout<<"Trying 1\n";
+            feedback_controller_->parse_sensor_data(robot_state);
             feedback_controller_->get_next_step(robot_state, traj_generator_);
             bool done = termination_handler_->should_terminate(robot_state, model_, traj_generator_);
-            
+           std::cout<<done<<" done\n"; 
+	   std::cout<<"Trying 2\n";
             if (done && time > 0.0) {            
                 try{
                     if (lock.try_lock()) {
@@ -127,19 +131,23 @@ void JointTorqueSkill::execute_skill_on_franka(run_loop* run_loop,
                 }
                 return franka::MotionFinished(franka::Torques(feedback_controller_->tau_d_array_));
             }
-
+	   std::cout<<"Trying 3\n";
             for(int i = 0; i < 7; i++) {
                 current_joint_torques_[i] = feedback_controller_->tau_d_array_[i];
+		std::cout<<"index "<<i<<" value = "<< current_joint_torques_[i]<<"\n";
             }
-            
-            limit_current_joint_torques(current_period_);     
+            std::cout<<"before limiting\n";            
+         
+            //limit_current_joint_torques(current_period_);     
                
             for(int i = 0; i < 7; i++) {
                 previous_joint_torques_[i] = current_joint_torques_[i];
-            }   
+            }
+	   std::cout<<"after limiting\n";
+	    std::cout<<current_joint_torques_[0]<<" jtqs\n";   
             return current_joint_torques_;   
     
     };
-
-    robot->robot_.control(joint_torque_callback, true);    
+    std::cout<<"Nothing wrong with callback definition\n";
+    robot->robot_.control(joint_torque_callback);    
 }
