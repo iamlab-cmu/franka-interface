@@ -104,13 +104,16 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   RunLoopProcessInfo* run_loop_info = shared_memory_handler_->getRunLoopProcessInfo();
   int memory_index = run_loop_info->get_current_shared_memory_index();
   std::cout << string_format("Create skill from memory index: %d\n", memory_index);
+  
   SharedBufferTypePtr traj_buffer = shared_memory_handler_->getTrajectoryGeneratorBuffer(memory_index);
   TrajectoryGenerator *traj_generator = traj_gen_factory_.getTrajectoryGeneratorForSkill(
       traj_buffer, sensor_data_manager_);
+
   SharedBufferTypePtr feedback_controller_buffer = shared_memory_handler_->getFeedbackControllerBuffer(
       memory_index);
   FeedbackController *feedback_controller =
       feedback_controller_factory_.getFeedbackControllerForSkill(feedback_controller_buffer, sensor_data_manager_);
+  
   SharedBufferTypePtr termination_handler_buffer = shared_memory_handler_->getTerminationParametersBuffer(
       memory_index);
   TerminationHandler* termination_handler =
