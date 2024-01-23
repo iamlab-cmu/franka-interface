@@ -1,7 +1,3 @@
-//
-// Created by Ruthrash Hari on 7/9/23
-// 
-
 #include <exception>
 #include "franka-interface/feedback_controller/torque_feedback_controller.h"
 
