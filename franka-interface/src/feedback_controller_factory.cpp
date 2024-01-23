@@ -26,7 +26,6 @@ FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(Sha
   FeedbackController* feedback_controller = nullptr;
   switch (feedback_controller_type) {
     case FeedbackControllerType::TorqueFeedbackController:
-      std::cout<<"Trying to load controller\n";
       feedback_controller_type_name = "TorqueFeedbackController";
       feedback_controller = new TorqueFeedbackController(buffer, sensor_data_manager);      
       break;
