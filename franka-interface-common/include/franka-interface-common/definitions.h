@@ -74,7 +74,7 @@ enum class FeedbackControllerType : uint8_t {
     TorqueFeedbackController                
 };
 
-// Enum for Termination Handler Types#end_if 
+// Enum for Termination Handler Types 
 enum class TerminationHandlerType : uint8_t {
     ContactTerminationHandler,
     FinalJointTerminationHandler,
