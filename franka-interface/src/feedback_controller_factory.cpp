@@ -16,6 +16,7 @@
 #include "franka-interface/feedback_controller/noop_feedback_controller.h"
 #include "franka-interface/feedback_controller/pass_through_feedback_controller.h"
 #include "franka-interface/feedback_controller/set_internal_impedance_feedback_controller.h"
+#include "franka-interface/feedback_controller/torque_feedback_controller.h"
 
 FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(SharedBufferTypePtr buffer, SensorDataManager* sensor_data_manager){
   FeedbackControllerType feedback_controller_type = static_cast<FeedbackControllerType>(buffer[0]);
@@ -24,7 +25,10 @@ FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(Sha
 
   FeedbackController* feedback_controller = nullptr;
   switch (feedback_controller_type) {
-    
+    case FeedbackControllerType::TorqueFeedbackController:
+      feedback_controller_type_name = "TorqueFeedbackController";
+      feedback_controller = new TorqueFeedbackController(buffer, sensor_data_manager);      
+      break;
     case FeedbackControllerType::CartesianImpedanceFeedbackController:
       feedback_controller_type_name = "CartesianImpedanceFeedbackController";
       feedback_controller = new CartesianImpedanceFeedbackController(buffer, sensor_data_manager);

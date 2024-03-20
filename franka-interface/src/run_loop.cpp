@@ -23,6 +23,7 @@
 #include "franka-interface/skills/cartesian_pose_skill.h"
 #include "franka-interface/skills/force_torque_skill.h"
 #include "franka-interface/skills/gripper_skill.h"
+#include "franka-interface/skills/joint_torque_skill.h"
 #include "franka-interface/skills/impedance_control_skill.h"
 #include "franka-interface/skills/joint_position_continuous_skill.h"
 #include "franka-interface/skills/joint_position_skill.h"
@@ -103,7 +104,7 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
   RunLoopProcessInfo* run_loop_info = shared_memory_handler_->getRunLoopProcessInfo();
   int memory_index = run_loop_info->get_current_shared_memory_index();
   std::cout << string_format("Create skill from memory index: %d\n", memory_index);
-
+  
   SharedBufferTypePtr traj_buffer = shared_memory_handler_->getTrajectoryGeneratorBuffer(memory_index);
   TrajectoryGenerator *traj_generator = traj_gen_factory_.getTrajectoryGeneratorForSkill(
       traj_buffer, sensor_data_manager_);
@@ -112,7 +113,7 @@ void run_loop::start_new_skill(BaseSkill* new_skill) {
       memory_index);
   FeedbackController *feedback_controller =
       feedback_controller_factory_.getFeedbackControllerForSkill(feedback_controller_buffer, sensor_data_manager_);
-
+  
   SharedBufferTypePtr termination_handler_buffer = shared_memory_handler_->getTerminationParametersBuffer(
       memory_index);
   TerminationHandler* termination_handler =
@@ -254,7 +255,11 @@ void run_loop::update_process_info() {
             case SkillType::JointPositionSkill:
               skill_type_name = "JointPositionSkill";
               new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
-              break;
+              break;   
+            case SkillType::JointTorqueSkill:
+              skill_type_name = "JointTorqueSkill";
+              new_skill = new JointTorqueSkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;                        
             default:
               std::cout << "Incorrect skill type: " << 
               static_cast<std::underlying_type<SkillType>::type>(new_skill_type) << 

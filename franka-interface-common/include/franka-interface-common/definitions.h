@@ -26,6 +26,7 @@ enum class SkillType : uint8_t {
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
+    JointTorqueSkill,   
 };
 
 // Enum for Meta Skill Types
@@ -70,9 +71,10 @@ enum class FeedbackControllerType : uint8_t {
     NoopFeedbackController,
     PassThroughFeedbackController,
     SetInternalImpedanceFeedbackController,
+    TorqueFeedbackController                
 };
 
-// Enum for Termination Handler Types
+// Enum for Termination Handler Types 
 enum class TerminationHandlerType : uint8_t {
     ContactTerminationHandler,
     FinalJointTerminationHandler,
@@ -106,6 +108,7 @@ enum class SensorDataMessageType : uint8_t {
   POSE_POSITION_VELOCITY,
   POSE_POSITION,
   SHOULD_TERMINATE,
+  JOINT_TORQUE
 };
 
 #endif  // FRANKA_INTERFACE_COMMON_DEFINITIONS_H_

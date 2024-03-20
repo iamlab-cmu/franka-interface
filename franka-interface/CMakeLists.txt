@@ -28,6 +28,7 @@ include_directories( ${Boost_INCLUDE_DIRS} )
 ## Library
 
 add_library(franka-interface SHARED
+  src/feedback_controller/torque_feedback_controller.cpp
   src/feedback_controller/cartesian_impedance_feedback_controller.cpp
   src/feedback_controller/ee_cartesian_impedance_feedback_controller.cpp
   src/feedback_controller/feedback_controller.cpp
@@ -45,6 +46,7 @@ add_library(franka-interface SHARED
   src/skills/impedance_control_skill.cpp
   src/skills/joint_position_continuous_skill.cpp
   src/skills/joint_position_skill.cpp
+  src/skills/joint_torque_skill.cpp  
   src/termination_handler/contact_termination_handler.cpp
   src/termination_handler/final_joint_termination_handler.cpp
   src/termination_handler/final_pose_termination_handler.cpp
