@@ -58,6 +58,8 @@ class TerminationHandler {
 
   void check_terminate_virtual_wall_collisions(const franka::RobotState &robot_state, franka::Model *robot_model);
 
+  void check_terminate_joint_limits(const franka::RobotState &robot_state);
+
   /**
    * Parse sensor data
    */
@@ -90,6 +92,15 @@ class TerminationHandler {
 
   // Create dist thresholds
   const std::array<double, 7> dist_thresholds_ = std::array<double, 7>{0.11, 0.11, 0.08, 0.08, 0.07, 0.07, 0.1};
+
+  // Franka Panda Joint Limits from https://frankaemika.github.io/docs/control_parameters.html
+  const std::array<double, 7> max_joint_limits_ = std::array<double, 7>{2.88, 1.75, 2.88, -0.06, 2.88, 3.74, 2.88};
+  const std::array<double, 7> min_joint_limits_ = std::array<double, 7>{-2.88, -1.75, -2.88, -3.06, -2.88, -0.0025, -2.88};
+
+  // Comment the 2 lines above and uncomment the 2 lines below if you are using a Franka Research 3
+  // Franka Research 3 Joint Limits from https://frankaemika.github.io/docs/control_parameters.html
+  // const std::array<double, 7> max_joint_limits_ = std::array<double, 7>{2.73, 1.77, 2.88, -0.14, 2.79, 4.5, 3.0};
+  // const std::array<double, 7> min_joint_limits_ = std::array<double, 7>{-2.73, -1.77, -2.88, -3.03, -2.79, 0.53, -3.0};
 
   bool terminated_by_virt_coll_ = false;
 

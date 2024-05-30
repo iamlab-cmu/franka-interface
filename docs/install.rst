@@ -261,36 +261,68 @@ Franka-Interface Installation Steps
     git clone --recurse-submodules https://github.com/iamlab-cmu/franka-interface.git
     cd franka-interface
 
-2. To allow asynchronous gripper commands, we use the ``franka_ros`` package, so install libfranka and franka_ros using the following command. Switch melodic to noetic if you are on Ubuntu 20.04::
-
-    sudo apt install ros-melodic-libfranka ros-melodic-franka-ros
-
-3. Clone LibFranka corresponding to your robot version. For example if your firmware is 3.x use the following command::
+2. Clone LibFranka corresponding to your robot version. For example if your firmware is 3.x use the following command::
 
     bash ./bash_scripts/clone_libfranka.sh 3
 
-4. If you are using a Franka Research 3, you should use the following command::
+3. If you are using a Franka Research 3, you should use the following command::
 
     bash ./bash_scripts/clone_libfranka.sh 6
+
+4. In addition, if you are using a Franka Research 3, you should go to the following file (franka-interface/include/franka-interface/termination_handler/termination_handler.h) and comment lines 97 and 98 and uncomment lines 102 and 103::
+
+    // Franka Panda Joint Limits from https://frankaemika.github.io/docs/control_parameters.html
+    const std::array<double, 7> max_joint_limits_ = std::array<double, 7>{2.88, 1.75, 2.88, -0.06, 2.88, 3.74, 2.88};
+    const std::array<double, 7> min_joint_limits_ = std::array<double, 7>{-2.88, -1.75, -2.88, -3.06, -2.88, -0.0025, -2.88};
+
+    // Comment the 2 lines above and uncomment the 2 lines below if you are using a Franka Research 3
+    // Franka Research 3 Joint Limits from https://frankaemika.github.io/docs/control_parameters.html
+    // const std::array<double, 7> max_joint_limits_ = std::array<double, 7>{2.73, 1.77, 2.88, -0.14, 2.79, 4.5, 3.0};
+    // const std::array<double, 7> min_joint_limits_ = std::array<double, 7>{-2.73, -1.77, -2.88, -3.03, -2.79, 0.53, -3.0};
 
 5. Build LibFranka::
 
     bash ./bash_scripts/make_libfranka.sh
 
-6. Build franka-interface::
+6. If you ran the command clone_libfranka.sh with the number 5, you should follow the additional commands::
+
+    cd libfranka/build
+    sudo make install
+    cd ../../catkin_ws/src/
+    git clone https://github.com/frankaemika/franka_ros.git
+    cd franka_ros
+    git checkout 0.9.1
+    cd ../../../
+
+6. If you have the franka research 3 and ran the command clone_libfranka.sh with the number 6, you should follow the additional commands::
+
+    cd libfranka/build
+    sudo make install
+    cd ../../catkin_ws/src/
+    git clone https://github.com/frankaemika/franka_ros.git
+    cd franka_ros
+    git checkout 0.10.0
+    cd ../../../
+
+7. Otherwise, if you used clone_libfranka.sh with the numbers 2, 3, or 4, follow the below command to install the ``franka_ros`` package. Switch noetic to melodic if you are on Ubuntu 18.04::
+
+    sudo apt install ros-noetic-libfranka ros-noetic-franka-ros
+
+
+8. Build franka-interface::
 
     bash ./bash_scripts/make_franka_interface.sh
 
-7. Enter the franka virtual environment (:ref:`Virtual Environment`) and then run the following commands::
+9. Enter the franka virtual environment (:ref:`Virtual Environment`) and then run the following commands::
 
     pip install catkin-tools empy
     bash ./bash_scripts/make_catkin.sh
 
-8. Afterwards source the ``catkin_ws`` using the following command::
+10. Afterwards source the ``catkin_ws`` using the following command::
 
     source catkin_ws/devel/setup.bash
 
-9. Add the following lines to the end of your ``~/.bashrc`` file::
+11. Add the following lines to the end of your ``~/.bashrc`` file::
 
     source /path/to/franka_virtual_env/franka/bin/activate
     source /path/to/franka-interface/catkin_ws/devel/setup.bash --extend

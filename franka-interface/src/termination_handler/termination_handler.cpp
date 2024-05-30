@@ -49,6 +49,22 @@ void TerminationHandler::check_terminate_virtual_wall_collisions(const franka::R
   }
 }
 
+void TerminationHandler::check_terminate_joint_limits(const franka::RobotState &robot_state) {
+  if (!done_) {
+
+    std::array<double, 7> current_joints = robot_state->q;
+
+    for(size_t i = 0; i < current_joints.size(); i++) {
+      if(current_joints[i] < min_joint_limits_[i] || current_joints[i] > max_joint_limits_[i]) {
+        std::cout << "Joint " << i << "is approaching joint limits (" << min_joint_limits_[i] << ", " << max_joint_limits_[i] << ") with position: " << current_joints[i] << std::endl;
+        done_ = true;
+        terminated_by_virt_coll_ = true;
+        break;
+      }
+    }
+  }
+}
+
 void TerminationHandler::parse_sensor_data(const franka::RobotState &robot_state) {
   SensorDataManagerReadStatus sensor_msg_status = sensor_data_manager_->readTerminationHandlerSensorMessage(should_terminate_msg_);
   if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {

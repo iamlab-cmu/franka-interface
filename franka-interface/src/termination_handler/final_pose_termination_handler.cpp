@@ -48,6 +48,7 @@ bool FinalPoseTerminationHandler::should_terminate(const franka::RobotState &rob
                                                              TrajectoryGenerator *trajectory_generator) {
   check_terminate_preempt();
   check_terminate_virtual_wall_collisions(robot_state, model);
+  check_terminate_joint_limits(robot_state);
   check_terminate_time(trajectory_generator);
 
   if(!done_){
