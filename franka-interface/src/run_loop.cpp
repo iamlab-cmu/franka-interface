@@ -21,11 +21,13 @@
 #include "franka-interface/skills/base_meta_skill.h"
 #include "franka-interface/skills/base_skill.h"
 #include "franka-interface/skills/cartesian_pose_skill.h"
+#include "franka-interface/skills/cartesian_velocity_skill.h"
 #include "franka-interface/skills/force_torque_skill.h"
 #include "franka-interface/skills/gripper_skill.h"
 #include "franka-interface/skills/impedance_control_skill.h"
 #include "franka-interface/skills/joint_position_continuous_skill.h"
 #include "franka-interface/skills/joint_position_skill.h"
+#include "franka-interface/skills/joint_velocity_skill.h"
 #include "franka-interface/utils/logger_utils.h"
 
 std::atomic<bool> run_loop::run_loop_ok_{false};
@@ -239,6 +241,10 @@ void run_loop::update_process_info() {
               skill_type_name = "CartesianPoseSkill";
               new_skill = new CartesianPoseSkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
+            case SkillType::CartesianVelocitySkill:
+              skill_type_name = "CartesianVelocitySkill";
+              new_skill = new CartesianVelocitySkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;
             case SkillType::ForceTorqueSkill:
               skill_type_name = "ForceTorqueSkill";
               new_skill = new ForceTorqueSkill(new_skill_id, new_meta_skill_id, new_skill_description);
@@ -254,6 +260,10 @@ void run_loop::update_process_info() {
             case SkillType::JointPositionSkill:
               skill_type_name = "JointPositionSkill";
               new_skill = new JointPositionSkill(new_skill_id, new_meta_skill_id, new_skill_description);
+              break;
+            case SkillType::JointVelocitySkill:
+              skill_type_name = "JointVelocitySkill";
+              new_skill = new JointVelocitySkill(new_skill_id, new_meta_skill_id, new_skill_description);
               break;
             default:
               std::cout << "Incorrect skill type: " << 

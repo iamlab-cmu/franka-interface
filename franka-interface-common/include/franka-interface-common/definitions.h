@@ -22,10 +22,12 @@ typedef SensorBufferType* SensorBufferTypePtr;
 // Enum for Skill Types
 enum class SkillType : uint8_t {
     CartesianPoseSkill,
+    CartesianVelocitySkill,
     ForceTorqueSkill,
     GripperSkill,
     ImpedanceControlSkill,
     JointPositionSkill,
+    JointVelocitySkill,
 };
 
 // Enum for Meta Skill Types
@@ -36,19 +38,23 @@ enum class MetaSkillType : uint8_t {
 
 // Enum for Trajectory Generator Types
 enum class TrajectoryGeneratorType : uint8_t {
+    CartesianVelocityTrajectoryGenerator,
     CubicHermiteSplineJointTrajectoryGenerator,
     CubicHermiteSplinePoseTrajectoryGenerator,
     GoalPoseDmpTrajectoryGenerator,
     GripperTrajectoryGenerator,
     ImpulseTrajectoryGenerator,
     JointDmpTrajectoryGenerator,
+    JointVelocityTrajectoryGenerator,
     LinearForcePositionTrajectoryGenerator,
     LinearJointTrajectoryGenerator,
     LinearPoseTrajectoryGenerator,
     MinJerkJointTrajectoryGenerator,
     MinJerkPoseTrajectoryGenerator,
+    PassThroughCartesianVelocityTrajectoryGenerator,
     PassThroughForcePositionTrajectoryGenerator,
     PassThroughJointTrajectoryGenerator,
+    PassThroughJointVelocityTrajectoryGenerator,
     PassThroughPoseTrajectoryGenerator,
     PoseDmpTrajectoryGenerator,
     QuaternionPoseDmpTrajectoryGenerator,
