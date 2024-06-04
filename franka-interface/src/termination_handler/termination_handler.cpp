@@ -52,7 +52,7 @@ void TerminationHandler::check_terminate_virtual_wall_collisions(const franka::R
 void TerminationHandler::check_terminate_joint_limits(const franka::RobotState &robot_state) {
   if (!done_) {
 
-    std::array<double, 7> current_joints = robot_state->q;
+    std::array<double, 7> current_joints = robot_state.q;
 
     for(size_t i = 0; i < current_joints.size(); i++) {
       if(current_joints[i] < min_joint_limits_[i] || current_joints[i] > max_joint_limits_[i]) {
