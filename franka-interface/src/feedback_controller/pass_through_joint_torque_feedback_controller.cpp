@@ -7,7 +7,18 @@
 #include "franka-interface/trajectory_generator/impulse_trajectory_generator.h"
 
 void PassThroughJointTorqueFeedbackController::parse_parameters() {
-  // pass
+  int data_size = (params_[1] + (params_[2] << 8) + (params_[3] << 16) + (params_[4] << 24));
+
+  bool parsed_params = joint_torque_feedback_params_.ParseFromArray(params_ + 5, data_size);
+
+  if (parsed_params){
+    for (int i = 0; i < 7; i++) {
+        S_[i] = std::min(std::max(joint_torque_feedback_params_.selection(i), 0.), 1.);
+        desired_joint_torques_[i] = joint_torque_feedback_params_.joint_torques(i);
+    }
+  } else {
+    std::cout << "Parsing JointTorqueFeedbackController params failed. Data size = " << data_size << std::endl;
+  }
 }
 
 void PassThroughJointTorqueFeedbackController::initialize_controller(FrankaRobot *robot) {
