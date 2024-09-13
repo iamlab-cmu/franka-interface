@@ -132,7 +132,9 @@ void ImpedanceControlSkill::execute_skill_on_franka(run_loop* run_loop,
     for(int i = 0; i < 7; i++) {
       current_joint_torques_[i] = feedback_controller_->tau_d_array_[i];
     }
-
+    if (current_period_ == 0.0) {
+	current_period_ = 0.001;
+    }
     limit_current_joint_torques(current_period_); 
 
     for(int i = 0; i < 7; i++) {
