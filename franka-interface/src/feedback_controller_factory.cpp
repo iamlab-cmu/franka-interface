@@ -15,6 +15,7 @@
 #include "franka-interface/feedback_controller/joint_impedance_feedback_controller.h"
 #include "franka-interface/feedback_controller/noop_feedback_controller.h"
 #include "franka-interface/feedback_controller/pass_through_feedback_controller.h"
+#include "franka-interface/feedback_controller/pass_through_joint_torque_feedback_controller.h"
 #include "franka-interface/feedback_controller/set_internal_impedance_feedback_controller.h"
 
 FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(SharedBufferTypePtr buffer, SensorDataManager* sensor_data_manager){
@@ -52,6 +53,10 @@ FeedbackController* FeedbackControllerFactory::getFeedbackControllerForSkill(Sha
     case FeedbackControllerType::PassThroughFeedbackController:
       feedback_controller_type_name = "PassThroughFeedbackController";
       feedback_controller = new PassThroughFeedbackController(buffer, sensor_data_manager);
+      break;
+    case FeedbackControllerType::PassThroughJointTorqueFeedbackController:
+      feedback_controller_type_name = "PassThroughJointTorqueFeedbackController";
+      feedback_controller = new PassThroughJointTorqueFeedbackController(buffer, sensor_data_manager);
       break;
     case FeedbackControllerType::SetInternalImpedanceFeedbackController:
       feedback_controller_type_name = "SetInternalImpedanceFeedbackController";

@@ -75,6 +75,7 @@ enum class FeedbackControllerType : uint8_t {
     JointImpedanceFeedbackController,
     NoopFeedbackController,
     PassThroughFeedbackController,
+    PassThroughJointTorqueFeedbackController,
     SetInternalImpedanceFeedbackController,
 };
 
