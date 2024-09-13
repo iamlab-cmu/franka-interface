@@ -24,6 +24,7 @@ class PassThroughJointTorqueFeedbackController : public FeedbackController {
   const franka::Model *model_;
 
   std::array<double, 7> S_= {};
+  std::array<double, 7> remove_gravity_= {};
   std::array<double, 7> desired_joint_torques_= {};
 
 };

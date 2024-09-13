@@ -14,6 +14,7 @@ void PassThroughJointTorqueFeedbackController::parse_parameters() {
   if (parsed_params){
     for (int i = 0; i < 7; i++) {
         S_[i] = std::min(std::max(joint_torque_feedback_params_.selection(i), 0.), 1.);
+        remove_gravity_[i] = joint_torque_feedback_params_.remove_gravity(i);
         desired_joint_torques_[i] = joint_torque_feedback_params_.joint_torques(i);
     }
   } else {
@@ -30,6 +31,7 @@ void PassThroughJointTorqueFeedbackController::parse_sensor_data(const franka::R
   if (sensor_msg_status == SensorDataManagerReadStatus::SUCCESS) {
     for (int i = 0; i < 7; i++) {
         S_[i] = std::min(std::max(joint_torque_sensor_msg_.selection(i), 0.), 1.);
+        remove_gravity_[i] = joint_torque_sensor_msg_.remove_gravity(i);
         desired_joint_torques_[i] = joint_torque_sensor_msg_.joint_torques(i);
     }
   }
@@ -42,7 +44,10 @@ void PassThroughJointTorqueFeedbackController::get_next_step(const franka::Robot
 
   for (int i = 0; i < 7; i++) {
     if (S_[i] == 1){
-        tau_d_array_[i] = desired_joint_torques_[i] - gravity[i];
+        tau_d_array_[i] = desired_joint_torques_[i];
+    }
+    if (remove_gravity_[i] == 1){
+        tau_d_array_[i] -= gravity[i];
     }
   }
 }
