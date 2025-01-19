@@ -27,7 +27,7 @@
   </node>
 
   <node pkg="franka_ros_interface" type="sensor_data_subscriber_node" name="sensor_data_subscriber_node_$(arg robot_num)" output="screen">
+    <param name="robot_num" value="$(arg robot_num)" />
   </node>
-
 
 </launch>
