@@ -7,7 +7,22 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
   franka_ros_interface::SensorSubscriberHandler handler(n);
-  ros::Subscriber sub = n.subscribe("franka_ros_interface/sensor", 10, &franka_ros_interface::SensorSubscriberHandler::SensorSubscriberCallback, &handler);
+  std::string robot_num;
+  if (n.getParam("robot_num", robot_num))
+  {
+    if (robot_num == "1")
+    {
+      ros::Subscriber sub = n.subscribe("franka_ros_interface/sensor", 10, &franka_ros_interface::SensorSubscriberHandler::SensorSubscriberCallback, &handler);
+    }
+    else
+    {
+      ros::Subscriber sub = n.subscribe("franka_ros_interface_"+robot_num+"/sensor", 10, &franka_ros_interface::SensorSubscriberHandler::SensorSubscriberCallback, &handler);
+    }
+  }
+  else
+  {
+    ros::Subscriber sub = n.subscribe("franka_ros_interface/sensor", 10, &franka_ros_interface::SensorSubscriberHandler::SensorSubscriberCallback, &handler);
+  }
 
   ros::spin();
 
