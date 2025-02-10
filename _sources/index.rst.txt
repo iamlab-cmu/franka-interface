@@ -1,0 +1,38 @@
+.. franka-interface documentation master file, created by
+   sphinx-quickstart on Wed Jun  9 19:14:42 2021.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to franka-interface's Documentation!
+============================================
+
+This library was designed to be used on an Ubuntu 18.04 / 20.04 PC with a Realtime Kernel Patch. The instructions in the Installation page will guide you through the process of installing a Realtime Kernel Patch. We are currently supporting ROS Melodic / Noetic and ROS2 Foxy / Humble at the moment.
+
+To join the Discord community, click the link `here <https://discord.gg/jMzpGRpSN2>`_. 
+
+If this library proves useful to your research, please cite the paper below::
+
+    @article{zhang2020modular,
+      title={A modular robotic arm control stack for research: Franka-interface and frankapy},
+      author={Zhang, Kevin and Sharma, Mohit and Liang, Jacky and Kroemer, Oliver},
+      journal={arXiv preprint arXiv:2011.02398},
+      year={2020}
+    }
+
+Note that this library has been released with the MIT license.
+
+.. toctree::
+   :maxdepth: 2
+   
+   install
+   network
+   support
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
